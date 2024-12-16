@@ -13,19 +13,6 @@ services:
     networks:
       - jingle_network
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: ../dockerfiles/frontend/Dockerfile
-    command: sh -c "npm install && npm run dev"
-    volumes:
-      - ./frontend:/app
-    restart: no
-    ports:
-      - "3080:3000"
-    networks:
-      - jingle_network
-
   db:
     image: postgres:latest
     environment:
