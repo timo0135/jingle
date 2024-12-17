@@ -1,6 +1,6 @@
 import DTO from "../DTO";
-import User from "../../../core/entities/user/User";
-import Direct from "../../../core/entities/direct/Direct";
+import User from "../../../core/domain/entities/user/User";
+import Direct from "../../../core/domain/entities/direct/Direct";
 
 class DisplayDirectDTO extends DTO{
     protected name: string;

@@ -1,6 +1,6 @@
 import DTO from "../DTO";
-import Music from "../../../core/entities/music/Music";
-import User from "../../../core/entities/user/User";
+import Music from "../../../core/domain/entities/music/Music";
+import User from "../../../core/domain/entities/user/User";
 import {IsNotEmpty} from "class-validator";
 
 class RemoveMusicToMixerDTO extends DTO {

@@ -1,8 +1,8 @@
 import DTO from "../DTO";
-import User from "../../../core/entities/user/User";
-import Playlist from "../../../core/entities/playlist/Playlist";
-import Avis from "../../../core/entities/avis/Avis";
-import Podcast from "../../../core/entities/podcast/Podcast";
+import User from "../../../core/domain/entities/user/User";
+import Playlist from "../../../core/domain/entities/playlist/Playlist";
+import Avis from "../../../core/domain/entities/avis/Avis";
+import Podcast from "../../../core/domain/entities/podcast/Podcast";
 
 class DisplayPodcastDTO extends DTO{
     protected date: Date;

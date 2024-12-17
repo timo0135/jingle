@@ -1,6 +1,6 @@
 import DTO from "../DTO";
-import User from "../../../core/entities/user/User";
-import Music from "../../../core/entities/music/Music";
+import User from "../../../core/domain/entities/user/User";
+import Music from "../../../core/domain/entities/music/Music";
 
 class DisplayMusicDTO extends DTO{
     protected name: string;

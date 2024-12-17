@@ -1,7 +1,7 @@
-import Playlist from "../../../core/entities/playlist/Playlist";
-import Music from "../../../core/entities/music/Music";
-import Direct from "../../../core/entities/direct/Direct";
-import User from "../../../core/entities/user/User";
+import Playlist from "../../../core/domain/entities/playlist/Playlist";
+import Music from "../../../core/domain/entities/music/Music";
+import Direct from "../../../core/domain/entities/direct/Direct";
+import User from "../../../core/domain/entities/user/User";
 import DTO from "../DTO";
 import {IsNotEmpty} from "class-validator";
 
