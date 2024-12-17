@@ -21,6 +21,20 @@ class PodcastRepository implements PodcastRepositoryInterface {
             return null;
         }
     }
+
+    async findAll(): Promise<Podcast[]> {
+        const client = await getMongoClient();
+        const database = client.db('jingle');
+        const collection = database.collection('Podcast');
+
+        try {
+            const podcastDocs = await collection.find().toArray();
+            return podcastDocs.map((podcastDoc: any) => new Podcast(podcastDoc.date, podcastDoc.name, podcastDoc.description, podcastDoc.creator, podcastDoc.image));
+        } catch (error) {
+            console.error("Error finding all podcasts:", error);
+            return [];
+        }
+    }
 }
 
 export default PodcastRepository;
