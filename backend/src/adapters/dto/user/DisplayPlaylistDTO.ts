@@ -1,7 +1,7 @@
 import DTO from "../DTO";
-import User from "../../../core/entities/user/User";
-import Podcast from "../../../core/entities/podcast/Podcast";
-import Playlist from "../../../core/entities/playlist/Playlist";
+import User from "../../../core/domain/entities/user/User";
+import Podcast from "../../../core/domain/entities/podcast/Podcast";
+import Playlist from "../../../core/domain/entities/playlist/Playlist";
 
 class DisplayPlaylistDTO extends DTO{
     protected name: string;

@@ -1,6 +1,6 @@
 import DTO from "../DTO";
-import Podcast from "../../../core/entities/podcast/Podcast";
-import Playlist from "../../../core/entities/playlist/Playlist";
+import Podcast from "../../../core/domain/entities/podcast/Podcast";
+import Playlist from "../../../core/domain/entities/playlist/Playlist";
 import {IsNotEmpty} from "class-validator";
 
 class RemovePodcastToPlaylistDTO extends DTO{

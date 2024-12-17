@@ -1,6 +1,6 @@
 import {IsNotEmpty} from "class-validator";
 import DTO from "../DTO";
-import User from "../../../core/entities/user/User";
+import User from "../../../core/domain/entities/user/User";
 
 class UnsubscribeToBroacasterDTO extends DTO {
     @IsNotEmpty()

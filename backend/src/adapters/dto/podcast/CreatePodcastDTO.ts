@@ -1,5 +1,5 @@
 import DTO from "../DTO";
-import User from "../../../core/entities/user/User";
+import User from "../../../core/domain/entities/user/User";
 
 class CreatePodcastDTO extends DTO{
     protected date: Date;

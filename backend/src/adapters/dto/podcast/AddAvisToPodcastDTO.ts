@@ -1,6 +1,6 @@
 import DTO from "../DTO";
-import Podcast from "../../../core/entities/podcast/Podcast";
-import Avis from "../../../core/entities/avis/Avis";
+import Podcast from "../../../core/domain/entities/podcast/Podcast";
+import Avis from "../../../core/domain/entities/avis/Avis";
 
 class AddAvisToPodcastDTO extends DTO {
     protected podcast: Podcast;
