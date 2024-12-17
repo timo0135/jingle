@@ -3,7 +3,7 @@ import Direct from "../../../core/domain/entities/direct/Direct";
 import User from "../../../core/domain/entities/user/User";
 import {IsNotEmpty} from "class-validator";
 
-class CancelGuessToDirect extends DTO{
+class CancelGuessToDirectDTO extends DTO{
 
     @IsNotEmpty()
     protected direct : Direct;
@@ -18,4 +18,4 @@ class CancelGuessToDirect extends DTO{
     }
 }
 
-export default CancelGuessToDirect;
+export default CancelGuessToDirectDTO;

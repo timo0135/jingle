@@ -5,6 +5,7 @@ import Direct from "../../../core/domain/entities/direct/Direct";
 import User from "../../../core/domain/entities/user/User";
 
 class DisplayUserDTO extends DTO {
+    protected id: string | null;
     protected email: string;
     protected password: string;
     protected pseudo: string;
@@ -20,6 +21,7 @@ class DisplayUserDTO extends DTO {
 
     constructor(user: User, token?: string, refresh?: string) {
         super();
+        this.id = user.getId();
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.pseudo = user.getPseudo();

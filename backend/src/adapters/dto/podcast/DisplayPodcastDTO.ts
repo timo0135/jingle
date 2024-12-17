@@ -5,6 +5,7 @@ import Avis from "../../../core/domain/entities/avis/Avis";
 import Podcast from "../../../core/domain/entities/podcast/Podcast";
 
 class DisplayPodcastDTO extends DTO{
+    protected id: string | null;
     protected date: Date;
     protected name: string;
     protected description: string;
@@ -15,6 +16,7 @@ class DisplayPodcastDTO extends DTO{
 
     constructor(podcast: Podcast) {
         super();
+        this.id = podcast.getId();
         this.date = podcast.getDate();
         this.name = podcast.getName();
         this.description = podcast.getDescription();
