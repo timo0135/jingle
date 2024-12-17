@@ -18,6 +18,10 @@ const server = app.listen(PORT, () => {
     throw new Error(error.message);
 });
 
+app.get("/", (req, res) => {
+    res.json({ message: "ça marche !" });
+});
+
 const wss = new WebSocketServer({ server });
 
 interface ExtendedWebSocket extends WebSocket {
