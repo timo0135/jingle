@@ -35,6 +35,8 @@ import SubscribeToBroacasterDTO from "../../../adapters/dto/user/SubscribeToBroa
 import UnsubscribeToBroacasterDTO from "../../../adapters/dto/user/UnsubscribeToBroacasterDTO";
 import UpgradeListenerToBroadcasterDTO from "../../../adapters/dto/user/UpgradeListenerToBroadcasterDTO";
 import DisplayUserDTO from "../../../adapters/dto/user/DisplayUserDTO";
+import CreateAvisDTO from "../../../adapters/dto/podcast/CreateAvisDTO";
+import UpdateDatePodcastDTO from "../../../adapters/dto/podcast/UpdateDatePodcastDTO";
 
 interface PodcastServiceInterface {
     getPodcastById(id: string): Promise<DisplayPodcastDTO>;
@@ -42,6 +44,7 @@ interface PodcastServiceInterface {
     getPodcastsByUserId(userId: string): Promise<DisplayPodcastDTO[]>
     createPodcast(podcast: CreatePodcastDTO): Promise<DisplayPodcastDTO>;
     updateTitlePodcast(dto: UpdateTitlePodcastDTO): Promise<DisplayPodcastDTO>;
+    updateDatePodcast(dto: UpdateDatePodcastDTO): Promise<DisplayPodcastDTO>;
     updateDescriptionPodcast(dto: UpdateDescriptionPodcastDTO): Promise<DisplayPodcastDTO>;
     updateImagePodcast(dto: UpdateImagePodcastDTO): Promise<DisplayPodcastDTO>;
     deletePodcast(id: string): Promise<void>;
@@ -51,6 +54,8 @@ interface PodcastServiceInterface {
     searchAvisPodcastInfo(dto: SearchAvisDTO): Promise<DisplayAvisDTO[]>;
     addAvisPodcast(dto: AddAvisToPodcastDTO): Promise<DisplayAvisDTO>;
     removeAvisPodcast(dto: RemoveAvisToPodcastDTO): Promise<DisplayAvisDTO>;
+    createAvis(dto: CreateAvisDTO): Promise<DisplayAvisDTO>;
+    deleteAvis(id: string): Promise<void>;
     updateTitleAvisPodcast(dto: UpdateTitleAvisDTO): Promise<DisplayAvisDTO>;
     updateContentAvisPodcast(dto: UpdateContentAvisDTO): Promise<DisplayAvisDTO>;
     getPlaylists(): Promise<DisplayPlaylistDTO[]>;
