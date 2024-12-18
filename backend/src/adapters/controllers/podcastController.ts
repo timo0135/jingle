@@ -65,11 +65,17 @@ export async function createPodcast(req: Request, res: Response) {
         try{
             const contactInput = plainToInstance(CreatePodcastDTO, data);
             await validateOrReject(contactInput);
-            if(!validator.isEmail(data.email)){
-                throw new PodcastServiceBadDataException('Invalid email');
+            if(!validator.isDate(data.date)){
+                throw new PodcastServiceBadDataException('Invalid date');
             }
-            if(!validator.isAlphanumeric(data.pseudo)){
-                throw new PodcastServiceBadDataException('Invalid pseudo');
+            if(!validator.isAlphanumeric(data.name)){
+                throw new PodcastServiceBadDataException('Invalid name');
+            }
+            if(!validator.isAlpha(data.host_id)){
+                throw new PodcastServiceBadDataException('Invalid host_id');
+            }
+            if(!validator.isAlphanumeric(data.image)){
+                throw new PodcastServiceBadDataException('Invalid image');
             }
         } catch (errors) {
             if (errors instanceof Array && errors[0] instanceof ValidationError) {
@@ -80,7 +86,8 @@ export async function createPodcast(req: Request, res: Response) {
                 throw new PodcastServiceBadDataException(errors.message);
             }
         }
-        const podcast = await podcastService.createPodcast(req.body);
+        const dto = new CreatePodcastDTO(data.date, data.name, data.description, data.host_id, data.image);
+        const podcast = await podcastService.createPodcast(dto);
         let response = {
             type: 'resource',
             locale: 'fr-FR',
