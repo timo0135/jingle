@@ -112,25 +112,99 @@ class PodcastService implements PodcastServiceInterface {
         }
     }
 
-    public updateTitlePodcast(dto: UpdateTitlePodcastDTO): Promise<DisplayPodcastDTO> {
-        throw new Error('Method not implemented.');
+    public async updateTitlePodcast(dto: UpdateTitlePodcastDTO): Promise<DisplayPodcastDTO> {
+        try {
+            const podcast = await this.instance.findById(dto.get('podcastId'));
+            if (podcast === null) {
+                throw new PodcastServiceNotFoundException("Podcast not found");
+            }
+            podcast.setName(dto.get('title'));
+            await this.instance.save(podcast);
+            return new DisplayPodcastDTO(podcast as Podcast);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast title");
+            }
+        }
     }
 
-    public updateDatePodcast(dto: UpdateDatePodcastDTO): Promise<DisplayPodcastDTO> {
-        throw new Error('Method not implemented.');
+    public async updateDatePodcast(dto: UpdateDatePodcastDTO): Promise<DisplayPodcastDTO> {
+        try {
+            const podcast = await this.instance.findById(dto.get('date'));
+            if (podcast === null) {
+                throw new PodcastServiceNotFoundException("Podcast not found");
+            }
+            podcast.setName(dto.get('date'));
+            await this.instance.save(podcast);
+            return new DisplayPodcastDTO(podcast as Podcast);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast title");
+            }
+        }
     }
 
 
-    public updateDescriptionPodcast(dto: UpdateDescriptionPodcastDTO): Promise<DisplayPodcastDTO> {
-        throw new Error('Method not implemented.');
+    public async updateDescriptionPodcast(dto: UpdateDescriptionPodcastDTO): Promise<DisplayPodcastDTO> {
+        try {
+            const podcast = await this.instance.findById(dto.get('podcastId'));
+            if (podcast === null) {
+                throw new PodcastServiceNotFoundException("Podcast not found");
+            }
+            podcast.setDescription(dto.get('description'));
+            await this.instance.save(podcast);
+            return new DisplayPodcastDTO(podcast as Podcast);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast description");
+            }
+        }
     }
 
-    public updateImagePodcast(dto: UpdateImagePodcastDTO): Promise<DisplayPodcastDTO> {
-        throw new Error('Method not implemented.');
+    public async updateImagePodcast(dto: UpdateImagePodcastDTO): Promise<DisplayPodcastDTO> {
+        try {
+            const podcast = await this.instance.findById(dto.get('podcastId'));
+            if (podcast === null) {
+                throw new PodcastServiceNotFoundException("Podcast not found");
+            }
+            podcast.setDescription(dto.get('image'));
+            await this.instance.save(podcast);
+            return new DisplayPodcastDTO(podcast as Podcast);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast description");
+            }
+        }
     }
 
     public deletePodcast(id: string): Promise<void> {
-        throw new Error('Method not implemented.');
+        try {
+            return this.instance.delete(id);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while deleting podcast");
+            }
+        }
     }
 
     public searchPodcastInfo(dto: SearchPodcastDTO): Promise<DisplayPodcastDTO[]> {

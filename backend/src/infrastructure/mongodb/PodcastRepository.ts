@@ -85,6 +85,22 @@ class PodcastRepository implements PodcastRepositoryInterface {
         }
     }
 
+    async delete(id: string): Promise<void> {
+        try {
+            const collection = await this.init();
+            const result = await collection.deleteOne({_id: new ObjectId(id)});
+            if (result.deletedCount === 0) {
+                throw new RepositoryNotFoundException("Podcast not found");
+            }
+        } catch (error) {
+            if (error instanceof MongoNetworkError || error instanceof MongoServerSelectionError) {
+                console.error("Error deleting podcast:", error);
+                throw new RepositoryInternalServerErrorException(error.message);
+            } else {
+                throw new RepositoryInternalServerErrorException("An error occurred while deleting podcast");
+            }
+        }
+    }
 
     async findAll(): Promise<Podcast[]> {
         try {
