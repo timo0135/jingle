@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { WebSocketServer, WebSocket } from "ws";
+import podcastRoute from "./adapters/routes/podcastRoute";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -21,6 +22,8 @@ const server = app.listen(PORT, () => {
 app.get("/", (req, res) => {
     res.json({ message: "ça marche !" });
 });
+
+app.use("/", podcastRoute);
 
 const wss = new WebSocketServer({ server });
 
