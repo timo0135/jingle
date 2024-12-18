@@ -43,13 +43,17 @@ import Podcast from "../../domain/entities/podcast/Podcast";
 import RepositoryInternalServerErrorException from "../../repositoryInterface/RepositoryInternalServerErrorException";
 import PodcastServiceInternalServerErrorException from "./PodcastServiceInternalServerErrorException";
 import RepositoryNotFoundException from "../../repositoryInterface/RepositoryNotFoundException";
+import {UserRepositoryInterface} from "../../repositoryInterface/UserRepositoryInterface";
+import PodcastServiceNotFoundException from "./PodcastServiceNotFoundException";
 
 class PodcastService implements PodcastServiceInterface {
 
     private instance: PodcastRepositoryInterface;
+    private userRepository: UserRepositoryInterface;
 
-    constructor(instance: PodcastRepositoryInterface) {
+    constructor(instance: PodcastRepositoryInterface, userRepository: UserRepositoryInterface) {
         this.instance = instance;
+        this.userRepository = userRepository
     }
 
     public getPodcastById(id: string): Promise<DisplayPodcastDTO> {
@@ -89,7 +93,11 @@ class PodcastService implements PodcastServiceInterface {
 
     public async createPodcast(podcast: CreatePodcastDTO): Promise<DisplayPodcastDTO> {
         try {
-            let p = new Podcast(podcast.get('date'), podcast.get('name'), podcast.get('description'), podcast.get('creator'), podcast.get('image'));
+            const user = await this.userRepository.findById(podcast.get('creatorId'));
+            if (user === null) {
+                throw new PodcastServiceNotFoundException("User not found");
+            }
+            let p = new Podcast(podcast.get('date'), podcast.get('name'), podcast.get('description'), user, podcast.get('image'));
             const id = await this.instance.save(p);
             p.setId(id);
             return new DisplayPodcastDTO(p);
