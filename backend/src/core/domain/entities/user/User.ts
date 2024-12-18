@@ -75,9 +75,25 @@ class User extends Entity {
         }
     }
 
+    public setSubscribers(subscribers: User[]): void {
+        if (this.role >= 2) {
+            this.subscribers = subscribers;
+        }else {
+            throw new Error("Access denied: insufficient role");
+        }
+    }
+
     public addSubscription(user: User): void {
         if (this.role >= 1) {
             this.subscriptions.push(user);
+        }else {
+            throw new Error("Access denied: insufficient role");
+        }
+    }
+
+    public setSubscriptions(subscriptions: User[]): void {
+        if (this.role >= 1) {
+            this.subscriptions = subscriptions;
         }else {
             throw new Error("Access denied: insufficient role");
         }
@@ -99,6 +115,14 @@ class User extends Entity {
         }
     }
 
+    public setPlaylists(playlists: Playlist[]): void {
+        if (this.role >= 1) {
+            this.playlists = playlists;
+        }else {
+            throw new Error("Access denied: insufficient role");
+        }
+    }
+
     public getMixers(): Music[] {
         if (this.role >= 2) {
             return this.mixers;
@@ -110,6 +134,14 @@ class User extends Entity {
     public addMixer(mixer: Music): void {
         if (this.role >= 2) {
             this.mixers.push(mixer);
+        }else {
+            throw new Error("Access denied: insufficient role");
+        }
+    }
+
+    public setMixers(mixers: Music[]): void {
+        if (this.role >= 2) {
+            this.mixers = mixers;
         }else {
             throw new Error("Access denied: insufficient role");
         }
@@ -131,6 +163,14 @@ class User extends Entity {
         }
     }
 
+    public setDirects(directs: Direct[]): void {
+        if (this.role >= 2) {
+            this.directs = directs;
+        }else {
+            throw new Error("Access denied: insufficient role");
+        }
+    }
+
     public getGuess(): Direct[] {
         if (this.role >= 1) {
             return this.guess;
@@ -142,6 +182,14 @@ class User extends Entity {
     public addGuess(guess: Direct): void {
         if (this.role >= 1) {
             this.guess.push(guess);
+        }else {
+            throw new Error("Access denied: insufficient role");
+        }
+    }
+
+    public setGuess(guess: Direct[]): void {
+        if (this.role >= 1) {
+            this.guess = guess;
         }else {
             throw new Error("Access denied: insufficient role");
         }

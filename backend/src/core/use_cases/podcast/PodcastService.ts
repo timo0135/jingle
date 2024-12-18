@@ -43,7 +43,7 @@ import Podcast from "../../domain/entities/podcast/Podcast";
 import RepositoryInternalServerErrorException from "../../repositoryInterface/RepositoryInternalServerErrorException";
 import PodcastServiceInternalServerErrorException from "./PodcastServiceInternalServerErrorException";
 import RepositoryNotFoundException from "../../repositoryInterface/RepositoryNotFoundException";
-import {UserRepositoryInterface} from "../../repositoryInterface/UserRepositoryInterface";
+import UserRepositoryInterface from "../../repositoryInterface/UserRepositoryInterface";
 import PodcastServiceNotFoundException from "./PodcastServiceNotFoundException";
 
 class PodcastService implements PodcastServiceInterface {
@@ -93,7 +93,7 @@ class PodcastService implements PodcastServiceInterface {
 
     public async createPodcast(podcast: CreatePodcastDTO): Promise<DisplayPodcastDTO> {
         try {
-            const user = await this.userRepository.findById(podcast.get('creatorId'));
+            const user = await this.userRepository.find(podcast.get('creatorId'));
             if (user === null) {
                 throw new PodcastServiceNotFoundException("User not found");
             }

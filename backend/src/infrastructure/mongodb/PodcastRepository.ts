@@ -36,7 +36,13 @@ class PodcastRepository implements PodcastRepositoryInterface {
                         email: podcast.getCreator().getEmail(),
                         password: podcast.getCreator().getPassword(),
                         pseudo: podcast.getCreator().getPseudo(),
-                        role: podcast.getCreator().getRole()
+                        role: podcast.getCreator().getRole(),
+                        subscribers: [],
+                        subscriptions: [],
+                        playlists: [],
+                        mixers: [],
+                        directs: [],
+                        guess: []
                     },
                     image: podcast.getImage()
                 });
@@ -52,7 +58,13 @@ class PodcastRepository implements PodcastRepositoryInterface {
                             email: podcast.getCreator().getEmail(),
                             password: podcast.getCreator().getPassword(),
                             pseudo: podcast.getCreator().getPseudo(),
-                            role: podcast.getCreator().getRole()
+                            role: podcast.getCreator().getRole(),
+                            subscribers: [],
+                            subscriptions: [],
+                            playlists: [],
+                            mixers: [],
+                            directs: [],
+                            guess: []
                         },
                         image: podcast.getImage()
                     }
@@ -67,6 +79,7 @@ class PodcastRepository implements PodcastRepositoryInterface {
                 console.error("Error saving podcast:", error);
                 throw new RepositoryInternalServerErrorException(error.message);
             } else {
+                console.error("Error saving podcast:", error);
                 throw new RepositoryInternalServerErrorException("An error occurred while saving podcast");
             }
         }
