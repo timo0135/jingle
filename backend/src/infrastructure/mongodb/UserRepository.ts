@@ -107,36 +107,48 @@ class UserRepository implements UserRepositoryInterface{
             return usersDoc.map((userDoc: any) => {
                 const user = new User(userDoc.email, userDoc.password, userDoc.pseudo, userDoc.role);
                 user.setId(userDoc._id.toString());
-                userDoc.subscribers.forEach((subscriber: any) => {
-                    const u = new User(subscriber.email, subscriber.password, subscriber.pseudo, subscriber.role);
-                    u.setId(subscriber._id.toString());
-                    user.addSubscriber(u);
-                });
-                userDoc.subscriptions.forEach((subscription: any) => {
-                    const u = new User(subscription.email, subscription.password, subscription.pseudo, subscription.role);
-                    u.setId(subscription._id.toString());
-                    user.addSubscription(u);
-                });
-                userDoc.playlists.forEach((playlist: any) => {
-                    const p = new Playlist(playlist.name, playlist.description, user);
-                    p.setId(playlist._id.toString());
-                    user.addPlaylist(p);
-                });
-                userDoc.mixer.forEach((mix: any) => {
-                    const m = new Music(mix.name, mix.file);
-                    m.setId(mix._id.toString());
-                    user.addMixer(m);
-                });
-                userDoc.directs.forEach((direct: any) => {
-                    const d = new Direct(direct.name, direct.description, direct.image, user, direct.date, direct.duration);
-                    d.setId(direct._id.toString());
-                    user.addDirect(d);
-                });
-                userDoc.guess.forEach((guess: any) => {
-                    const g = new Direct(guess.name, guess.description, guess.image, user, guess.date, guess.duration);
-                    g.setId(guess._id.toString());
-                    user.addGuess(g);
-                });
+                if (userDoc.subscribers !== null) {
+                    userDoc.subscribers.forEach((subscriber: any) => {
+                        const u = new User(subscriber.email, subscriber.password, subscriber.pseudo, subscriber.role);
+                        u.setId(subscriber._id.toString());
+                        user.addSubscriber(u);
+                    });
+                }
+                if (userDoc.subscriptions !== null) {
+                    userDoc.subscriptions.forEach((subscription: any) => {
+                        const u = new User(subscription.email, subscription.password, subscription.pseudo, subscription.role);
+                        u.setId(subscription._id.toString());
+                        user.addSubscription(u);
+                    });
+                }
+                if (userDoc.playlists !== null) {
+                    userDoc.playlists.forEach((playlist: any) => {
+                        const p = new Playlist(playlist.name, playlist.description, user);
+                        p.setId(playlist._id.toString());
+                        user.addPlaylist(p);
+                    });
+                }
+                if (userDoc.mixer !== null) {
+                    userDoc.mixer.forEach((mix: any) => {
+                        const m = new Music(mix.name, mix.file);
+                        m.setId(mix._id.toString());
+                        user.addMixer(m);
+                    });
+                }
+                if(userDoc.directs !== null) {
+                    userDoc.directs.forEach((direct: any) => {
+                        const d = new Direct(direct.name, direct.description, direct.image, user, direct.date, direct.duration);
+                        d.setId(direct._id.toString());
+                        user.addDirect(d);
+                    });
+                }
+                if (userDoc.guess !== null) {
+                    userDoc.guess.forEach((guess: any) => {
+                        const g = new Direct(guess.name, guess.description, guess.image, user, guess.date, guess.duration);
+                        g.setId(guess._id.toString());
+                        user.addGuess(g);
+                    });
+                }
                 return user;
             });
         } catch (error) {
@@ -159,36 +171,48 @@ class UserRepository implements UserRepositoryInterface{
             }
             const user = new User(userDoc.email, userDoc.password, userDoc.pseudo, userDoc.role);
             user.setId(userDoc._id.toString());
-            userDoc.subscribers.forEach((subscriber: any) => {
-                const u = new User(subscriber.email, subscriber.password, subscriber.pseudo, subscriber.role);
-                u.setId(subscriber._id.toString());
-                user.addSubscriber(u);
-            });
-            userDoc.subscriptions.forEach((subscription: any) => {
-                const u = new User(subscription.email, subscription.password, subscription.pseudo, subscription.role);
-                u.setId(subscription._id.toString());
-                user.addSubscription(u);
-            });
-            userDoc.playlists.forEach((playlist: any) => {
-                const p = new Playlist(playlist.name, playlist.description, user);
-                p.setId(playlist._id.toString());
-                user.addPlaylist(p);
-            });
-            userDoc.mixer.forEach((mix: any) => {
-                const m = new Music(mix.name, mix.file);
-                m.setId(mix._id.toString());
-                user.addMixer(m);
-            });
-            userDoc.directs.forEach((direct: any) => {
-                const d = new Direct(direct.name, direct.description, direct.image, user, direct.date, direct.duration);
-                d.setId(direct._id.toString());
-                user.addDirect(d);
-            });
-            userDoc.guess.forEach((guess: any) => {
-                const g = new Direct(guess.name, guess.description, guess.image, user, guess.date, guess.duration);
-                g.setId(guess._id.toString());
-                user.addGuess(g);
-            });
+            if (userDoc.subscribers !== null) {
+                userDoc.subscribers.forEach((subscriber: any) => {
+                    const u = new User(subscriber.email, subscriber.password, subscriber.pseudo, subscriber.role);
+                    u.setId(subscriber._id.toString());
+                    user.addSubscriber(u);
+                });
+            }
+            if (userDoc.subscriptions !== null) {
+                userDoc.subscriptions.forEach((subscription: any) => {
+                    const u = new User(subscription.email, subscription.password, subscription.pseudo, subscription.role);
+                    u.setId(subscription._id.toString());
+                    user.addSubscription(u);
+                });
+            }
+            if (userDoc.playlists !== null) {
+                userDoc.playlists.forEach((playlist: any) => {
+                    const p = new Playlist(playlist.name, playlist.description, user);
+                    p.setId(playlist._id.toString());
+                    user.addPlaylist(p);
+                });
+            }
+            if (userDoc.mixer !== null) {
+                userDoc.mixer.forEach((mix: any) => {
+                    const m = new Music(mix.name, mix.file);
+                    m.setId(mix._id.toString());
+                    user.addMixer(m);
+                });
+            }
+            if(userDoc.directs !== null) {
+                userDoc.directs.forEach((direct: any) => {
+                    const d = new Direct(direct.name, direct.description, direct.image, user, direct.date, direct.duration);
+                    d.setId(direct._id.toString());
+                    user.addDirect(d);
+                });
+            }
+            if (userDoc.guess !== null) {
+                userDoc.guess.forEach((guess: any) => {
+                    const g = new Direct(guess.name, guess.description, guess.image, user, guess.date, guess.duration);
+                    g.setId(guess._id.toString());
+                    user.addGuess(g);
+                });
+            }
             return user;
         } catch (error) {
             if (error instanceof MongoNetworkError || error instanceof MongoServerSelectionError) {
@@ -210,36 +234,48 @@ class UserRepository implements UserRepositoryInterface{
             }
             const user = new User(userDoc.email, userDoc.password, userDoc.pseudo, userDoc.role);
             user.setId(userDoc._id.toString());
-            userDoc.subscribers.forEach((subscriber: any) => {
-                const u = new User(subscriber.email, subscriber.password, subscriber.pseudo, subscriber.role);
-                u.setId(subscriber._id.toString());
-                user.addSubscriber(u);
-            });
-            userDoc.subscriptions.forEach((subscription: any) => {
-                const u = new User(subscription.email, subscription.password, subscription.pseudo, subscription.role);
-                u.setId(subscription._id.toString());
-                user.addSubscription(u);
-            });
-            userDoc.playlists.forEach((playlist: any) => {
-                const p = new Playlist(playlist.name, playlist.description, user);
-                p.setId(playlist._id.toString());
-                user.addPlaylist(p);
-            });
-            userDoc.mixer.forEach((mix: any) => {
-                const m = new Music(mix.name, mix.file);
-                m.setId(mix._id.toString());
-                user.addMixer(m);
-            });
-            userDoc.directs.forEach((direct: any) => {
-                const d = new Direct(direct.name, direct.description, direct.image, user, direct.date, direct.duration);
-                d.setId(direct._id.toString());
-                user.addDirect(d);
-            });
-            userDoc.guess.forEach((guess: any) => {
-                const g = new Direct(guess.name, guess.description, guess.image, user, guess.date, guess.duration);
-                g.setId(guess._id.toString());
-                user.addGuess(g);
-            });
+            if (userDoc.subscribers !== null) {
+                userDoc.subscribers.forEach((subscriber: any) => {
+                    const u = new User(subscriber.email, subscriber.password, subscriber.pseudo, subscriber.role);
+                    u.setId(subscriber._id.toString());
+                    user.addSubscriber(u);
+                });
+            }
+            if (userDoc.subscriptions !== null) {
+                userDoc.subscriptions.forEach((subscription: any) => {
+                    const u = new User(subscription.email, subscription.password, subscription.pseudo, subscription.role);
+                    u.setId(subscription._id.toString());
+                    user.addSubscription(u);
+                });
+            }
+            if (userDoc.playlists !== null) {
+                userDoc.playlists.forEach((playlist: any) => {
+                    const p = new Playlist(playlist.name, playlist.description, user);
+                    p.setId(playlist._id.toString());
+                    user.addPlaylist(p);
+                });
+            }
+            if (userDoc.mixer !== null) {
+                userDoc.mixer.forEach((mix: any) => {
+                    const m = new Music(mix.name, mix.file);
+                    m.setId(mix._id.toString());
+                    user.addMixer(m);
+                });
+            }
+            if(userDoc.directs !== null) {
+                userDoc.directs.forEach((direct: any) => {
+                    const d = new Direct(direct.name, direct.description, direct.image, user, direct.date, direct.duration);
+                    d.setId(direct._id.toString());
+                    user.addDirect(d);
+                });
+            }
+            if (userDoc.guess !== null) {
+                userDoc.guess.forEach((guess: any) => {
+                    const g = new Direct(guess.name, guess.description, guess.image, user, guess.date, guess.duration);
+                    g.setId(guess._id.toString());
+                    user.addGuess(g);
+                });
+            }
             return user;
         }catch (error) {
             if (error instanceof MongoNetworkError || error instanceof MongoServerSelectionError) {
@@ -259,36 +295,48 @@ class UserRepository implements UserRepositoryInterface{
             return usersDoc.map((userDoc: any) => {
                 const user = new User(userDoc.email, userDoc.password, userDoc.pseudo, userDoc.role);
                 user.setId(userDoc._id.toString());
-                userDoc.subscribers.forEach((subscriber: any) => {
-                    const u = new User(subscriber.email, subscriber.password, subscriber.pseudo, subscriber.role);
-                    u.setId(subscriber._id.toString());
-                    user.addSubscriber(u);
-                });
-                userDoc.subscriptions.forEach((subscription: any) => {
-                    const u = new User(subscription.email, subscription.password, subscription.pseudo, subscription.role);
-                    u.setId(subscription._id.toString());
-                    user.addSubscription(u);
-                });
-                userDoc.playlists.forEach((playlist: any) => {
-                    const p = new Playlist(playlist.name, playlist.description, user);
-                    p.setId(playlist._id.toString());
-                    user.addPlaylist(p);
-                });
-                userDoc.mixer.forEach((mix: any) => {
-                    const m = new Music(mix.name, mix.file);
-                    m.setId(mix._id.toString());
-                    user.addMixer(m);
-                });
-                userDoc.directs.forEach((direct: any) => {
-                    const d = new Direct(direct.name, direct.description, direct.image, user, direct.date, direct.duration);
-                    d.setId(direct._id.toString());
-                    user.addDirect(d);
-                });
-                userDoc.guess.forEach((guess: any) => {
-                    const g = new Direct(guess.name, guess.description, guess.image, user, guess.date, guess.duration);
-                    g.setId(guess._id.toString());
-                    user.addGuess(g);
-                });
+                if (userDoc.subscribers !== null) {
+                    userDoc.subscribers.forEach((subscriber: any) => {
+                        const u = new User(subscriber.email, subscriber.password, subscriber.pseudo, subscriber.role);
+                        u.setId(subscriber._id.toString());
+                        user.addSubscriber(u);
+                    });
+                }
+                if (userDoc.subscriptions !== null) {
+                    userDoc.subscriptions.forEach((subscription: any) => {
+                        const u = new User(subscription.email, subscription.password, subscription.pseudo, subscription.role);
+                        u.setId(subscription._id.toString());
+                        user.addSubscription(u);
+                    });
+                }
+                if (userDoc.playlists !== null) {
+                    userDoc.playlists.forEach((playlist: any) => {
+                        const p = new Playlist(playlist.name, playlist.description, user);
+                        p.setId(playlist._id.toString());
+                        user.addPlaylist(p);
+                    });
+                }
+                if (userDoc.mixer !== null) {
+                    userDoc.mixer.forEach((mix: any) => {
+                        const m = new Music(mix.name, mix.file);
+                        m.setId(mix._id.toString());
+                        user.addMixer(m);
+                    });
+                }
+                if(userDoc.directs !== null) {
+                    userDoc.directs.forEach((direct: any) => {
+                        const d = new Direct(direct.name, direct.description, direct.image, user, direct.date, direct.duration);
+                        d.setId(direct._id.toString());
+                        user.addDirect(d);
+                    });
+                }
+                if (userDoc.guess !== null) {
+                    userDoc.guess.forEach((guess: any) => {
+                        const g = new Direct(guess.name, guess.description, guess.image, user, guess.date, guess.duration);
+                        g.setId(guess._id.toString());
+                        user.addGuess(g);
+                    });
+                }
                 return user;
             });
         }catch (error) {
@@ -326,7 +374,13 @@ class UserRepository implements UserRepositoryInterface{
                         email: user.getEmail(),
                         password: user.getPassword(),
                         pseudo: user.getPseudo(),
-                        role: user.getRole()
+                        role: user.getRole(),
+                        subscribers: user.getSubscribers(),
+                        subscriptions: user.getSubscriptions(),
+                        playlists: user.getPlaylists(),
+                        mixers: user.getMixers(),
+                        directs: user.getDirects(),
+                        guess: user.getGuess()
                     }
                 });
                 if (result.modifiedCount === 0) {
