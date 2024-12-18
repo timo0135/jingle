@@ -40,10 +40,14 @@ import CreateAvisDTO from "../../../adapters/dto/podcast/CreateAvisDTO";
 import UpdateDatePodcastDTO from "../../../adapters/dto/podcast/UpdateDatePodcastDTO";
 import {PodcastRepositoryInterface} from "../../repositoryInterface/PodcastRepositoryInterface";
 import Podcast from "../../domain/entities/podcast/Podcast";
+import RepositoryInternalServerErrorException from "../../repositoryInterface/RepositoryInternalServerErrorException";
+import PodcastServiceInternalServerErrorException from "./PodcastServiceInternalServerErrorException";
+import RepositoryNotFoundException from "../../repositoryInterface/RepositoryNotFoundException";
 
-class PodcastService implements PodcastServiceInterface{
+class PodcastService implements PodcastServiceInterface {
 
     private instance: PodcastRepositoryInterface;
+
     constructor(instance: PodcastRepositoryInterface) {
         this.instance = instance;
     }
@@ -67,18 +71,44 @@ class PodcastService implements PodcastServiceInterface{
     }
 
     public getPodcastsByUserId(userId: string): Promise<DisplayPodcastDTO[]> {
-        throw new Error('Method not implemented.');
+        try {
+            let podcasts = this.instance.getPodcastsByUserId(userId);
+            return podcasts.then((podcasts) => {
+                return podcasts.map((podcast) => new DisplayPodcastDTO(podcast as Podcast));
+            });
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while getting podcasts by user id");
+            }
+        }
     }
 
-    public createPodcast(podcast: CreatePodcastDTO): Promise<DisplayPodcastDTO> {
-        throw new Error('Method not implemented.');
+    public async createPodcast(podcast: CreatePodcastDTO): Promise<DisplayPodcastDTO> {
+        try {
+            let p = new Podcast(podcast.get('date'), podcast.get('name'), podcast.get('description'), podcast.get('creator'), podcast.get('image'));
+            const id = await this.instance.save(p);
+            p.setId(id);
+            return new DisplayPodcastDTO(p);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while creating podcast");
+            }
+        }
     }
 
     public updateTitlePodcast(dto: UpdateTitlePodcastDTO): Promise<DisplayPodcastDTO> {
         throw new Error('Method not implemented.');
     }
 
-    public updateDatePodcast(dto: UpdateDatePodcastDTO): Promise<DisplayPodcastDTO>{
+    public updateDatePodcast(dto: UpdateDatePodcastDTO): Promise<DisplayPodcastDTO> {
         throw new Error('Method not implemented.');
     }
 
@@ -127,10 +157,11 @@ class PodcastService implements PodcastServiceInterface{
         throw new Error('Method not implemented.');
     }
 
-    public createAvis(dto: CreateAvisDTO): Promise<DisplayAvisDTO>{
+    public createAvis(dto: CreateAvisDTO): Promise<DisplayAvisDTO> {
         throw new Error('Method not implemented.');
     }
-    public deleteAvis(id: string): Promise<void>{
+
+    public deleteAvis(id: string): Promise<void> {
         throw new Error('Method not implemented.');
     }
 

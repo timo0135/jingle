@@ -2,10 +2,14 @@ import * as mongoDB from "mongodb";
 import { mongoConfig } from '../../config/database';
 
 export const getMongoClient = async (): Promise<mongoDB.MongoClient> => {
+    const uri = mongoConfig.uri;
+    if (!uri) {
+        throw new Error('Mongo URI not found');
+    }
     try {
-        const client: mongoDB.MongoClient = new mongoDB.MongoClient("mongodb://admin:pass@mongodb");
+        const client: mongoDB.MongoClient = new mongoDB.MongoClient(uri);
         await client.connect();
-        console.log('Connected to MongoDB');
+        console.log('Connected to MongoDB successfully at URI:', uri);
         return client;
     } catch (error) {
         console.error('Error connecting to MongoDB:', error);
