@@ -2,10 +2,17 @@ import { PodcastRepositoryInterface } from "../../core/repositoryInterface/Podca
 import Podcast from "../../core/domain/entities/podcast/Podcast";
 import { getMongoClient } from "./MongoClient";
 import { ObjectId } from 'mongodb';
-import {mongoConfig} from "../../config/database";
 import User from "../../core/domain/entities/user/User";
+import { MongoClient } from "mongodb";
 
 class PodcastRepository implements PodcastRepositoryInterface {
+
+    protected client: Promise<MongoClient>
+
+    constructor(client: Promise<MongoClient>) {
+        this.client = client;
+    }
+
     async findById(id: string): Promise<Podcast | null> {
         const client = await getMongoClient();
         const database = client.db('jingle');
