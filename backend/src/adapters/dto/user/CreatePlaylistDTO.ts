@@ -1,5 +1,4 @@
 import DTO from "../DTO";
-import User from "../../../core/domain/entities/user/User";
 import {IsNotEmpty} from "class-validator";
 
 class CreatePlaylistDTO extends DTO{
@@ -8,11 +7,11 @@ class CreatePlaylistDTO extends DTO{
     protected name: string;
 
     @IsNotEmpty()
-    protected user: User;
-    constructor(name: string, user: User) {
+    protected userId: string;
+    constructor(name: string, userId: string) {
         super();
         this.name = name;
-        this.user = user;
+        this.userId = userId;
     }
 }
 

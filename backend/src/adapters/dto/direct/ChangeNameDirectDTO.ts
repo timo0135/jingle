@@ -1,13 +1,12 @@
 import DTO from "../DTO";
-import Direct from "../../../core/domain/entities/direct/Direct";
 
 class ChangeNameDirectDTO extends DTO{
     protected name: string;
-    protected direct: Direct
-    constructor(name: string, direct: Direct) {
+    protected directId: string
+    constructor(name: string, directId: string) {
         super();
         this.name = name;
-        this.direct = direct;
+        this.directId = directId;
     }
 }
 

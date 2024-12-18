@@ -1,5 +1,4 @@
 import DTO from "../DTO";
-import User from "../../../core/domain/entities/user/User";
 import {IsNotEmpty} from "class-validator";
 
 class CreateDirectDTO extends DTO{
@@ -14,7 +13,7 @@ class CreateDirectDTO extends DTO{
     protected image: string;
 
     @IsNotEmpty()
-    protected host: User;
+    protected hostId: string;
 
     @IsNotEmpty()
     protected date: Date;
@@ -22,12 +21,12 @@ class CreateDirectDTO extends DTO{
     @IsNotEmpty()
     protected duration: number;
 
-    constructor(name: string, description: string, image: string, host: User, date: Date, duration: number) {
+    constructor(name: string, description: string, image: string, hostId: string, date: Date, duration: number) {
         super();
         this.name = name;
         this.description = description;
         this.image = image;
-        this.host = host;
+        this.hostId = hostId;
         this.date = date;
         this.duration = duration;
     }

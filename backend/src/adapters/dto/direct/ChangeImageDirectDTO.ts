@@ -1,14 +1,13 @@
 import DTO from "../DTO";
-import Direct from "../../../core/domain/entities/direct/Direct";
 
 class ChangeImageDirectDTO extends DTO{
     protected image: string;
-    protected direct: Direct;
+    protected directId: string;
 
-    constructor(image: string, direct: Direct) {
+    constructor(image: string, directId: string) {
         super();
         this.image = image;
-        this.direct = direct;
+        this.directId = directId;
     }
 }
 

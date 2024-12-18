@@ -1,16 +1,15 @@
 import {IsNotEmpty} from "class-validator";
 import DTO from "../DTO";
-import Podcast from "../../../core/domain/entities/podcast/Podcast";
 
 class UpdateTitlePodcastDTO extends DTO {
     @IsNotEmpty()
     protected title: string;
-    protected podcast: Podcast
+    protected podcastId: string
 
-    constructor(title: string, podcast: Podcast) {
+    constructor(title: string, podcastId: string) {
         super();
         this.title = title;
-        this.podcast = podcast;
+        this.podcastId = podcastId;
     }
 }
 

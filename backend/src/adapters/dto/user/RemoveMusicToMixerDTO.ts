@@ -1,20 +1,18 @@
 import DTO from "../DTO";
-import Music from "../../../core/domain/entities/music/Music";
-import User from "../../../core/domain/entities/user/User";
 import {IsNotEmpty} from "class-validator";
 
 class RemoveMusicToMixerDTO extends DTO {
 
     @IsNotEmpty()
-    protected music: Music;
+    protected musicId: string;
 
     @IsNotEmpty()
-    protected user: User;
+    protected userId: string;
 
-    constructor(music: Music, user: User) {
+    constructor(musicId: string, userId: string) {
         super();
-        this.music = music;
-        this.user = user;
+        this.musicId = musicId;
+        this.userId = userId;
     }
 }
 

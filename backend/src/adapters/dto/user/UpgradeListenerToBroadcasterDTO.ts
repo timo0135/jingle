@@ -1,12 +1,11 @@
 import DTO from "../DTO";
-import User from "../../../core/domain/entities/user/User";
 
 class UpgradeListenerToBroadcasterDTO extends DTO{
-    protected user: User;
+    protected userId: string;
 
-    constructor(user: User) {
+    constructor(userId: string) {
         super();
-        this.user = user;
+        this.userId = userId;
     }
 }
 

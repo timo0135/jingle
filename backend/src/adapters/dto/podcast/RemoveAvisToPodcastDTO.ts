@@ -1,20 +1,18 @@
 import DTO from "../DTO";
-import Podcast from "../../../core/domain/entities/podcast/Podcast";
-import Avis from "../../../core/domain/entities/avis/Avis";
 import {IsNotEmpty} from "class-validator";
 
 class RemoveAvisToPodcastDTO extends DTO{
 
     @IsNotEmpty()
-    protected podcast: Podcast;
+    protected podcastId: string;
 
     @IsNotEmpty()
-    protected avis: Avis;
+    protected avisId: string;
 
-    constructor(podcast: Podcast, avis: Avis) {
+    constructor(podcastId: string, avisId: string) {
         super();
-        this.podcast = podcast;
-        this.avis = avis;
+        this.podcastId = podcastId;
+        this.avisId = avisId;
     }
 }
 

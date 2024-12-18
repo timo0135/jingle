@@ -1,18 +1,17 @@
 import DTO from "../DTO";
-import User from "../../../core/domain/entities/user/User";
 import {IsNotEmpty} from "class-validator";
 
 class ChangeEmailUserDTO extends DTO{
 
     @IsNotEmpty()
-    protected user: User;
+    protected userId: string;
 
     @IsNotEmpty()
     protected email: string;
 
-    constructor(user: User, email: string) {
+    constructor(userId: string, email: string) {
         super();
-        this.user = user;
+        this.userId = userId;
         this.email = email;
     }
 }

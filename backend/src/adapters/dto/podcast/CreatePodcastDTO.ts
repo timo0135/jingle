@@ -1,5 +1,4 @@
 import DTO from "../DTO";
-import User from "../../../core/domain/entities/user/User";
 import {IsNotEmpty} from "class-validator";
 
 class CreatePodcastDTO extends DTO{
@@ -14,17 +13,17 @@ class CreatePodcastDTO extends DTO{
     protected description: string;
 
     @IsNotEmpty()
-    protected creator: User;
+    protected creatorId: string;
 
     @IsNotEmpty()
     protected image: string;
 
-    constructor(date: Date, name: string, description: string, creator: User, image: string) {
+    constructor(date: Date, name: string, description: string, creatorId: string, image: string) {
         super();
         this.date = date;
         this.name = name;
         this.description = description;
-        this.creator = creator;
+        this.creatorId = creatorId;
         this.image = image;
     }
 }

@@ -1,12 +1,11 @@
 import DTO from "../DTO";
-import Music from "../../../core/domain/entities/music/Music";
 
 class ChangeFileMusicDTO extends DTO{
-    protected music: Music;
+    protected musicId: string;
     protected file: string;
-  constructor(music: Music, file: string) {
+  constructor(musicId: string, file: string) {
     super();
-    this.music = music;
+    this.musicId = musicId;
     this.file = file;
   }
 }

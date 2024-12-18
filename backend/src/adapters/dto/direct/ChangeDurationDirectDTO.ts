@@ -1,14 +1,13 @@
 import DTO from "../DTO";
-import Direct from "../../../core/domain/entities/direct/Direct";
 
 class ChangeDurationDirectDTO extends DTO{
     protected duration: number;
-    protected direct: Direct;
+    protected directId: string;
 
-    constructor(duration: number, direct: Direct) {
+    constructor(duration: number, directId: string) {
         super();
         this.duration = duration;
-        this.direct = direct;
+        this.directId = directId;
     }
 }
 

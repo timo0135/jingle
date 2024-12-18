@@ -1,19 +1,17 @@
 import DTO from "../DTO";
-import Podcast from "../../../core/domain/entities/podcast/Podcast";
-import Playlist from "../../../core/domain/entities/playlist/Playlist";
 import {IsNotEmpty} from "class-validator";
 
 class RemovePodcastToPlaylistDTO extends DTO{
 
     @IsNotEmpty()
-    protected podcast: Podcast;
+    protected podcastId: string;
 
     @IsNotEmpty()
-    protected playlist: Playlist;
-  constructor(podcast: Podcast, playlist: Playlist) {
+    protected playlistId: string;
+  constructor(podcastId: string, playlistId: string) {
     super();
-    this.podcast = podcast;
-    this.playlist = playlist;
+    this.podcastId = podcastId;
+    this.playlistId = playlistId;
 
   }
 }

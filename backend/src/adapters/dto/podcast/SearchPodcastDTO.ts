@@ -1,14 +1,13 @@
 import DTO from "../DTO";
-import Podcast from "../../../core/domain/entities/podcast/Podcast";
 
 class SearchPodcastDTO extends DTO{
     protected info: string;
-    protected podcast: Podcast;
+    protected podcastId: string;
 
-    constructor(info: string, podcast: Podcast) {
+    constructor(info: string, podcastId: string) {
         super();
         this.info = info;
-        this.podcast = podcast;
+        this.podcastId = podcastId;
     }
 }
 

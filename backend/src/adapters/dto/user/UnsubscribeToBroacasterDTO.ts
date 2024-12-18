@@ -1,18 +1,17 @@
 import {IsNotEmpty} from "class-validator";
 import DTO from "../DTO";
-import User from "../../../core/domain/entities/user/User";
 
 class UnsubscribeToBroacasterDTO extends DTO {
     @IsNotEmpty()
-    protected broadcaster: User;
+    protected broadcasterId: string;
 
     @IsNotEmpty()
-    protected user: User;
+    protected userId: string;
 
-    constructor(broadcaster: User, user: User) {
+    constructor(broadcasterId: string, userId: string) {
         super();
-        this.broadcaster = broadcaster;
-        this.user = user;
+        this.broadcasterId = broadcasterId;
+        this.userId = userId;
     }
 }
 

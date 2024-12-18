@@ -1,20 +1,18 @@
 import DTO from "../DTO";
-import Direct from "../../../core/domain/entities/direct/Direct";
-import User from "../../../core/domain/entities/user/User";
 import {IsNotEmpty} from "class-validator";
 
 class InviteGuessToDirectDTO extends DTO {
 
     @IsNotEmpty()
-    protected direct : Direct;
+    protected directId : string;
 
     @IsNotEmpty()
-    protected guess: User;
+    protected guessId: string;
 
-    constructor(direct: Direct, guess: User) {
+    constructor(directId: string, guessId: string) {
         super();
-        this.direct = direct;
-        this.guess = guess;
+        this.directId = directId;
+        this.guessId = guessId;
     }
 }
 

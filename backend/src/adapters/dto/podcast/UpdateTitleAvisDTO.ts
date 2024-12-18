@@ -1,13 +1,12 @@
 import DTO from "../DTO";
-import Avis from "../../../core/domain/entities/avis/Avis";
 
 class UpdateTitleAvisDTO extends DTO{
     protected title: string;
-    protected avis: Avis;
-  constructor(title: string, avis: Avis) {
+    protected avisId: string;
+  constructor(title: string, avisId: string) {
     super();
     this.title = title;
-    this.avis = avis;
+    this.avisId = avisId;
 
   }
 }

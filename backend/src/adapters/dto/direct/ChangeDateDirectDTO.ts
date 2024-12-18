@@ -1,12 +1,11 @@
 import DTO from "../DTO";
-import Direct from "../../../core/domain/entities/direct/Direct";
 
 class ChangeDateDirectDTO extends DTO{
-    protected direct: Direct;
+    protected directId: string;
     protected date: Date;
-    constructor(direct: Direct, date: Date) {
+    constructor(directId: string, date: Date) {
         super();
-        this.direct = direct;
+        this.directId = directId;
         this.date = date;
     }
 }

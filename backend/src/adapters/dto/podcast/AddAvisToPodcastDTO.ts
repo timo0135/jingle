@@ -1,6 +1,5 @@
 import DTO from "../DTO";
 import Podcast from "../../../core/domain/entities/podcast/Podcast";
-import Avis from "../../../core/domain/entities/avis/Avis";
 import {IsNotEmpty} from "class-validator";
 
 class AddAvisToPodcastDTO extends DTO {
@@ -9,12 +8,12 @@ class AddAvisToPodcastDTO extends DTO {
     protected podcast: Podcast;
 
     @IsNotEmpty()
-    protected avis: Avis;
+    protected avisId: string;
 
-    constructor(podcast: Podcast, avis: Avis) {
+    constructor(podcast: Podcast, avisId: string) {
         super();
         this.podcast = podcast;
-        this.avis = avis;
+        this.avisId = avisId;
     }
 }
 
