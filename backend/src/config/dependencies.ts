@@ -4,6 +4,8 @@ import {getMongoClient} from "../infrastructure/mongodb/MongoClient";
 import UserRepository from "../infrastructure/mongodb/UserRepository";
 
 // ! Only instance of mongoClient
-const mongoClient = getMongoClient();
+export const mongoClient = getMongoClient();
+export const podcastRepository = new PodcastRepository(mongoClient);
+export const userRepository = new UserRepository(mongoClient);
 
-export const podcastServiceInterface = new PodcastService(new PodcastRepository(mongoClient), new UserRepository(mongoClient));
+export const podcastServiceInterface = new PodcastService(podcastRepository, userRepository);

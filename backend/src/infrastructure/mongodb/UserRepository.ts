@@ -369,6 +369,10 @@ class UserRepository implements UserRepositoryInterface{
                 user.setId(result.insertedId.toString());
                 return user.getId() as string;
             }else{
+                const existingUser = await collection.findOne({ _id: new ObjectId(user.getId() as string) });
+                if (!existingUser) {
+                    throw new RepositoryNotFoundException("User not found");
+                }
                 const result = await collection.updateOne({ _id: new ObjectId(user.getId() as string) }, {
                     $set: {
                         email: user.getEmail(),
@@ -383,9 +387,6 @@ class UserRepository implements UserRepositoryInterface{
                         guess: user.getGuess()
                     }
                 });
-                if (result.modifiedCount === 0) {
-                    throw new RepositoryNotFoundException("User not found");
-                }
                 return user.getId() as string;
             }
         }catch (error) {

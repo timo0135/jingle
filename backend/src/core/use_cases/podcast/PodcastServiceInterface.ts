@@ -37,16 +37,17 @@ import UpgradeListenerToBroadcasterDTO from "../../../adapters/dto/user/UpgradeL
 import DisplayUserDTO from "../../../adapters/dto/user/DisplayUserDTO";
 import CreateAvisDTO from "../../../adapters/dto/podcast/CreateAvisDTO";
 import UpdateDatePodcastDTO from "../../../adapters/dto/podcast/UpdateDatePodcastDTO";
+import DisplayDetailsPodcastDTO from "../../../adapters/dto/podcast/DisplayDetailsPodcastDTO";
 
 interface PodcastServiceInterface {
-    getPodcastById(id: string): Promise<DisplayPodcastDTO>;
+    getPodcastById(id: string): Promise<DisplayDetailsPodcastDTO>;
     getPodcasts(): Promise<DisplayPodcastDTO[]>;
     getPodcastsByUserId(userId: string): Promise<DisplayPodcastDTO[]>
-    createPodcast(podcast: CreatePodcastDTO): Promise<DisplayPodcastDTO>;
-    updateTitlePodcast(dto: UpdateTitlePodcastDTO): Promise<DisplayPodcastDTO>;
-    updateDatePodcast(dto: UpdateDatePodcastDTO): Promise<DisplayPodcastDTO>;
-    updateDescriptionPodcast(dto: UpdateDescriptionPodcastDTO): Promise<DisplayPodcastDTO>;
-    updateImagePodcast(dto: UpdateImagePodcastDTO): Promise<DisplayPodcastDTO>;
+    createPodcast(podcast: CreatePodcastDTO): Promise<DisplayDetailsPodcastDTO>;
+    updateTitlePodcast(dto: UpdateTitlePodcastDTO): Promise<DisplayDetailsPodcastDTO>;
+    updateDatePodcast(dto: UpdateDatePodcastDTO): Promise<DisplayDetailsPodcastDTO>;
+    updateDescriptionPodcast(dto: UpdateDescriptionPodcastDTO): Promise<DisplayDetailsPodcastDTO>;
+    updateImagePodcast(dto: UpdateImagePodcastDTO): Promise<DisplayDetailsPodcastDTO>;
     deletePodcast(id: string): Promise<void>;
     searchPodcastInfo(dto: SearchPodcastDTO): Promise<DisplayPodcastDTO[]>;
     getAvisPodcast(podcastId: string): Promise<DisplayAvisDTO[]>;

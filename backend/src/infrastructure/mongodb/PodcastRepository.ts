@@ -48,6 +48,10 @@ class PodcastRepository implements PodcastRepositoryInterface {
                 });
                 podcast.setId(result.insertedId.toString());
             } else {
+                const existingPodcast = await collection.findOne({_id: new ObjectId(podcast.getId() as string)});
+                if (!existingPodcast) {
+                    throw new RepositoryNotFoundException("Podcast not found");
+                }
                 const result = await collection.updateOne({_id: new ObjectId(podcast.getId() as string)}, {
                     $set: {
                         date: podcast.getDate(),
@@ -69,17 +73,15 @@ class PodcastRepository implements PodcastRepositoryInterface {
                         image: podcast.getImage()
                     }
                 });
-                if (result.modifiedCount === 0) {
-                    throw new RepositoryNotFoundException("Podcast not found");
-                }
             }
             return podcast.getId() as string;
         } catch (error) {
             if (error instanceof MongoNetworkError || error instanceof MongoServerSelectionError) {
                 console.error("Error saving podcast:", error);
                 throw new RepositoryInternalServerErrorException(error.message);
+            } if (error instanceof RepositoryNotFoundException) {
+                throw new RepositoryNotFoundException(error.message);
             } else {
-                console.error("Error saving podcast:", error);
                 throw new RepositoryInternalServerErrorException("An error occurred while saving podcast");
             }
         }
@@ -133,8 +135,10 @@ class PodcastRepository implements PodcastRepositoryInterface {
             return p;
         } catch (error) {
             if (error instanceof MongoNetworkError || error instanceof MongoServerSelectionError) {
-                console.error("Error finding podcast by id:", error);
                 throw new RepositoryInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                // console.error("Error finding podcast by id aaaa:", error);
+                throw new RepositoryNotFoundException(error.message);
             } else {
                 throw new RepositoryInternalServerErrorException("An error occurred while finding podcast by id");
             }

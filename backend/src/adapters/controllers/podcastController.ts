@@ -13,6 +13,7 @@ import UpdateTitlePodcastDTO from "../dto/podcast/UpdateTitlePodcastDTO";
 import UpdateDescriptionPodcastDTO from "../dto/podcast/UpdateDescriptionPodcastDTO";
 import UpdateImagePodcastDTO from "../dto/podcast/UpdateImagePodcastDTO";
 import UpdateDatePodcastDTO from "../dto/podcast/UpdateDatePodcastDTO";
+import moment from 'moment';
 
 
 const podcastService : PodcastServiceInterface = podcastServiceInterface;
@@ -41,13 +42,37 @@ export async function getPodcasts(req: Request, res: Response) {
 export async function getPodcast(req: Request, res: Response) {
     try {
         const podcast = await podcastService.getPodcastById(req.params.id);
+        const filteredPodcast = {
+            id: podcast.get('id'),
+            name: podcast.get('name'),
+            description: podcast.get('description'),
+            date: podcast.get('date'),
+            image: podcast.get('image'),
+            creator: {
+                id: podcast.get('creator').getId(),
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/users/${podcast.get('creator').getId()}`
+                    }
+                ]
+            }
+        };
         let response = {
             type: 'resource',
             locale: 'fr-FR',
-            podcast: podcast,
+            podcast: filteredPodcast,
             links: [
                 {
                     rel: 'self',
+                    href: `/podcasts/${podcast.get('id')}`
+                },
+                {
+                    rel: 'delete',
+                    href: `/podcasts/${podcast.get('id')}`
+                },
+                {
+                    rel: 'update',
                     href: `/podcasts/${podcast.get('id')}`
                 }
             ]
@@ -55,6 +80,7 @@ export async function getPodcast(req: Request, res: Response) {
 
         res.status(200).json(response);
     } catch (error) {
+        console.log(error);
         handleError(res, error);
     }
 }
@@ -62,21 +88,24 @@ export async function getPodcast(req: Request, res: Response) {
 export async function createPodcast(req: Request, res: Response) {
     try {
         let data = req.body;
+        const formattedDate = moment(data.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
         try{
             const contactInput = plainToInstance(CreatePodcastDTO, data);
             await validateOrReject(contactInput);
-            // if(!validator.isDate(data.date)){
-            //     throw new PodcastServiceBadDataException('Invalid date');
-            // }
+            if(!validator.isDate(formattedDate)){
+                throw new PodcastServiceBadDataException('Invalid date');
+            }
             if(!validator.isAlphanumeric(data.name)){
                 throw new PodcastServiceBadDataException('Invalid name');
             }
             if(!validator.isAlphanumeric(data.creatorId)){
                 throw new PodcastServiceBadDataException('Invalid host_id');
             }
-            // if(!validator.isAlphanumeric(data.image)){
-            //     throw new PodcastServiceBadDataException('Invalid image');
-            // }
+            const imagePattern = /^(http:\/\/|https:\/\/)?([a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+)+(\/[a-zA-Z0-9-_]+)*\.(png|jpeg|jpg|gif|bmp|webp)|([a-zA-Z0-9-_]+\.(png|jpeg|jpg|gif|bmp|webp))$/;
+
+            if (!imagePattern.test(data.image)) {
+                throw new PodcastServiceBadDataException('Invalid image');
+            }
         } catch (errors) {
             if (errors instanceof Array && errors[0] instanceof ValidationError) {
                 const messages = errors.map(error => Object.values(error.constraints || {}).join(', ')).join(', ');
@@ -86,12 +115,43 @@ export async function createPodcast(req: Request, res: Response) {
                 throw new PodcastServiceBadDataException(errors.message);
             }
         }
-        const dto = new CreatePodcastDTO(data.date, data.name, data.description, data.creatorId, data.image);
+        const dateObject = moment(formattedDate, 'YYYY-MM-DD').toDate();
+        const dto = new CreatePodcastDTO(dateObject, data.name, data.description, data.creatorId, data.image);
         const podcast = await podcastService.createPodcast(dto);
+        const filteredPodcast = {
+            id: podcast.get('id'),
+            name: podcast.get('name'),
+            description: podcast.get('description'),
+            date: podcast.get('date'),
+            image: podcast.get('image'),
+            creator: {
+                id: podcast.get('creator').getId(),
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/users/${podcast.get('creator').getId()}`
+                    }
+                ]
+            },
+            links: [
+                {
+                    rel: 'self',
+                    href: `/podcasts/${podcast.get('id')}`
+                },
+                {
+                    rel: 'delete',
+                    href: `/podcasts/${podcast.get('id')}`
+                },
+                {
+                    rel: 'update',
+                    href: `/podcasts/${podcast.get('id')}`
+                }
+            ]
+        };
         let response = {
             type: 'resource',
             locale: 'fr-FR',
-            podcast: podcast,
+            podcast: filteredPodcast,
             links: [
                 {
                     rel: 'self',
@@ -112,26 +172,30 @@ export async function updatePodcast(req: Request, res: Response) {
         let data = req.body;
         let podcast = null;
         if(data.date != undefined){
-            if(!validator.isDate(data.date)){
+            const formattedDate = moment(data.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
+            if(!validator.isDate(formattedDate)){
                 throw new PodcastServiceBadDataException('Invalid date');
             }
-            let date = new Date(data.date);
-            podcast = await podcastService.updateDatePodcast(new UpdateDatePodcastDTO(date, req.params.id));
+            const dateObject = moment(formattedDate, 'YYYY-MM-DD').toDate();
+            podcast = await podcastService.updateDatePodcast(new UpdateDatePodcastDTO(dateObject, req.params.id));
+            console.log(podcast);
         }
         if(data.name != undefined){
-            if(!validator.isAlphanumeric(data.name)){
+            if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.name)){
                 throw new PodcastServiceBadDataException('Invalid name');
             }
             podcast = await podcastService.updateTitlePodcast(new UpdateTitlePodcastDTO(data.name, req.params.id));
         }
         if(data.description != undefined){
-            if(!validator.isAlphanumeric(data.description)){
+            if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.description)){
                 throw new PodcastServiceBadDataException('Invalid description');
             }
             podcast = await podcastService.updateDescriptionPodcast(new UpdateDescriptionPodcastDTO(data.description, req.params.id));
         }
         if(data.image != undefined){
-            if(!validator.isAlphanumeric(data.image)){
+            const imagePattern = /^(http:\/\/|https:\/\/)?([a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+)+(\/[a-zA-Z0-9-_]+)*\.(png|jpeg|jpg|gif|bmp|webp)|([a-zA-Z0-9-_]+\.(png|jpeg|jpg|gif|bmp|webp))$/;
+
+            if (!imagePattern.test(data.image)) {
                 throw new PodcastServiceBadDataException('Invalid image');
             }
             podcast = await podcastService.updateImagePodcast(new UpdateImagePodcastDTO(data.image, req.params.id));
@@ -139,10 +203,40 @@ export async function updatePodcast(req: Request, res: Response) {
         if(podcast == null){
             throw new PodcastServiceBadDataException('No data to update');
         }
+        const filteredPodcast = {
+            id: podcast.get('id'),
+            name: podcast.get('name'),
+            description: podcast.get('description'),
+            date: podcast.get('date'),
+            image: podcast.get('image'),
+            creator: {
+                id: podcast.get('creator').getId(),
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/users/${podcast.get('creator').getId()}`
+                    }
+                ]
+            },
+            links: [
+                {
+                    rel: 'self',
+                    href: `/podcasts/${podcast.get('id')}`
+                },
+                {
+                    rel: 'delete',
+                    href: `/podcasts/${podcast.get('id')}`
+                },
+                {
+                    rel: 'update',
+                    href: `/podcasts/${podcast.get('id')}`
+                }
+            ]
+        };
         let response = {
             type: 'resource',
             locale: 'fr-FR',
-            podcast: podcast,
+            podcast: filteredPodcast,
             links: [
                 {
                     rel: 'self',

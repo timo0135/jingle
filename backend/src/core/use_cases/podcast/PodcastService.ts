@@ -45,6 +45,7 @@ import PodcastServiceInternalServerErrorException from "./PodcastServiceInternal
 import RepositoryNotFoundException from "../../repositoryInterface/RepositoryNotFoundException";
 import UserRepositoryInterface from "../../repositoryInterface/UserRepositoryInterface";
 import PodcastServiceNotFoundException from "./PodcastServiceNotFoundException";
+import DisplayDetailsPodcastDTO from "../../../adapters/dto/podcast/DisplayDetailsPodcastDTO";
 
 class PodcastService implements PodcastServiceInterface {
 
@@ -56,12 +57,18 @@ class PodcastService implements PodcastServiceInterface {
         this.userRepository = userRepository
     }
 
-    public getPodcastById(id: string): Promise<DisplayPodcastDTO> {
+    public getPodcastById(id: string): Promise<DisplayDetailsPodcastDTO> {
         return this.instance.findById(id).then((podcast) => {
-            let p = new DisplayPodcastDTO(podcast as Podcast);
+            let p = new DisplayDetailsPodcastDTO(podcast as Podcast);
             return p;
         }).catch((error) => {
-            throw new Error(error);
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast description");
+            }
         });
     }
 
@@ -70,7 +77,13 @@ class PodcastService implements PodcastServiceInterface {
             let p = podcasts.map((podcast) => new DisplayPodcastDTO(podcast as Podcast));
             return p;
         }).catch((error) => {
-            throw new Error(error);
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast description");
+            }
         });
     }
 
@@ -84,14 +97,14 @@ class PodcastService implements PodcastServiceInterface {
             if (error instanceof RepositoryInternalServerErrorException) {
                 throw new PodcastServiceInternalServerErrorException(error.message);
             } else if (error instanceof RepositoryNotFoundException) {
-                throw new PodcastServiceInternalServerErrorException(error.message);
+                throw new PodcastServiceNotFoundException(error.message);
             } else {
-                throw new PodcastServiceInternalServerErrorException("An error occurred while getting podcasts by user id");
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast description");
             }
         }
     }
 
-    public async createPodcast(podcast: CreatePodcastDTO): Promise<DisplayPodcastDTO> {
+    public async createPodcast(podcast: CreatePodcastDTO): Promise<DisplayDetailsPodcastDTO> {
         try {
             const user = await this.userRepository.find(podcast.get('creatorId'));
             if (user === null) {
@@ -100,19 +113,19 @@ class PodcastService implements PodcastServiceInterface {
             let p = new Podcast(podcast.get('date'), podcast.get('name'), podcast.get('description'), user, podcast.get('image'));
             const id = await this.instance.save(p);
             p.setId(id);
-            return new DisplayPodcastDTO(p);
+            return new DisplayDetailsPodcastDTO(p);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
                 throw new PodcastServiceInternalServerErrorException(error.message);
             } else if (error instanceof RepositoryNotFoundException) {
-                throw new PodcastServiceInternalServerErrorException(error.message);
+                throw new PodcastServiceNotFoundException(error.message);
             } else {
-                throw new PodcastServiceInternalServerErrorException("An error occurred while creating podcast");
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast description");
             }
         }
     }
 
-    public async updateTitlePodcast(dto: UpdateTitlePodcastDTO): Promise<DisplayPodcastDTO> {
+    public async updateTitlePodcast(dto: UpdateTitlePodcastDTO): Promise<DisplayDetailsPodcastDTO> {
         try {
             const podcast = await this.instance.findById(dto.get('podcastId'));
             if (podcast === null) {
@@ -120,40 +133,42 @@ class PodcastService implements PodcastServiceInterface {
             }
             podcast.setName(dto.get('title'));
             await this.instance.save(podcast);
-            return new DisplayPodcastDTO(podcast as Podcast);
+            return new DisplayDetailsPodcastDTO(podcast as Podcast);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
                 throw new PodcastServiceInternalServerErrorException(error.message);
             } else if (error instanceof RepositoryNotFoundException) {
-                throw new PodcastServiceInternalServerErrorException(error.message);
+                throw new PodcastServiceNotFoundException(error.message);
             } else {
-                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast title");
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast description");
             }
         }
     }
 
-    public async updateDatePodcast(dto: UpdateDatePodcastDTO): Promise<DisplayPodcastDTO> {
+    public async updateDatePodcast(dto: UpdateDatePodcastDTO): Promise<DisplayDetailsPodcastDTO> {
         try {
-            const podcast = await this.instance.findById(dto.get('date'));
+            const podcast = await this.instance.findById(dto.get('podcastId')) as Podcast;
             if (podcast === null) {
                 throw new PodcastServiceNotFoundException("Podcast not found");
             }
-            podcast.setName(dto.get('date'));
+            console.log("aaa",dto.get('date'));
+            podcast.setDate(dto.get('date'));
             await this.instance.save(podcast);
-            return new DisplayPodcastDTO(podcast as Podcast);
+            return new DisplayDetailsPodcastDTO(podcast as Podcast);
         } catch (error) {
+            console.log(error);
             if (error instanceof RepositoryInternalServerErrorException) {
                 throw new PodcastServiceInternalServerErrorException(error.message);
             } else if (error instanceof RepositoryNotFoundException) {
-                throw new PodcastServiceInternalServerErrorException(error.message);
+                throw new PodcastServiceNotFoundException(error.message);
             } else {
-                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast title");
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast description");
             }
         }
     }
 
 
-    public async updateDescriptionPodcast(dto: UpdateDescriptionPodcastDTO): Promise<DisplayPodcastDTO> {
+    public async updateDescriptionPodcast(dto: UpdateDescriptionPodcastDTO): Promise<DisplayDetailsPodcastDTO> {
         try {
             const podcast = await this.instance.findById(dto.get('podcastId'));
             if (podcast === null) {
@@ -161,32 +176,32 @@ class PodcastService implements PodcastServiceInterface {
             }
             podcast.setDescription(dto.get('description'));
             await this.instance.save(podcast);
-            return new DisplayPodcastDTO(podcast as Podcast);
+            return new DisplayDetailsPodcastDTO(podcast as Podcast);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
                 throw new PodcastServiceInternalServerErrorException(error.message);
             } else if (error instanceof RepositoryNotFoundException) {
-                throw new PodcastServiceInternalServerErrorException(error.message);
+                throw new PodcastServiceNotFoundException(error.message);
             } else {
                 throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast description");
             }
         }
     }
 
-    public async updateImagePodcast(dto: UpdateImagePodcastDTO): Promise<DisplayPodcastDTO> {
+    public async updateImagePodcast(dto: UpdateImagePodcastDTO): Promise<DisplayDetailsPodcastDTO> {
         try {
             const podcast = await this.instance.findById(dto.get('podcastId'));
             if (podcast === null) {
                 throw new PodcastServiceNotFoundException("Podcast not found");
             }
-            podcast.setDescription(dto.get('image'));
+            podcast.setImage(dto.get('image'));
             await this.instance.save(podcast);
-            return new DisplayPodcastDTO(podcast as Podcast);
+            return new DisplayDetailsPodcastDTO(podcast as Podcast);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
                 throw new PodcastServiceInternalServerErrorException(error.message);
             } else if (error instanceof RepositoryNotFoundException) {
-                throw new PodcastServiceInternalServerErrorException(error.message);
+                throw new PodcastServiceNotFoundException(error.message);
             } else {
                 throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast description");
             }
@@ -200,9 +215,9 @@ class PodcastService implements PodcastServiceInterface {
             if (error instanceof RepositoryInternalServerErrorException) {
                 throw new PodcastServiceInternalServerErrorException(error.message);
             } else if (error instanceof RepositoryNotFoundException) {
-                throw new PodcastServiceInternalServerErrorException(error.message);
+                throw new PodcastServiceNotFoundException(error.message);
             } else {
-                throw new PodcastServiceInternalServerErrorException("An error occurred while deleting podcast");
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast description");
             }
         }
     }
