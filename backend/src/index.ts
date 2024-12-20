@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { WebSocketServer, WebSocket } from "ws";
 import podcastRoute from "./adapters/routes/podcastRoute";
+import userRoute from "./adapters/routes/userRoutes";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -24,6 +25,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", podcastRoute);
+app.use("/", userRoute);
 
 const wss = new WebSocketServer({ server });
 
