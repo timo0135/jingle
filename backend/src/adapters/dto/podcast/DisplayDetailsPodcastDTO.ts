@@ -9,10 +9,10 @@ class DisplayDetailsPodcastDTO extends DTO{
     protected date: Date;
     protected name: string;
     protected description: string;
-    protected creator: User;
+    protected creator: string;
     protected image: string;
-    protected content: Playlist[] = [];
-    protected avis: Avis[] = [];
+    protected content: string[] = [];
+    protected avis: string[] = [];
 
     constructor(podcast: Podcast) {
         super();

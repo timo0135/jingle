@@ -31,19 +31,7 @@ class PodcastRepository implements PodcastRepositoryInterface {
                     date: podcast.getDate(),
                     name: podcast.getName(),
                     description: podcast.getDescription(),
-                    creator: {
-                        _id: new ObjectId(podcast.getCreator().getId() as string),
-                        email: podcast.getCreator().getEmail(),
-                        password: podcast.getCreator().getPassword(),
-                        pseudo: podcast.getCreator().getPseudo(),
-                        role: podcast.getCreator().getRole(),
-                        subscribers: [],
-                        subscriptions: [],
-                        playlists: [],
-                        mixers: [],
-                        directs: [],
-                        guess: []
-                    },
+                    creator: new ObjectId(podcast.getCreator()),
                     image: podcast.getImage()
                 });
                 podcast.setId(result.insertedId.toString());
@@ -57,19 +45,7 @@ class PodcastRepository implements PodcastRepositoryInterface {
                         date: podcast.getDate(),
                         name: podcast.getName(),
                         description: podcast.getDescription(),
-                        creator: {
-                            _id: new ObjectId(podcast.getCreator().getId() as string),
-                            email: podcast.getCreator().getEmail(),
-                            password: podcast.getCreator().getPassword(),
-                            pseudo: podcast.getCreator().getPseudo(),
-                            role: podcast.getCreator().getRole(),
-                            subscribers: [],
-                            subscriptions: [],
-                            playlists: [],
-                            mixers: [],
-                            directs: [],
-                            guess: []
-                        },
+                        creator: new ObjectId(podcast.getCreator()),
                         image: podcast.getImage()
                     }
                 });
@@ -128,16 +104,13 @@ class PodcastRepository implements PodcastRepositoryInterface {
             if (!podcastDoc) {
                 throw new RepositoryNotFoundException("Podcast not found");
             }
-            const user = this.getUser(podcastDoc);
-            user.setId(podcastDoc.creator._id.toString());
-            let p = new Podcast(podcastDoc.date, podcastDoc.name, podcastDoc.description, user, podcastDoc.image);
+            let p = new Podcast(podcastDoc.date, podcastDoc.name, podcastDoc.description, podcastDoc.creator, podcastDoc.image);
             p.setId(podcastDoc._id.toString());
             return p;
         } catch (error) {
             if (error instanceof MongoNetworkError || error instanceof MongoServerSelectionError) {
                 throw new RepositoryInternalServerErrorException(error.message);
             } else if (error instanceof RepositoryNotFoundException) {
-                // console.error("Error finding podcast by id aaaa:", error);
                 throw new RepositoryNotFoundException(error.message);
             } else {
                 throw new RepositoryInternalServerErrorException("An error occurred while finding podcast by id");
@@ -181,9 +154,7 @@ class PodcastRepository implements PodcastRepositoryInterface {
     // ! This method is used to get the podcast from the podcast document in the database
     private getPodcast(podcastDoc: any): Podcast {
         try {
-            const user = this.getUser(podcastDoc);
-            user.setId(podcastDoc.creator._id.toString());
-            let p = new Podcast(podcastDoc.date, podcastDoc.name, podcastDoc.description, user, podcastDoc.image);
+            let p = new Podcast(podcastDoc.date, podcastDoc.name, podcastDoc.description, podcastDoc.creator, podcastDoc.image);
             p.setId(podcastDoc._id.toString());
             return p;
         } catch (error) {

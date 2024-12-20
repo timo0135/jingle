@@ -5,12 +5,12 @@ class Direct extends Entity{
     protected name: string;
     protected description: string;
     protected image: string;
-    protected host: User;
+    protected host: string;
     protected date: Date;
     protected duration: number;
-    protected guess: User[] = [];
+    protected guess: string[] = [];
 
-    constructor(name: string, description: string, image: string, host: User, date: Date, duration: number) {
+    constructor(name: string, description: string, image: string, host: string, date: Date, duration: number) {
         super();
         this.name = name;
         this.description = description;
@@ -32,7 +32,7 @@ class Direct extends Entity{
         return this.image;
     }
 
-    public getHost(): User {
+    public getHost(): string {
         return this.host;
     }
 
@@ -44,7 +44,7 @@ class Direct extends Entity{
         return this.duration;
     }
 
-    public getGuess(): User[] {
+    public getGuess(): string[] {
         return this.guess;
     }
 
@@ -60,7 +60,7 @@ class Direct extends Entity{
         this.image = image;
     }
 
-    public setHost(host: User): void {
+    public setHost(host: string): void {
         this.host = host;
     }
 
@@ -72,7 +72,7 @@ class Direct extends Entity{
         this.duration = duration;
     }
 
-    public addGuess(user: User): void {
+    public addGuess(user: string): void {
         this.guess.push(user);
     }
 }

@@ -49,11 +49,11 @@ export async function getPodcast(req: Request, res: Response) {
             date: podcast.get('date'),
             image: podcast.get('image'),
             creator: {
-                id: podcast.get('creator').getId(),
+                id: podcast.get('creator'),
                 links: [
                     {
                         rel: 'self',
-                        href: `/users/${podcast.get('creator').getId()}`
+                        href: `/users/${podcast.get('creator')}`
                     }
                 ]
             }
@@ -125,11 +125,11 @@ export async function createPodcast(req: Request, res: Response) {
             date: podcast.get('date'),
             image: podcast.get('image'),
             creator: {
-                id: podcast.get('creator').getId(),
+                id: podcast.get('creator'),
                 links: [
                     {
                         rel: 'self',
-                        href: `/users/${podcast.get('creator').getId()}`
+                        href: `/users/${podcast.get('creator')}`
                     }
                 ]
             },
@@ -210,11 +210,11 @@ export async function updatePodcast(req: Request, res: Response) {
             date: podcast.get('date'),
             image: podcast.get('image'),
             creator: {
-                id: podcast.get('creator').getId(),
+                id: podcast.get('creator'),
                 links: [
                     {
                         rel: 'self',
-                        href: `/users/${podcast.get('creator').getId()}`
+                        href: `/users/${podcast.get('creator')}`
                     }
                 ]
             },

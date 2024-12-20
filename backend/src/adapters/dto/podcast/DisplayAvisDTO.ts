@@ -6,7 +6,7 @@ class DisplayAvisDTO extends DTO{
     protected id: string | null;
     protected title: string;
     protected content: string;
-    protected podcast: Podcast;
+    protected podcast: string;
 
     constructor(avis: Avis) {
         super();

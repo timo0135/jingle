@@ -7,8 +7,8 @@ class DisplayPlaylistDTO extends DTO{
     protected id: string | null;
     protected name: string;
     protected description: string;
-    protected user: User;
-    protected content: Podcast[] = [];
+    protected user: string;
+    protected content: string[] = [];
 
     constructor(playlist : Playlist) {
         super();

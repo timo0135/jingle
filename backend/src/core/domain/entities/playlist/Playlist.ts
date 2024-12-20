@@ -5,10 +5,10 @@ import Podcast from "../podcast/Podcast";
 class Playlist extends Entity{
     protected name: string;
     protected description: string;
-    protected user: User;
-    protected content: Podcast[] = [];
+    protected user: string;
+    protected content: string[] = [];
 
-    constructor(name: string, description: string, user: User) {
+    constructor(name: string, description: string, user: string) {
         super();
         this.name = name;
         this.description = description;
@@ -23,7 +23,7 @@ class Playlist extends Entity{
         return this.description;
     }
 
-    public getUser(): User {
+    public getUser(): string {
         return this.user;
     }
 
@@ -35,15 +35,15 @@ class Playlist extends Entity{
         this.description = description;
     }
 
-    public setUser(user: User): void {
+    public setUser(user: string): void {
         this.user = user;
     }
 
-    public getContent(): Podcast[] {
+    public getContent(): string[] {
         return this.content;
     }
 
-    public addContent(podcast: Podcast): void {
+    public addContent(podcast: string): void {
         this.content.push(podcast);
     }
 }

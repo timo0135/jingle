@@ -5,12 +5,12 @@ import {IsNotEmpty} from "class-validator";
 class AddAvisToPodcastDTO extends DTO {
 
     @IsNotEmpty()
-    protected podcast: Podcast;
+    protected podcast: string;
 
     @IsNotEmpty()
     protected avisId: string;
 
-    constructor(podcast: Podcast, avisId: string) {
+    constructor(podcast: string, avisId: string) {
         super();
         this.podcast = podcast;
         this.avisId = avisId;

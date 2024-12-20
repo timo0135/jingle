@@ -10,12 +10,12 @@ class DisplayUserDTO extends DTO {
     protected password: string;
     protected pseudo: string;
     protected role: number;
-    protected subscribers: User[] = [];
-    protected subscriptions: User[] = [];
-    protected playlists: Playlist[] = [];
-    protected mixers: Music[] = [];
-    protected directs: Direct[] = [];
-    protected guess: Direct[] = [];
+    protected subscribers: string[] = [];
+    protected subscriptions: string[] = [];
+    protected playlists: string[] = [];
+    protected mixers: string[] = [];
+    protected directs: string[] = [];
+    protected guess: string[] = [];
     protected token: string | null = null;
     protected refresh: string | null = null;
 

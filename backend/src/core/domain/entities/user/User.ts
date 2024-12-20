@@ -8,12 +8,12 @@ class User extends Entity {
     protected password: string;
     protected pseudo: string;
     protected role: number;
-    protected subscribers: User[] = [];
-    protected subscriptions: User[] = [];
-    protected playlists: Playlist[] = [];
-    protected mixers: Music[] = [];
-    protected directs: Direct[] = [];
-    protected guess: Direct[] = [];
+    protected subscribers: string[] = [];
+    protected subscriptions: string[] = [];
+    protected playlists: string[] = [];
+    protected mixers: string[] = [];
+    protected directs: string[] = [];
+    protected guess: string[] = [];
 
     constructor(email: string, password: string, pseudo: string, role: number) {
         super();
@@ -51,147 +51,123 @@ class User extends Entity {
         this.role = role;
     }
 
-    public getSubscribers(): User[] {
+    public getSubscribers(): string[] {
         if (this.role >= 2) {
             return this.subscribers;
         } else {
-            throw new Error("Access denied: insufficient role");
+            return [];
         }
     }
 
-    public getSubscriptions(): User[] {
+    public getSubscriptions(): string[] {
         if (this.role >= 1) {
             return this.subscriptions;
         } else {
-            throw new Error("Access denied: insufficient role");
+            return [];
         }
     }
 
-    public addSubscriber(user: User): void {
+    public addSubscriber(user: string): void {
         if (this.role >= 2) {
             this.subscribers.push(user);
-        }else {
-            throw new Error("Access denied: insufficient role");
         }
     }
 
-    public setSubscribers(subscribers: User[]): void {
+    public setSubscribers(subscribers: string[]): void {
         if (this.role >= 2) {
             this.subscribers = subscribers;
-        }else {
-            throw new Error("Access denied: insufficient role");
         }
     }
 
-    public addSubscription(user: User): void {
+    public addSubscription(user: string): void {
         if (this.role >= 1) {
             this.subscriptions.push(user);
-        }else {
-            throw new Error("Access denied: insufficient role");
         }
     }
 
-    public setSubscriptions(subscriptions: User[]): void {
+    public setSubscriptions(subscriptions: string[]): void {
         if (this.role >= 1) {
             this.subscriptions = subscriptions;
-        }else {
-            throw new Error("Access denied: insufficient role");
         }
     }
 
-    public getPlaylists(): Playlist[] {
+    public getPlaylists(): string[] {
         if (this.role >= 1) {
             return this.playlists;
         }else {
-            throw new Error("Access denied: insufficient role");
+            return [];
         }
     }
 
-    public addPlaylist(playlist: Playlist): void {
+    public addPlaylist(playlist: string): void {
         if (this.role >= 1) {
             this.playlists.push(playlist);
-        }else {
-            throw new Error("Access denied: insufficient role");
         }
     }
 
-    public setPlaylists(playlists: Playlist[]): void {
+    public setPlaylists(playlists: string[]): void {
         if (this.role >= 1) {
             this.playlists = playlists;
-        }else {
-            throw new Error("Access denied: insufficient role");
         }
     }
 
-    public getMixers(): Music[] {
+    public getMixers(): string[] {
         if (this.role >= 2) {
             return this.mixers;
         }else {
-            throw new Error("Access denied: insufficient role");
+            return [];
         }
     }
 
-    public addMixer(mixer: Music): void {
+    public addMixer(mixer: string): void {
         if (this.role >= 2) {
             this.mixers.push(mixer);
-        }else {
-            throw new Error("Access denied: insufficient role");
         }
     }
 
-    public setMixers(mixers: Music[]): void {
+    public setMixers(mixers: string[]): void {
         if (this.role >= 2) {
             this.mixers = mixers;
-        }else {
-            throw new Error("Access denied: insufficient role");
         }
     }
 
-    public getDirects(): Direct[] {
+    public getDirects(): string[] {
         if (this.role >= 2) {
             return this.directs;
         }else {
-            throw new Error("Access denied: insufficient role");
+            return [];
         }
     }
 
-    public addDirect(direct: Direct): void {
+    public addDirect(direct: string): void {
         if (this.role >= 2) {
             this.directs.push(direct);
-        }else {
-            throw new Error("Access denied: insufficient role");
         }
     }
 
-    public setDirects(directs: Direct[]): void {
+    public setDirects(directs: string[]): void {
         if (this.role >= 2) {
             this.directs = directs;
-        }else {
-            throw new Error("Access denied: insufficient role");
         }
     }
 
-    public getGuess(): Direct[] {
+    public getGuess(): string[] {
         if (this.role >= 1) {
             return this.guess;
         }else {
-            throw new Error("Access denied: insufficient role");
+            return [];
         }
     }
 
-    public addGuess(guess: Direct): void {
+    public addGuess(guess: string): void {
         if (this.role >= 1) {
             this.guess.push(guess);
-        }else {
-            throw new Error("Access denied: insufficient role");
         }
     }
 
-    public setGuess(guess: Direct[]): void {
+    public setGuess(guess: string[]): void {
         if (this.role >= 1) {
             this.guess = guess;
-        }else {
-            throw new Error("Access denied: insufficient role");
         }
     }
 }

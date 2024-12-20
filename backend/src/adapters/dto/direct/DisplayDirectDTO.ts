@@ -7,10 +7,10 @@ class DisplayDirectDTO extends DTO{
     protected name: string;
     protected description: string;
     protected image: string;
-    protected host: User;
+    protected host: string;
     protected date: Date;
     protected duration: number;
-    protected guess: User[] = [];
+    protected guess: string[] = [];
 
     constructor(direct: Direct) {
         super();

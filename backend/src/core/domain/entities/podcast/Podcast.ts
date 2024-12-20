@@ -7,12 +7,12 @@ class Podcast extends Entity{
     protected date: Date;
     protected name: string;
     protected description: string;
-    protected creator: User;
+    protected creator: string;
     protected image: string;
-    protected content: Playlist[] = [];
-    protected avis: Avis[] = [];
+    protected content: string[] = [];
+    protected avis: string[] = [];
 
-    constructor(date: Date, name: string, description: string, creator: User ,image: string) {
+    constructor(date: Date, name: string, description: string, creator: string ,image: string) {
         super();
         this.date = date;
         this.name = name;
@@ -33,7 +33,7 @@ class Podcast extends Entity{
         return this.description;
     }
 
-    public getCreator(): User {
+    public getCreator(): string {
         return this.creator;
     }
 
@@ -41,7 +41,7 @@ class Podcast extends Entity{
         return this.image;
     }
 
-    public getContent(): Playlist[] {
+    public getContent(): string[] {
         return this.content;
     }
 
@@ -57,7 +57,7 @@ class Podcast extends Entity{
         this.description = description;
     }
 
-    public setCreator(creator: User): void {
+    public setCreator(creator: string): void {
         this.creator = creator;
     }
 
@@ -65,23 +65,23 @@ class Podcast extends Entity{
         this.image = image;
     }
 
-    public setContent(content: Playlist[]): void {
+    public setContent(content: string[]): void {
         this.content = content;
     }
 
-    public addContent(content: Playlist): void {
+    public addContent(content: string): void {
         this.content.push(content);
     }
 
-    public removeContent(content: Playlist): void {
+    public removeContent(content: string): void {
         this.content = this.content.filter(c => c !== content);
     }
 
-    public getAvis(): Avis[] {
+    public getAvis(): string[] {
         return this.avis;
     }
 
-    public setAvis(avis: Avis[]): void {
+    public setAvis(avis: string[]): void {
         this.avis = avis;
     }
 }

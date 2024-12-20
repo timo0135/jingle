@@ -1,12 +1,11 @@
 import Entity from "../Entity";
-import Podcast from "../podcast/Podcast";
 
 class Avis extends Entity{
     protected title: string;
     protected content: string;
-    protected podcast: Podcast;
+    protected podcast: string;
 
-    constructor(title: string, content: string, podcast: Podcast) {
+    constructor(title: string, content: string, podcast: string) {
         super();
         this.title = title;
         this.content = content;
@@ -29,11 +28,11 @@ class Avis extends Entity{
         this.content = content;
     }
 
-    public getPodcast(): Podcast {
+    public getPodcast(): string {
         return this.podcast;
     }
 
-    public setPodcast(podcast: Podcast): void {
+    public setPodcast(podcast: string): void {
         this.podcast = podcast;
     }
 }

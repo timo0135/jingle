@@ -43,18 +43,15 @@ import Podcast from "../../domain/entities/podcast/Podcast";
 import RepositoryInternalServerErrorException from "../../repositoryInterface/RepositoryInternalServerErrorException";
 import PodcastServiceInternalServerErrorException from "./PodcastServiceInternalServerErrorException";
 import RepositoryNotFoundException from "../../repositoryInterface/RepositoryNotFoundException";
-import UserRepositoryInterface from "../../repositoryInterface/UserRepositoryInterface";
 import PodcastServiceNotFoundException from "./PodcastServiceNotFoundException";
 import DisplayDetailsPodcastDTO from "../../../adapters/dto/podcast/DisplayDetailsPodcastDTO";
 
 class PodcastService implements PodcastServiceInterface {
 
     private instance: PodcastRepositoryInterface;
-    private userRepository: UserRepositoryInterface;
 
-    constructor(instance: PodcastRepositoryInterface, userRepository: UserRepositoryInterface) {
+    constructor(instance: PodcastRepositoryInterface) {
         this.instance = instance;
-        this.userRepository = userRepository
     }
 
     public getPodcastById(id: string): Promise<DisplayDetailsPodcastDTO> {
@@ -106,11 +103,7 @@ class PodcastService implements PodcastServiceInterface {
 
     public async createPodcast(podcast: CreatePodcastDTO): Promise<DisplayDetailsPodcastDTO> {
         try {
-            const user = await this.userRepository.find(podcast.get('creatorId'));
-            if (user === null) {
-                throw new PodcastServiceNotFoundException("User not found");
-            }
-            let p = new Podcast(podcast.get('date'), podcast.get('name'), podcast.get('description'), user, podcast.get('image'));
+            let p = new Podcast(podcast.get('date'), podcast.get('name'), podcast.get('description'), podcast.get('creatorId'), podcast.get('image'));
             const id = await this.instance.save(p);
             p.setId(id);
             return new DisplayDetailsPodcastDTO(p);
@@ -151,7 +144,6 @@ class PodcastService implements PodcastServiceInterface {
             if (podcast === null) {
                 throw new PodcastServiceNotFoundException("Podcast not found");
             }
-            console.log("aaa",dto.get('date'));
             podcast.setDate(dto.get('date'));
             await this.instance.save(podcast);
             return new DisplayDetailsPodcastDTO(podcast as Podcast);
