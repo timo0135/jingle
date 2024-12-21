@@ -38,6 +38,7 @@ import DisplayUserDTO from "../../../adapters/dto/user/DisplayUserDTO";
 import CreateAvisDTO from "../../../adapters/dto/podcast/CreateAvisDTO";
 import UpdateDatePodcastDTO from "../../../adapters/dto/podcast/UpdateDatePodcastDTO";
 import DisplayDetailsPodcastDTO from "../../../adapters/dto/podcast/DisplayDetailsPodcastDTO";
+import ChangeDescriptionPlaylistDTO from "../../../adapters/dto/user/ChangeDescriptionPlaylistDTO";
 
 interface PodcastServiceInterface {
     getPodcastById(id: string): Promise<DisplayDetailsPodcastDTO>;
@@ -66,6 +67,7 @@ interface PodcastServiceInterface {
     deletePlaylist(id: string): Promise<void>;
     addPodcastToPlaylist(dto: AddPodcastToPlaylistDTO): Promise<DisplayPlaylistDTO>;
     updateNamePlaylist(dto: ChangeNamePlaylistDTO): Promise<DisplayPlaylistDTO>;
+    updateDescriptionPlaylist(dto: ChangeDescriptionPlaylistDTO): Promise<DisplayPlaylistDTO>;
     getDirects(): Promise<DisplayDirectDTO[]>;
     getDirectById(id: string): Promise<DisplayDirectDTO>;
     getDirectsByUserId(userId: string): Promise<DisplayDirectDTO[]>;

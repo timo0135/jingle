@@ -7,11 +7,15 @@ class CreatePlaylistDTO extends DTO{
     protected name: string;
 
     @IsNotEmpty()
+    protected description: string;
+
+    @IsNotEmpty()
     protected userId: string;
-    constructor(name: string, userId: string) {
+    constructor(name: string, description: string, userId: string) {
         super();
         this.name = name;
         this.userId = userId;
+        this.description = description;
     }
 }
 
