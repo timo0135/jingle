@@ -45,6 +45,7 @@ import PodcastServiceInternalServerErrorException from "./PodcastServiceInternal
 import RepositoryNotFoundException from "../../repositoryInterface/RepositoryNotFoundException";
 import PodcastServiceNotFoundException from "./PodcastServiceNotFoundException";
 import DisplayDetailsPodcastDTO from "../../../adapters/dto/podcast/DisplayDetailsPodcastDTO";
+import Avis from "../../domain/entities/avis/Avis";
 
 class PodcastService implements PodcastServiceInterface {
 
@@ -218,40 +219,121 @@ class PodcastService implements PodcastServiceInterface {
         throw new Error('Method not implemented.');
     }
 
-    public getAvisPodcast(podcastId: string): Promise<DisplayAvisDTO[]> {
-        throw new Error('Method not implemented.');
+    public async getAvisPodcast(podcastId: string): Promise<DisplayAvisDTO[]> {
+        try{
+            const podcast = await this.instance.findById(podcastId);
+            if (podcast === null) {
+                throw new PodcastServiceNotFoundException("Podcast not found");
+            }
+            const avis = await this.instance.getAvisByPodcastId(podcastId);
+            return avis.map((avi) => new DisplayAvisDTO(avi));
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while fetching podcast avis");
+            }
+        }
     }
 
-    public getAvisPodcastById(avisId: string): Promise<DisplayAvisDTO> {
-        throw new Error('Method not implemented.');
+    public async getAvisPodcastById(avisId: string): Promise<DisplayAvisDTO> {
+        try{
+            const avis = await this.instance.findAvisById(avisId);
+            if (avis === null) {
+                throw new PodcastServiceNotFoundException("Avis not found");
+            }
+            return new DisplayAvisDTO(avis);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while fetching podcast avis");
+            }
+        }
     }
 
     public searchAvisPodcastInfo(dto: SearchAvisDTO): Promise<DisplayAvisDTO[]> {
         throw new Error('Method not implemented.');
     }
 
-    public addAvisPodcast(dto: AddAvisToPodcastDTO): Promise<DisplayAvisDTO> {
-        throw new Error('Method not implemented.');
+    public async addAvisPodcast(dto: AddAvisToPodcastDTO): Promise<DisplayAvisDTO> {
+        try {
+            const avis = await this.instance.findAvisById(dto.get('avisId'));
+            if (avis === null) {
+                throw new PodcastServiceNotFoundException("Avis not found");
+            }
+            avis.setPodcast(dto.get('podcast'));
+            await this.instance.saveAvis(avis);
+            return new DisplayAvisDTO(avis);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while fetching podcast avis");
+            }
+        }
     }
 
-    public removeAvisPodcast(dto: RemoveAvisToPodcastDTO): Promise<DisplayAvisDTO> {
-        throw new Error('Method not implemented.');
+    public async updateTitleAvisPodcast(dto: UpdateTitleAvisDTO): Promise<DisplayAvisDTO> {
+        try{
+            const avis = await this.instance.findAvisById(dto.get('avisId'));
+            if (avis === null) {
+                throw new PodcastServiceNotFoundException("Avis not found");
+            }
+            avis.setTitle(dto.get('title'));
+            await this.instance.saveAvis(avis)
+            return new DisplayAvisDTO(avis)
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast avis");
+            }
+        }
     }
 
-    public updateTitleAvisPodcast(dto: UpdateTitleAvisDTO): Promise<DisplayAvisDTO> {
-        throw new Error('Method not implemented.');
+    public async updateContentAvisPodcast(dto: UpdateContentAvisDTO): Promise<DisplayAvisDTO> {
+        try{
+            const avis = await this.instance.findAvisById(dto.get('avisId'));
+            if (avis === null) {
+                throw new PodcastServiceNotFoundException("Avis not found");
+            }
+            avis.setContent(dto.get('content'));
+            await this.instance.saveAvis(avis)
+            return new DisplayAvisDTO(avis)
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast avis");
+            }
+        }
     }
 
-    public updateContentAvisPodcast(dto: UpdateContentAvisDTO): Promise<DisplayAvisDTO> {
-        throw new Error('Method not implemented.');
-    }
+    public async createAvis(dto: CreateAvisDTO): Promise<DisplayAvisDTO> {
+        const avis = new Avis(dto.get('title'), dto.get('content'), dto.get('podcastId'), dto.get('userId'));
+        let id = await this.instance.saveAvis(avis);
+        avis.setId(id);
+        return new DisplayAvisDTO(avis);
 
-    public createAvis(dto: CreateAvisDTO): Promise<DisplayAvisDTO> {
-        throw new Error('Method not implemented.');
     }
 
     public deleteAvis(id: string): Promise<void> {
-        throw new Error('Method not implemented.');
+        const avis = this.instance.findAvisById(id);
+        if (avis === null) {
+            throw new PodcastServiceNotFoundException("Avis not found");
+        }
+        return this.instance.deleteAvis(id);
     }
 
     public getPlaylists(): Promise<DisplayPlaylistDTO[]> {

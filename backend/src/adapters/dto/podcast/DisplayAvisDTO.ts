@@ -7,6 +7,7 @@ class DisplayAvisDTO extends DTO{
     protected title: string;
     protected content: string;
     protected podcast: string;
+    protected userId: string
 
     constructor(avis: Avis) {
         super();
@@ -14,6 +15,7 @@ class DisplayAvisDTO extends DTO{
         this.title = avis.getTitle();
         this.content = avis.getContent();
         this.podcast = avis.getPodcast();
+        this.userId = avis.getUserId();
     }
 }
 

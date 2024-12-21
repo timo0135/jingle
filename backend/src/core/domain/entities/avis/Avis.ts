@@ -4,12 +4,14 @@ class Avis extends Entity{
     protected title: string;
     protected content: string;
     protected podcast: string;
+    protected userId: string;
 
-    constructor(title: string, content: string, podcast: string) {
+    constructor(title: string, content: string, podcast: string, userId: string) {
         super();
         this.title = title;
         this.content = content;
         this.podcast = podcast;
+        this.userId = userId;
     }
 
     public getTitle(): string {
@@ -34,6 +36,14 @@ class Avis extends Entity{
 
     public setPodcast(podcast: string): void {
         this.podcast = podcast;
+    }
+
+    public getUserId(): string {
+        return this.userId;
+    }
+
+    public setUserId(userId: string): void {
+        this.userId = userId;
     }
 }
 

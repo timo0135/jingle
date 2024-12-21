@@ -14,6 +14,9 @@ import UpdateDescriptionPodcastDTO from "../dto/podcast/UpdateDescriptionPodcast
 import UpdateImagePodcastDTO from "../dto/podcast/UpdateImagePodcastDTO";
 import UpdateDatePodcastDTO from "../dto/podcast/UpdateDatePodcastDTO";
 import moment from 'moment';
+import CreateAvisDTO from "../dto/podcast/CreateAvisDTO";
+import UpdateTitleAvisDTO from "../dto/podcast/UpdateTitleAvisDTO";
+import UpdateContentAvisDTO from "../dto/podcast/UpdateContentAvisDTO";
 
 
 const podcastService : PodcastServiceInterface = podcastServiceInterface;
@@ -256,6 +259,237 @@ export async function deletePodcast(req: Request, res: Response) {
         await podcastService.deletePodcast(req.params.id);
         res.status(204).send();
     } catch (error) {
+        handleError(res, error);
+    }
+}
+
+export async function getAvisByPodcast(req: Request, res: Response) {
+    try {
+        const avis = await podcastService.getAvisPodcast(req.params.id);
+        const filteredAvis = avis.map(avis => {
+            return {
+                id: avis.get('id'),
+                title: avis.get('title'),
+                content: avis.get('content'),
+                user: {
+                    id: avis.get('userId'),
+                    links: [
+                        {
+                            rel: 'self',
+                            href: `/users/${avis.get('userId')}`
+                        }
+                    ]
+                }
+            }
+        });
+        let response = {
+            type: 'resource',
+            locale: 'fr-FR',
+            avis: filteredAvis,
+            links: [
+                {
+                    rel: 'self',
+                    href: `/podcasts/${req.params.id}/avis`
+                }
+            ]
+        }
+
+        res.status(200).json(response);
+    } catch (error) {
+        handleError(res, error);
+    }
+}
+
+export async function getAvisById(req: Request, res: Response) {
+    try {
+        const avis = await podcastService.getAvisPodcastById(req.params.id);
+        const filteredAvis = {
+            id: avis.get('id'),
+            title: avis.get('title'),
+            content: avis.get('content'),
+            user: {
+                id: avis.get('userId'),
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/users/${avis.get('userId')}`
+                    }
+                ]
+            },
+            podcast:{
+                id: avis.get('podcast'),
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/podcasts/${avis.get('podcast')}`
+                    }
+                ]
+            }
+        };
+        let response = {
+            type: 'resource',
+            locale: 'fr-FR',
+            avis: filteredAvis,
+            links: [
+                {
+                    rel: 'self',
+                    href: `/avis/${req.params.id}`
+                }
+            ]
+        }
+
+        res.status(200).json(response);
+    } catch (error) {
+        handleError(res, error);
+    }
+}
+
+export async function createAvis(req: Request, res: Response) {
+    try {
+        let data = {
+            title : req.body.title,
+            content : req.body.content,
+            podcastId : req.params.id,
+            userId : req.body.userId
+        };
+        try{
+            const contactInput = plainToInstance(CreateAvisDTO, data);
+            await validateOrReject(contactInput);
+            if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.title)){
+                throw new PodcastServiceBadDataException('Invalid title');
+            }
+            if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.content)){
+                throw new PodcastServiceBadDataException('Invalid content');
+            }
+            if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.podcastId)){
+                throw new PodcastServiceBadDataException('Invalid podcast');
+            }
+            if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.userId)){
+                throw new PodcastServiceBadDataException('Invalid user');
+            }
+        } catch (errors) {
+            if (errors instanceof Array && errors[0] instanceof ValidationError) {
+                const messages = errors.map(error => Object.values(error.constraints || {}).join(', ')).join(', ');
+                throw new PodcastServiceBadDataException(messages);
+            }
+            if (errors instanceof PodcastServiceBadDataException) {
+                throw new PodcastServiceBadDataException(errors.message);
+            }
+        }
+        const dto = new CreateAvisDTO(data.title, data.content, data.podcastId, data.userId);
+        const avis = await podcastService.createAvis(dto);
+        const filteredAvis = {
+            id: avis.get('id'),
+            title: avis.get('title'),
+            content: avis.get('content'),
+            user: {
+                id: avis.get('userId'),
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/users/${avis.get('userId')}`
+                    }
+                ]
+            },
+            podcast:{
+                id: avis.get('podcast'),
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/podcasts/${avis.get('podcast')}`
+                    }
+                ]
+            },
+            links: [
+                {
+                    rel: 'self',
+                    href: `/avis/${avis.get('id')}`
+                }
+            ]
+        };
+        let response = {
+            type: 'resource',
+            locale: 'fr-FR',
+            avis: filteredAvis,
+            links: [
+                {
+                    rel: 'self',
+                    href: `/avis/${avis.get('id')}`
+                }
+            ]
+        };
+
+        res.status(201).json(response);
+    } catch (error) {
+        handleError(res, error);
+    }
+}
+
+export async function deleteAvis(req: Request, res: Response) {
+    try {
+        await podcastService.deleteAvis(req.params.id);
+        res.status(204).send();
+    } catch (error) {
+        handleError(res, error);
+    }
+}
+
+export async function updateAvis(req: Request, res: Response){
+    try{
+        let data = req.body;
+        let avis = null;
+        if(data.title != undefined){
+            if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.title)){
+                throw new PodcastServiceBadDataException('Invalid content');
+            }
+            avis = await podcastService.updateTitleAvisPodcast(new UpdateTitleAvisDTO(data.title, req.params.id));
+        }
+        if(data.content != undefined){
+            if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.content)){
+                throw new PodcastServiceBadDataException('Invalid content');
+            }
+            avis = await podcastService.updateContentAvisPodcast(new UpdateContentAvisDTO(data.content, req.params.id));
+        }
+        if(avis == null){
+            throw new PodcastServiceBadDataException('No data to update');
+        }
+        const filteredAvis = {
+            id: avis.get('id'),
+            title: avis.get('title'),
+            content: avis.get('content'),
+            user: {
+                id: avis.get('userId'),
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/users/${avis.get('userId')}`
+                    }
+                ]
+            },
+            podcast:{
+                id: avis.get('podcast'),
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/podcasts/${avis.get('podcast')}`
+                    }
+                ]
+            }
+        };
+        let response = {
+            type: 'resource',
+            locale: 'fr-FR',
+            avis: filteredAvis,
+            links: [
+                {
+                    rel: 'self',
+                    href: `/avis/${req.params.id}`
+                }
+            ]
+        }
+        res.status(200).json(response);
+
+    } catch (error){
         handleError(res, error);
     }
 }

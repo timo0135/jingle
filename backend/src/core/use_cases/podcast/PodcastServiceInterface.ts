@@ -54,7 +54,6 @@ interface PodcastServiceInterface {
     getAvisPodcastById(avisId: string): Promise<DisplayAvisDTO>;
     searchAvisPodcastInfo(dto: SearchAvisDTO): Promise<DisplayAvisDTO[]>;
     addAvisPodcast(dto: AddAvisToPodcastDTO): Promise<DisplayAvisDTO>;
-    removeAvisPodcast(dto: RemoveAvisToPodcastDTO): Promise<DisplayAvisDTO>;
     createAvis(dto: CreateAvisDTO): Promise<DisplayAvisDTO>;
     deleteAvis(id: string): Promise<void>;
     updateTitleAvisPodcast(dto: UpdateTitleAvisDTO): Promise<DisplayAvisDTO>;
