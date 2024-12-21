@@ -49,6 +49,7 @@ import Avis from "../../domain/entities/avis/Avis";
 import PlaylistRepositoryInterface from "../../repositoryInterface/PlaylistRepositoryInterface";
 import Playlist from "../../domain/entities/playlist/Playlist";
 import ChangeDescriptionPlaylistDTO from "../../../adapters/dto/user/ChangeDescriptionPlaylistDTO";
+import RemovePodcastToPlaylistDTO from "../../../adapters/dto/user/RemovePodcastToPlaylistDTO";
 
 class PodcastService implements PodcastServiceInterface {
 
@@ -462,6 +463,26 @@ class PodcastService implements PodcastServiceInterface {
                 throw new PodcastServiceNotFoundException("Playlist not found");
             }
             playlist.addContent(dto.get('podcastId'));
+            await this.instancePlaylist.save(playlist);
+            return new DisplayPlaylistDTO(playlist);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while deleting playlist");
+            }
+        }
+    }
+
+    public async removePodcastToPlaylist(dto: RemovePodcastToPlaylistDTO): Promise<DisplayPlaylistDTO> {
+        try{
+            const playlist = await this.instancePlaylist.find(dto.get('playlistId'));
+            if (playlist === null) {
+                throw new PodcastServiceNotFoundException("Playlist not found");
+            }
+            playlist.removeContent(dto.get('podcastId'));
             await this.instancePlaylist.save(playlist);
             return new DisplayPlaylistDTO(playlist);
         } catch (error) {

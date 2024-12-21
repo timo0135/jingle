@@ -45,6 +45,10 @@ class Playlist extends Entity{
         this.content.push(podcast);
     }
 
+    public removeContent(podcast: string): void {
+        this.content = this.content.filter((p) => p !== podcast);
+    }
+
     public setContent(content: string[]): void {
         this.content = content;
     }
