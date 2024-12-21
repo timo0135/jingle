@@ -5,13 +5,15 @@ import UserRepository from "../infrastructure/mongodb/UserRepository";
 import AuthentificationService from "../core/use_cases/authentification/AuthentificationService";
 import JWTManager from "../adapters/providers/authentification/JWTManager";
 import JWTAuthProvider from "../adapters/providers/authentification/JWTAuthProvider";
+import PlaylistRepository from "../infrastructure/mongodb/PlaylistRepository";
 
 // ! Only instance of mongoClient
 export const mongoClient = getMongoClient();
-export const podcastRepository = new PodcastRepository(mongoClient);
-export const userRepository = new UserRepository(mongoClient);
+export const podcastRepositoryInterface = new PodcastRepository(mongoClient);
+export const userRepositoryInterface = new UserRepository(mongoClient);
+export const playlistRepositoryInterface = new PlaylistRepository(mongoClient);
 export const jwtManager = new JWTManager();
 
-export const podcastServiceInterface = new PodcastService(podcastRepository);
-export const authentificationServiceInterface = new AuthentificationService(userRepository);
+export const podcastServiceInterface = new PodcastService(podcastRepositoryInterface, playlistRepositoryInterface);
+export const authentificationServiceInterface = new AuthentificationService(userRepositoryInterface);
 export const authentificationProvider = new JWTAuthProvider(jwtManager, authentificationServiceInterface);

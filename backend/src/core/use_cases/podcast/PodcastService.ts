@@ -46,17 +46,20 @@ import RepositoryNotFoundException from "../../repositoryInterface/RepositoryNot
 import PodcastServiceNotFoundException from "./PodcastServiceNotFoundException";
 import DisplayDetailsPodcastDTO from "../../../adapters/dto/podcast/DisplayDetailsPodcastDTO";
 import Avis from "../../domain/entities/avis/Avis";
+import PlaylistRepositoryInterface from "../../repositoryInterface/PlaylistRepositoryInterface";
 
 class PodcastService implements PodcastServiceInterface {
 
-    private instance: PodcastRepositoryInterface;
+    private instancePodcast: PodcastRepositoryInterface;
+    private instancePlaylist: PlaylistRepositoryInterface;
 
-    constructor(instance: PodcastRepositoryInterface) {
-        this.instance = instance;
+    constructor(instancePodcast: PodcastRepositoryInterface, instancePlaylist: PlaylistRepositoryInterface) {
+        this.instancePodcast = instancePodcast;
+        this.instancePlaylist = instancePlaylist;
     }
 
     public getPodcastById(id: string): Promise<DisplayDetailsPodcastDTO> {
-        return this.instance.findById(id).then((podcast) => {
+        return this.instancePodcast.findById(id).then((podcast) => {
             let p = new DisplayDetailsPodcastDTO(podcast as Podcast);
             return p;
         }).catch((error) => {
@@ -71,7 +74,7 @@ class PodcastService implements PodcastServiceInterface {
     }
 
     public getPodcasts(): Promise<DisplayPodcastDTO[]> {
-        return this.instance.findAll().then((podcasts) => {
+        return this.instancePodcast.findAll().then((podcasts) => {
             let p = podcasts.map((podcast) => new DisplayPodcastDTO(podcast as Podcast));
             return p;
         }).catch((error) => {
@@ -87,7 +90,7 @@ class PodcastService implements PodcastServiceInterface {
 
     public getPodcastsByUserId(userId: string): Promise<DisplayPodcastDTO[]> {
         try {
-            let podcasts = this.instance.getPodcastsByUserId(userId);
+            let podcasts = this.instancePodcast.getPodcastsByUserId(userId);
             return podcasts.then((podcasts) => {
                 return podcasts.map((podcast) => new DisplayPodcastDTO(podcast as Podcast));
             });
@@ -105,7 +108,7 @@ class PodcastService implements PodcastServiceInterface {
     public async createPodcast(podcast: CreatePodcastDTO): Promise<DisplayDetailsPodcastDTO> {
         try {
             let p = new Podcast(podcast.get('date'), podcast.get('name'), podcast.get('description'), podcast.get('creatorId'), podcast.get('image'));
-            const id = await this.instance.save(p);
+            const id = await this.instancePodcast.save(p);
             p.setId(id);
             return new DisplayDetailsPodcastDTO(p);
         } catch (error) {
@@ -121,12 +124,12 @@ class PodcastService implements PodcastServiceInterface {
 
     public async updateTitlePodcast(dto: UpdateTitlePodcastDTO): Promise<DisplayDetailsPodcastDTO> {
         try {
-            const podcast = await this.instance.findById(dto.get('podcastId'));
+            const podcast = await this.instancePodcast.findById(dto.get('podcastId'));
             if (podcast === null) {
                 throw new PodcastServiceNotFoundException("Podcast not found");
             }
             podcast.setName(dto.get('title'));
-            await this.instance.save(podcast);
+            await this.instancePodcast.save(podcast);
             return new DisplayDetailsPodcastDTO(podcast as Podcast);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
@@ -141,12 +144,12 @@ class PodcastService implements PodcastServiceInterface {
 
     public async updateDatePodcast(dto: UpdateDatePodcastDTO): Promise<DisplayDetailsPodcastDTO> {
         try {
-            const podcast = await this.instance.findById(dto.get('podcastId')) as Podcast;
+            const podcast = await this.instancePodcast.findById(dto.get('podcastId')) as Podcast;
             if (podcast === null) {
                 throw new PodcastServiceNotFoundException("Podcast not found");
             }
             podcast.setDate(dto.get('date'));
-            await this.instance.save(podcast);
+            await this.instancePodcast.save(podcast);
             return new DisplayDetailsPodcastDTO(podcast as Podcast);
         } catch (error) {
             console.log(error);
@@ -163,12 +166,12 @@ class PodcastService implements PodcastServiceInterface {
 
     public async updateDescriptionPodcast(dto: UpdateDescriptionPodcastDTO): Promise<DisplayDetailsPodcastDTO> {
         try {
-            const podcast = await this.instance.findById(dto.get('podcastId'));
+            const podcast = await this.instancePodcast.findById(dto.get('podcastId'));
             if (podcast === null) {
                 throw new PodcastServiceNotFoundException("Podcast not found");
             }
             podcast.setDescription(dto.get('description'));
-            await this.instance.save(podcast);
+            await this.instancePodcast.save(podcast);
             return new DisplayDetailsPodcastDTO(podcast as Podcast);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
@@ -183,12 +186,12 @@ class PodcastService implements PodcastServiceInterface {
 
     public async updateImagePodcast(dto: UpdateImagePodcastDTO): Promise<DisplayDetailsPodcastDTO> {
         try {
-            const podcast = await this.instance.findById(dto.get('podcastId'));
+            const podcast = await this.instancePodcast.findById(dto.get('podcastId'));
             if (podcast === null) {
                 throw new PodcastServiceNotFoundException("Podcast not found");
             }
             podcast.setImage(dto.get('image'));
-            await this.instance.save(podcast);
+            await this.instancePodcast.save(podcast);
             return new DisplayDetailsPodcastDTO(podcast as Podcast);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
@@ -203,7 +206,7 @@ class PodcastService implements PodcastServiceInterface {
 
     public deletePodcast(id: string): Promise<void> {
         try {
-            return this.instance.delete(id);
+            return this.instancePodcast.delete(id);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
                 throw new PodcastServiceInternalServerErrorException(error.message);
@@ -221,11 +224,11 @@ class PodcastService implements PodcastServiceInterface {
 
     public async getAvisPodcast(podcastId: string): Promise<DisplayAvisDTO[]> {
         try{
-            const podcast = await this.instance.findById(podcastId);
+            const podcast = await this.instancePodcast.findById(podcastId);
             if (podcast === null) {
                 throw new PodcastServiceNotFoundException("Podcast not found");
             }
-            const avis = await this.instance.getAvisByPodcastId(podcastId);
+            const avis = await this.instancePodcast.getAvisByPodcastId(podcastId);
             return avis.map((avi) => new DisplayAvisDTO(avi));
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
@@ -240,7 +243,7 @@ class PodcastService implements PodcastServiceInterface {
 
     public async getAvisPodcastById(avisId: string): Promise<DisplayAvisDTO> {
         try{
-            const avis = await this.instance.findAvisById(avisId);
+            const avis = await this.instancePodcast.findAvisById(avisId);
             if (avis === null) {
                 throw new PodcastServiceNotFoundException("Avis not found");
             }
@@ -262,12 +265,12 @@ class PodcastService implements PodcastServiceInterface {
 
     public async addAvisPodcast(dto: AddAvisToPodcastDTO): Promise<DisplayAvisDTO> {
         try {
-            const avis = await this.instance.findAvisById(dto.get('avisId'));
+            const avis = await this.instancePodcast.findAvisById(dto.get('avisId'));
             if (avis === null) {
                 throw new PodcastServiceNotFoundException("Avis not found");
             }
             avis.setPodcast(dto.get('podcast'));
-            await this.instance.saveAvis(avis);
+            await this.instancePodcast.saveAvis(avis);
             return new DisplayAvisDTO(avis);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
@@ -282,12 +285,12 @@ class PodcastService implements PodcastServiceInterface {
 
     public async updateTitleAvisPodcast(dto: UpdateTitleAvisDTO): Promise<DisplayAvisDTO> {
         try{
-            const avis = await this.instance.findAvisById(dto.get('avisId'));
+            const avis = await this.instancePodcast.findAvisById(dto.get('avisId'));
             if (avis === null) {
                 throw new PodcastServiceNotFoundException("Avis not found");
             }
             avis.setTitle(dto.get('title'));
-            await this.instance.saveAvis(avis)
+            await this.instancePodcast.saveAvis(avis)
             return new DisplayAvisDTO(avis)
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
@@ -302,12 +305,12 @@ class PodcastService implements PodcastServiceInterface {
 
     public async updateContentAvisPodcast(dto: UpdateContentAvisDTO): Promise<DisplayAvisDTO> {
         try{
-            const avis = await this.instance.findAvisById(dto.get('avisId'));
+            const avis = await this.instancePodcast.findAvisById(dto.get('avisId'));
             if (avis === null) {
                 throw new PodcastServiceNotFoundException("Avis not found");
             }
             avis.setContent(dto.get('content'));
-            await this.instance.saveAvis(avis)
+            await this.instancePodcast.saveAvis(avis)
             return new DisplayAvisDTO(avis)
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
@@ -322,18 +325,18 @@ class PodcastService implements PodcastServiceInterface {
 
     public async createAvis(dto: CreateAvisDTO): Promise<DisplayAvisDTO> {
         const avis = new Avis(dto.get('title'), dto.get('content'), dto.get('podcastId'), dto.get('userId'));
-        let id = await this.instance.saveAvis(avis);
+        let id = await this.instancePodcast.saveAvis(avis);
         avis.setId(id);
         return new DisplayAvisDTO(avis);
 
     }
 
     public deleteAvis(id: string): Promise<void> {
-        const avis = this.instance.findAvisById(id);
+        const avis = this.instancePodcast.findAvisById(id);
         if (avis === null) {
             throw new PodcastServiceNotFoundException("Avis not found");
         }
-        return this.instance.deleteAvis(id);
+        return this.instancePodcast.deleteAvis(id);
     }
 
     public getPlaylists(): Promise<DisplayPlaylistDTO[]> {

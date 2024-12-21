@@ -1,6 +1,4 @@
 import Entity from "../Entity";
-import User from "../user/User";
-import Podcast from "../podcast/Podcast";
 
 class Playlist extends Entity{
     protected name: string;
@@ -45,6 +43,10 @@ class Playlist extends Entity{
 
     public addContent(podcast: string): void {
         this.content.push(podcast);
+    }
+
+    public setContent(content: string[]): void {
+        this.content = content;
     }
 }
 
