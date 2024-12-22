@@ -9,7 +9,18 @@ export default {
     "./error.vue",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "primary": "var(--primary-color)",
+        "secondary": "var(--secondary-color)"
+      },
+      fontFamily: {
+        "bungee": ['Bungee', 'cursive'],
+        "inter": ['Inter', 'sans-serif'],
+
+      }
+    },
   },
   plugins: [],
-};
+}
+
