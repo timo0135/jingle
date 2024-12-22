@@ -3,9 +3,7 @@ import Playlist from "../../core/domain/entities/playlist/Playlist";
 import {MongoClient, MongoNetworkError, MongoServerSelectionError, ObjectId} from "mongodb";
 import RepositoryNotFoundException from "../../core/repositoryInterface/RepositoryNotFoundException";
 import console from "node:console";
-import RepositoryInternalServerErrorException
-    from "../../core/repositoryInterface/RepositoryInternalServerErrorException";
-import podcast from "../../core/domain/entities/podcast/Podcast";
+import RepositoryInternalServerErrorException from "../../core/repositoryInterface/RepositoryInternalServerErrorException";
 
 class PlaylistRepository implements PlaylistRepositoryInterface {
     private readonly client: Promise<MongoClient>;

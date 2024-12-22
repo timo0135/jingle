@@ -8,7 +8,6 @@ import SearchPodcastDTO from "../../../adapters/dto/podcast/SearchPodcastDTO";
 import DisplayAvisDTO from "../../../adapters/dto/podcast/DisplayAvisDTO";
 import SearchAvisDTO from "../../../adapters/dto/podcast/SearchAvisDTO";
 import AddAvisToPodcastDTO from "../../../adapters/dto/podcast/AddAvisToPodcastDTO";
-import RemoveAvisToPodcastDTO from "../../../adapters/dto/podcast/RemoveAvisToPodcastDTO";
 import UpdateTitleAvisDTO from "../../../adapters/dto/podcast/UpdateTitleAvisDTO";
 import UpdateContentAvisDTO from "../../../adapters/dto/podcast/UpdateContentAvisDTO";
 import DisplayPlaylistDTO from "../../../adapters/dto/user/DisplayPlaylistDTO";
@@ -50,15 +49,19 @@ import PlaylistRepositoryInterface from "../../repositoryInterface/PlaylistRepos
 import Playlist from "../../domain/entities/playlist/Playlist";
 import ChangeDescriptionPlaylistDTO from "../../../adapters/dto/user/ChangeDescriptionPlaylistDTO";
 import RemovePodcastToPlaylistDTO from "../../../adapters/dto/user/RemovePodcastToPlaylistDTO";
+import DirectRepositoryInterface from "../../repositoryInterface/DirectRepositoryInterface";
+import Direct from "../../domain/entities/direct/Direct";
 
 class PodcastService implements PodcastServiceInterface {
 
     private instancePodcast: PodcastRepositoryInterface;
     private instancePlaylist: PlaylistRepositoryInterface;
+    private instanceDirect: DirectRepositoryInterface;
 
-    constructor(instancePodcast: PodcastRepositoryInterface, instancePlaylist: PlaylistRepositoryInterface) {
+    constructor(instancePodcast: PodcastRepositoryInterface, instancePlaylist: PlaylistRepositoryInterface, instanceDirect: DirectRepositoryInterface) {
         this.instancePodcast = instancePodcast;
         this.instancePlaylist = instancePlaylist;
+        this.instanceDirect = instanceDirect;
     }
 
     public getPodcastById(id: string): Promise<DisplayDetailsPodcastDTO> {
@@ -536,56 +539,220 @@ class PodcastService implements PodcastServiceInterface {
         }
     }
 
-    public getDirects(): Promise<DisplayDirectDTO[]> {
-        throw new Error('Method not implemented.');
+    public async getDirects(): Promise<DisplayDirectDTO[]> {
+        try{
+            const directs = await this.instanceDirect.findAll();
+            return directs.map((direct) => new DisplayDirectDTO(direct));
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while fetching directs");
+            }
+        }
     }
 
-    public getDirectById(id: string): Promise<DisplayDirectDTO> {
-        throw new Error('Method not implemented.');
+    public async getDirectById(id: string): Promise<DisplayDirectDTO> {
+        try{
+            const direct = await this.instanceDirect.find(id);
+            if (direct === null) {
+                throw new PodcastServiceNotFoundException("Direct not found");
+            }
+            return new DisplayDirectDTO(direct);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while finding directs");
+            }
+        }
     }
 
-    public getDirectsByUserId(userId: string): Promise<DisplayDirectDTO[]> {
-        throw new Error('Method not implemented.');
+    public async getDirectsByUserId(userId: string): Promise<DisplayDirectDTO[]> {
+        try{
+            const directs = await this.instanceDirect.findByUserId(userId);
+            return directs.map((direct) => new DisplayDirectDTO(direct));
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while fetching directs");
+            }
+        }
     }
 
     public searchDirectInfo(dto: SearchDirectDTO): Promise<DisplayDirectDTO[]> {
         throw new Error('Method not implemented.');
     }
 
-    public createDirect(direct: CreateDirectDTO): Promise<DisplayDirectDTO> {
-        throw new Error('Method not implemented.');
+    public async createDirect(direct: CreateDirectDTO): Promise<DisplayDirectDTO> {
+        try{
+            const d = new Direct(direct.get('name'), direct.get('description'), direct.get('image'), direct.get('host'), direct.get('date'), direct.get('duration'));
+            const id = await this.instanceDirect.save(d);
+            d.setId(id);
+            return new DisplayDirectDTO(d);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while saving direct");
+            }
+        }
     }
 
-    public deleteDirect(id: string): Promise<void> {
-        throw new Error('Method not implemented.');
+    public async deleteDirect(id: string): Promise<void> {
+        try{
+            await this.instanceDirect.delete(id);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while deleting direct");
+            }
+        }
     }
 
-    public updateNameDirect(dto: ChangeNameDirectDTO): Promise<DisplayDirectDTO> {
-        throw new Error('Method not implemented.');
+    public async updateNameDirect(dto: ChangeNameDirectDTO): Promise<DisplayDirectDTO> {
+        try{
+            const direct = await this.instanceDirect.find(dto.get('directId'));
+            if(direct === null){
+                throw new PodcastServiceNotFoundException('Direct not found');
+            }
+            direct.setName(dto.get("name"));
+            return new DisplayDirectDTO(direct);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating name direct");
+            }
+        }
     }
 
-    public updateDescriptionDirect(dto: ChangeDescriptionDirectDTO): Promise<DisplayDirectDTO> {
-        throw new Error('Method not implemented.');
+    public async updateDescriptionDirect(dto: ChangeDescriptionDirectDTO): Promise<DisplayDirectDTO> {
+        try{
+            const direct = await this.instanceDirect.find(dto.get('directId'));
+            if(direct === null){
+                throw new PodcastServiceNotFoundException('Direct not found');
+            }
+            direct.setName(dto.get("description"));
+            return new DisplayDirectDTO(direct);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating description direct");
+            }
+        }
     }
 
-    public updateImageDirect(dto: ChangeImageDirectDTO): Promise<DisplayDirectDTO> {
-        throw new Error('Method not implemented.');
+    public async updateImageDirect(dto: ChangeImageDirectDTO): Promise<DisplayDirectDTO> {
+        try{
+            const direct = await this.instanceDirect.find(dto.get('directId'));
+            if(direct === null){
+                throw new PodcastServiceNotFoundException('Direct not found');
+            }
+            direct.setName(dto.get("image"));
+            return new DisplayDirectDTO(direct);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating image direct");
+            }
+        }
     }
 
-    public updateDateDirect(dto: ChangeDateDirectDTO): Promise<DisplayDirectDTO> {
-        throw new Error('Method not implemented.');
+    public async updateDateDirect(dto: ChangeDateDirectDTO): Promise<DisplayDirectDTO> {
+        try{
+            const direct = await this.instanceDirect.find(dto.get('directId'));
+            if(direct === null){
+                throw new PodcastServiceNotFoundException('Direct not found');
+            }
+            direct.setName(dto.get("date"));
+            return new DisplayDirectDTO(direct);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating date direct");
+            }
+        }
     }
 
-    public updateDurationDirect(dto: ChangeDurationDirectDTO): Promise<DisplayDirectDTO> {
-        throw new Error('Method not implemented.');
+    public async updateDurationDirect(dto: ChangeDurationDirectDTO): Promise<DisplayDirectDTO> {
+        try{
+            const direct = await this.instanceDirect.find(dto.get('directId'));
+            if(direct === null){
+                throw new PodcastServiceNotFoundException('Direct not found');
+            }
+            direct.setName(dto.get("duration"));
+            return new DisplayDirectDTO(direct);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while updating duration direct");
+            }
+        }
     }
 
-    public inviteUserToDirect(dto: InviteGuessToDirectDTO): Promise<DisplayDirectDTO> {
-        throw new Error('Method not implemented.');
+    public async inviteUserToDirect(dto: InviteGuessToDirectDTO): Promise<DisplayDirectDTO> {
+        try{
+            const direct = await this.instanceDirect.find(dto.get('directId'));
+            if(direct === null){
+                throw new PodcastServiceNotFoundException('Direct not found');
+            }
+            direct.addGuess(dto.get("guessId"))
+            return new DisplayDirectDTO(direct);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while adding guess direct");
+            }
+        }
     }
 
-    public cancelInvitationToDirect(dto: CancelGuessToDirectDTO): Promise<DisplayDirectDTO> {
-        throw new Error('Method not implemented.');
+    public async cancelInvitationToDirect(dto: CancelGuessToDirectDTO): Promise<DisplayDirectDTO> {
+        try{
+            const direct = await this.instanceDirect.find(dto.get('directId'));
+            if(direct === null){
+                throw new PodcastServiceNotFoundException('Direct not found');
+            }
+            direct.removeGuess(dto.get("guessId"))
+            return new DisplayDirectDTO(direct);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while removing guess direct");
+            }
+        }
     }
 
     public getMusics(): Promise<DisplayMusicDTO[]> {

@@ -75,6 +75,14 @@ class Direct extends Entity{
     public addGuess(user: string): void {
         this.guess.push(user);
     }
+
+    public removeGuess(user: string): void {
+        this.guess = this.guess.filter((u) => u !== user);
+    }
+
+    public setGuess(users: string[]): void {
+        this.guess = users;
+    }
 }
 
 export default Direct;
