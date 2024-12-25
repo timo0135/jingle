@@ -1,7 +1,18 @@
 <template>
   <div>
-    <h1>Test</h1>
-    <p>test</p>
-    <p>eeeddd</p>
+    <NuxtPage/>
+    <NuxtLoadingIndicator/>
   </div>
 </template>
+
+<style>
+
+*{
+  margin: 0;
+  padding: 0;
+}
+
+html{
+  background-color: var(--secondary-color);
+}
+</style>
