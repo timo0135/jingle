@@ -5,7 +5,7 @@ import RepositoryNotFoundException from "../../core/repositoryInterface/Reposito
 import console from "node:console";
 import RepositoryInternalServerErrorException from "../../core/repositoryInterface/RepositoryInternalServerErrorException";
 
-class DirectRepository implements DirectRepositoryInterface {
+class MongoDirectRepository implements DirectRepositoryInterface {
     private readonly client: Promise<MongoClient>;
 
     constructor(client: Promise<MongoClient>) {
@@ -134,4 +134,4 @@ class DirectRepository implements DirectRepositoryInterface {
 
 }
 
-export default DirectRepository;
+export default MongoDirectRepository;

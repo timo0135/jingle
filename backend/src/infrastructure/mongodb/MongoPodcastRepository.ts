@@ -9,7 +9,7 @@ import RepositoryNotFoundException from "../../core/repositoryInterface/Reposito
 import * as console from "node:console";
 import Avis from "../../core/domain/entities/avis/Avis";
 
-class PodcastRepository implements PodcastRepositoryInterface {
+class MongoPodcastRepository implements PodcastRepositoryInterface {
 
     private readonly client: Promise<MongoClient>;
 
@@ -274,4 +274,4 @@ class PodcastRepository implements PodcastRepositoryInterface {
 
 }
 
-export default PodcastRepository;
+export default MongoPodcastRepository;

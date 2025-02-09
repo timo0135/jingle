@@ -2,7 +2,7 @@ import * as mongoDB from "mongodb";
 import { mongoConfig } from '../../config/database';
 
 export const getMongoClient = async (): Promise<mongoDB.MongoClient> => {
-    const uri = mongoConfig.uri;
+    const uri = "mongodb://mongodb:27017";
     if (!uri) {
         throw new Error('Mongo URI not found');
     }

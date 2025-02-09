@@ -12,7 +12,7 @@ class Podcast extends Entity{
     protected content: string[] = [];
     protected avis: string[] = [];
 
-    constructor(date: Date, name: string, description: string, creator: string ,image: string) {
+    constructor(date: Date, name: string, description: string, creator: string, image: string) {
         super();
         this.date = date;
         this.name = name;

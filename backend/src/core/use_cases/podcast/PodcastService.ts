@@ -79,19 +79,22 @@ class PodcastService implements PodcastServiceInterface {
         });
     }
 
-    public getPodcasts(): Promise<DisplayPodcastDTO[]> {
-        return this.instancePodcast.findAll().then((podcasts) => {
-            let p = podcasts.map((podcast) => new DisplayPodcastDTO(podcast as Podcast));
+    public async getPodcasts(): Promise<DisplayPodcastDTO[]> {
+        try {
+            const Promisepodcasts = await this.instancePodcast.findAll();
+            const podcasts = await Promise.all(Promisepodcasts);
+            let p = podcasts.map((podcast : Podcast) => new DisplayPodcastDTO(podcast));
             return p;
-        }).catch((error) => {
+        } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
                 throw new PodcastServiceInternalServerErrorException(error.message);
             } else if (error instanceof RepositoryNotFoundException) {
                 throw new PodcastServiceNotFoundException(error.message);
             } else {
-                throw new PodcastServiceInternalServerErrorException("An error occurred while updating podcast description");
+                console.log(error);
+                throw new PodcastServiceInternalServerErrorException("An error occurred while fetching podcasts");
             }
-        });
+        }
     }
 
     public getPodcastsByUserId(userId: string): Promise<DisplayPodcastDTO[]> {
