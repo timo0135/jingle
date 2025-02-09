@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 
 // ! Configuration de la connexion à la base de données
-const uri = 'mongodb://admin:pass@localhost:27017';
+const uri = 'mongodb://mongodb:27017';
 const dbName = 'jingle';
 
 async function createDatabaseAndCollections() {
@@ -9,7 +9,7 @@ async function createDatabaseAndCollections() {
     const collections = ['User', 'Music', 'Direct', 'Guests', 'Mover', 'Subscriber', 'Podcast', 'Avis', 'Content', 'Playlist'];
 
     try {
-        client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        client = new MongoClient(uri);
 
         await client.connect();
 

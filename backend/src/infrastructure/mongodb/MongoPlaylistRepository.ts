@@ -5,7 +5,7 @@ import RepositoryNotFoundException from "../../core/repositoryInterface/Reposito
 import console from "node:console";
 import RepositoryInternalServerErrorException from "../../core/repositoryInterface/RepositoryInternalServerErrorException";
 
-class PlaylistRepository implements PlaylistRepositoryInterface {
+class MongoPlaylistRepository implements PlaylistRepositoryInterface {
     private readonly client: Promise<MongoClient>;
 
     constructor(client: Promise<MongoClient>) {
@@ -170,4 +170,4 @@ class PlaylistRepository implements PlaylistRepositoryInterface {
 
 }
 
-export default PlaylistRepository;
+export default MongoPlaylistRepository;

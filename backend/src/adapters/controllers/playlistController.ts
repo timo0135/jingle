@@ -11,6 +11,7 @@ import AddPodcastToPlaylistDTO from "../dto/user/AddPodcastToPlaylistDTO";
 import ChangeNamePlaylistDTO from "../dto/user/ChangeNamePlaylistDTO";
 import ChangeDescriptionPlaylistDTO from "../dto/user/ChangeDescriptionPlaylistDTO";
 import RemovePodcastToPlaylistDTO from "../dto/user/RemovePodcastToPlaylistDTO";
+import validator from "validator";
 
 const podcastService: PodcastServiceInterface = podcastServiceInterface;
 
@@ -176,7 +177,7 @@ export async function addPodcastToPlaylist(req: Request, res: Response) {
         try{
             const contactInput = plainToInstance(AddPodcastToPlaylistDTO, data);
             await validateOrReject(contactInput);
-            if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.podcastId)){
+            if(!validator.isUUID(data.podcastId)){
                 throw new PodcastServiceBadDataException('Invalid podcastId');
             }
         } catch (errors) {
@@ -205,7 +206,7 @@ export async function removePodcastToPlaylist(req: Request, res: Response) {
         try{
             const contactInput = plainToInstance(RemovePodcastToPlaylistDTO, data);
             await validateOrReject(contactInput);
-            if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.podcastId)){
+            if(!validator.isUUID(data.podcastId)){
                 throw new PodcastServiceBadDataException('Invalid podcastId');
             }
         } catch (errors) {

@@ -101,7 +101,7 @@ export async function createPodcast(req: Request, res: Response) {
             if(!validator.isAlphanumeric(data.name)){
                 throw new PodcastServiceBadDataException('Invalid name');
             }
-            if(!validator.isAlphanumeric(data.creatorId)){
+            if (!validator.isUUID(data.creatorId)) {
                 throw new PodcastServiceBadDataException('Invalid host_id');
             }
             const imagePattern = /^(http:\/\/|https:\/\/)?([a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+)+(\/[a-zA-Z0-9-_]+)*\.(png|jpeg|jpg|gif|bmp|webp)|([a-zA-Z0-9-_]+\.(png|jpeg|jpg|gif|bmp|webp))$/;
@@ -361,10 +361,10 @@ export async function createAvis(req: Request, res: Response) {
             if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.content)){
                 throw new PodcastServiceBadDataException('Invalid content');
             }
-            if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.podcastId)){
+            if(!validator.isUUID(data.podcastId)){
                 throw new PodcastServiceBadDataException('Invalid podcast');
             }
-            if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.userId)){
+            if(!validator.isUUID(data.userId)){
                 throw new PodcastServiceBadDataException('Invalid user');
             }
         } catch (errors) {

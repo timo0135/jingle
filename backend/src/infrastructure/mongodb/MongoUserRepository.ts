@@ -8,7 +8,7 @@ import Music from "../../core/domain/entities/music/Music";
 import Direct from "../../core/domain/entities/direct/Direct";
 
 
-class UserRepository implements UserRepositoryInterface{
+class MongoUserRepository implements UserRepositoryInterface{
     protected client: Promise<MongoClient>
 
     constructor(client: Promise<MongoClient>) {
@@ -226,4 +226,4 @@ class UserRepository implements UserRepositoryInterface{
 
 }
 
-export default UserRepository;
+export default MongoUserRepository;
