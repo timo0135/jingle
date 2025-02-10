@@ -53,6 +53,7 @@ import DirectRepositoryInterface from "../../repositoryInterface/DirectRepositor
 import Direct from "../../domain/entities/direct/Direct";
 import UserRepositoryInterface from "../../repositoryInterface/UserRepositoryInterface";
 import PodcastServiceBadDataException from "./PodcastServiceBadDataException";
+import * as constants from "../../../config/constantes";
 
 class PodcastService implements PodcastServiceInterface {
 
@@ -68,7 +69,7 @@ class PodcastService implements PodcastServiceInterface {
         this.instanceUser = instanceUser;
     }
 
-    public getPodcastById(id: string): Promise<DisplayDetailsPodcastDTO> {
+    public async getPodcastById(id: string): Promise<DisplayDetailsPodcastDTO> {
         return this.instancePodcast.findById(id).then((podcast) => {
             let p = new DisplayDetailsPodcastDTO(podcast as Podcast);
             return p;
@@ -851,7 +852,7 @@ class PodcastService implements PodcastServiceInterface {
     public async upgradeListerToBroadcaster(dto: UpgradeListenerToBroadcasterDTO): Promise<DisplayUserDTO> {
         try{
             const user = await this.instanceUser.find(dto.get('userId'))
-            user.setRole(2);
+            user.setRole(constants.BROADCASTER);
             await this.instanceUser.save(user);
             return new DisplayUserDTO(user);
         } catch (error) {

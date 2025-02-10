@@ -1,13 +1,12 @@
 import Entity from "../Entity";
-import Playlist from "../playlist/Playlist";
-import Music from "../music/Music";
-import Direct from "../direct/Direct";
+import * as constants from "../../../../config/constantes";
+
 
 class User extends Entity {
     protected email: string;
     protected password: string;
     protected pseudo: string;
-    protected role: number;
+    protected role: number = constants.LISTENER;
     protected subscribers: string[] = [];
     protected subscriptions: string[] = [];
     protected playlists: string[] = [];

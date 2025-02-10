@@ -1,0 +1,16 @@
+export const IS_USER = 1;
+export const IS_ADMIN = 2;
+export const IS_MY_PODCAST = 3;
+export const IS_MY_DIRECT = 4;
+export const IS_MY_AVIS = 5;
+export const IS_MY_PLAYLIST = 6;
+export const IS_MY_SUBSCRIBER = 7;
+export const IS_MY_SUBSCRIPTION = 8;
+export const IS_MY_MIXER = 9;
+export const IS_MY_INVITAION = 10;
+export const IS_MY_GUEST = 11;
+export const IS_MY_CONTENT = 12;
+export const IS_BROADCASTER = 13;
+export const IS_ME = 14;
+export const LISTENER = 1;
+export const BROADCASTER = 2;
