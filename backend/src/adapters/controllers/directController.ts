@@ -16,6 +16,8 @@ import ChangeDescriptionDirectDTO from "../dto/direct/ChangeDescriptionDirectDTO
 import ChangeImageDirectDTO from "../dto/direct/ChangeImageDirectDTO";
 import ChangeDateDirectDTO from "../dto/direct/ChangeDateDirectDTO";
 import ChangeDurationDirectDTO from "../dto/direct/ChangeDurationDirectDTO";
+import InviteGuessToDirectDTO from "../dto/direct/InviteGuessToDirectDTO";
+import CancelGuessToDirectDTO from "../dto/direct/CancelGuessToDirectDTO";
 
 const podcastService: PodcastServiceInterface = podcastServiceInterface;
 
@@ -408,6 +410,132 @@ export async function updateDirect(req: Request, res: Response) {
 
         res.status(200).json(reponse);
     }catch (error) {
+        handleError(res, error);
+    }
+}
+
+export async function inviteGuest(req: Request, res: Response) {
+    try {
+        if(req.body.guestId === undefined){
+            throw new PodcastServiceBadDataException('guestId is required');
+        }
+        if(!validator.isUUID(req.body.guestId)){
+            throw new PodcastServiceBadDataException('Invalid guestId');
+        }
+        let direct = await podcastService.inviteUserToDirect(new InviteGuessToDirectDTO(req.params.id, req.body.guestId));
+        let guestsFiltered = direct.get('guess').map((guest: string) => {
+            return {
+                id: guest,
+                links: [
+                    {
+                        rel: 'self',
+                        href: '/users/' + guest
+                    }
+                ]
+            }
+        });
+        let filteredDirect = {
+            id: direct.get('id'),
+            name: direct.get('name'),
+            description: direct.get('description'),
+            image: direct.get('image'),
+            hostId: direct.get('hostId'),
+            date: direct.get('date'),
+            duration: direct.get('duration'),
+            guests: guestsFiltered
+        }
+        const reponse = {
+            type: 'resource',
+            locale: 'fr-FR',
+            direct: filteredDirect,
+            links: [
+                {
+                    rel: 'self',
+                    href: '/directs/' + direct.get('id')
+                },
+                {
+                    rel: 'update',
+                    href: '/directs/' + direct.get('id')
+                },
+                {
+                    rel: 'delete',
+                    href: '/directs/' + direct.get('id')
+                },
+                {
+                    rel: 'directs',
+                    href: '/directs'
+                },
+                {
+                    rel: 'host',
+                    href: '/users/' + direct.get('hostId')
+                }
+            ]
+        }
+        res.status(200).json(reponse);
+    } catch (error) {
+        handleError(res, error);
+    }
+}
+
+export async function cancelGuest(req: Request, res: Response) {
+    try {
+        if(req.body.guestId === undefined){
+            throw new PodcastServiceBadDataException('guestId is required');
+        }
+        if(!validator.isUUID(req.body.guestId)){
+            throw new PodcastServiceBadDataException('Invalid guestId');
+        }
+        let direct = await podcastService.cancelInvitationToDirect(new CancelGuessToDirectDTO(req.params.id, req.body.guestId));
+        let guestsFiltered = direct.get('guess').map((guest: string) => {
+            return {
+                id: guest,
+                links: [
+                    {
+                        rel: 'self',
+                        href: '/users/' + guest
+                    }
+                ]
+            }
+        });
+        let filteredDirect = {
+            id: direct.get('id'),
+            name: direct.get('name'),
+            description: direct.get('description'),
+            image: direct.get('image'),
+            hostId: direct.get('hostId'),
+            date: direct.get('date'),
+            duration: direct.get('duration'),
+            guests: guestsFiltered
+        }
+        const reponse = {
+            type: 'resource',
+            locale: 'fr-FR',
+            direct: filteredDirect,
+            links: [
+                {
+                    rel: 'self',
+                    href: '/directs/' + direct.get('id')
+                },
+                {
+                    rel: 'update',
+                    href: '/directs/' + direct.get('id')
+                },
+                {
+                    rel: 'delete',
+                    href: '/directs/' + direct.get('id')
+                },
+                {
+                    rel: 'directs',
+                    href: '/directs'
+                },
+                {
+                    rel: 'host',
+                    href: '/users/' + direct.get('hostId')
+                }
+            ]
+        }
+        res.status(200).json(reponse);
+    } catch (error) {
         handleError(res, error);
     }
 }

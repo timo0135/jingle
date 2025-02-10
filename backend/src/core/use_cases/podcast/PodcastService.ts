@@ -579,7 +579,8 @@ class PodcastService implements PodcastServiceInterface {
 
     public async getDirectsByUserId(userId: string): Promise<DisplayDirectDTO[]> {
         try{
-            const directs = await this.instanceDirect.findByUserId(userId);
+            const promise_directs = await this.instanceDirect.findByUserId(userId);
+            const directs = await Promise.all(promise_directs);
             return directs.map((direct) => new DisplayDirectDTO(direct));
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
@@ -587,6 +588,7 @@ class PodcastService implements PodcastServiceInterface {
             } else if (error instanceof RepositoryNotFoundException) {
                 throw new PodcastServiceNotFoundException(error.message);
             } else {
+
                 throw new PodcastServiceInternalServerErrorException("An error occurred while fetching directs");
             }
         }
@@ -735,6 +737,7 @@ class PodcastService implements PodcastServiceInterface {
                 throw new PodcastServiceNotFoundException('Direct not found');
             }
             direct.addGuess(dto.get("guessId"))
+            await this.instanceDirect.save(direct);
             return new DisplayDirectDTO(direct);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
@@ -754,6 +757,7 @@ class PodcastService implements PodcastServiceInterface {
                 throw new PodcastServiceNotFoundException('Direct not found');
             }
             direct.removeGuess(dto.get("guessId"))
+            await this.instanceDirect.save(direct);
             return new DisplayDirectDTO(direct);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
