@@ -21,6 +21,6 @@ export const playlistRepositoryInterface = new PostGresPlaylistRepository(db_jin
 export const directRepositoryInterface = new PostGresDirectRepository(db_jingle);
 export const jwtManager = new JWTManager();
 
-export const podcastServiceInterface = new PodcastService(podcastRepositoryInterface, playlistRepositoryInterface, directRepositoryInterface);
+export const podcastServiceInterface = new PodcastService(podcastRepositoryInterface, playlistRepositoryInterface, directRepositoryInterface, userRepositoryInterface);
 export const authentificationServiceInterface = new AuthentificationService(userRepositoryInterface);
 export const authentificationProvider = new JWTAuthProvider(jwtManager, authentificationServiceInterface);

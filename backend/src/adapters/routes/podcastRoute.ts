@@ -13,5 +13,6 @@ router.get('/podcasts/:id/avis', PodcastController.getAvisByPodcast);
 router.get('/avis/:id', PodcastController.getAvisById);
 router.delete('/avis/:id', PodcastController.deleteAvis);
 router.put('/avis/:id', PodcastController.updateAvis);
+router.put('/users/:id/subscribers', PodcastController.subscribeToBroadcaster);
 
 export default router;

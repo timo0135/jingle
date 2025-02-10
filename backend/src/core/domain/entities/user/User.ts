@@ -52,123 +52,79 @@ class User extends Entity {
     }
 
     public getSubscribers(): string[] {
-        if (this.role >= 2) {
-            return this.subscribers;
-        } else {
-            return [];
-        }
+        return this.subscribers;
     }
 
     public getSubscriptions(): string[] {
-        if (this.role >= 1) {
-            return this.subscriptions;
-        } else {
-            return [];
-        }
+        return this.subscriptions;
     }
 
     public addSubscriber(user: string): void {
-        if (this.role >= 2) {
-            this.subscribers.push(user);
-        }
+        this.subscribers.push(user);
+    }
+
+    public removeSubscriber(user: string): void {
+        this.subscribers = this.subscribers.filter(subscriber => subscriber !== user);
     }
 
     public setSubscribers(subscribers: string[]): void {
-        if (this.role >= 2) {
-            this.subscribers = subscribers;
-        }
+        this.subscribers = subscribers;
     }
 
     public addSubscription(user: string): void {
-        if (this.role >= 1) {
-            this.subscriptions.push(user);
-        }
+        this.subscriptions.push(user);
     }
 
     public setSubscriptions(subscriptions: string[]): void {
-        if (this.role >= 1) {
-            this.subscriptions = subscriptions;
-        }
+        this.subscriptions = subscriptions;
     }
 
     public getPlaylists(): string[] {
-        if (this.role >= 1) {
-            return this.playlists;
-        }else {
-            return [];
-        }
+        return this.playlists;
     }
 
     public addPlaylist(playlist: string): void {
-        if (this.role >= 1) {
-            this.playlists.push(playlist);
-        }
+        this.playlists.push(playlist);
     }
 
     public setPlaylists(playlists: string[]): void {
-        if (this.role >= 1) {
-            this.playlists = playlists;
-        }
+        this.playlists = playlists;
     }
 
     public getMixers(): string[] {
-        if (this.role >= 2) {
-            return this.mixers;
-        }else {
-            return [];
-        }
+        return this.mixers;
     }
 
     public addMixer(mixer: string): void {
-        if (this.role >= 2) {
-            this.mixers.push(mixer);
-        }
+        this.mixers.push(mixer);
     }
 
     public setMixers(mixers: string[]): void {
-        if (this.role >= 2) {
-            this.mixers = mixers;
-        }
+        this.mixers = mixers;
     }
 
     public getDirects(): string[] {
-        if (this.role >= 2) {
-            return this.directs;
-        }else {
-            return [];
-        }
+        return this.directs;
     }
 
     public addDirect(direct: string): void {
-        if (this.role >= 2) {
-            this.directs.push(direct);
-        }
+        this.directs.push(direct);
     }
 
     public setDirects(directs: string[]): void {
-        if (this.role >= 2) {
-            this.directs = directs;
-        }
+        this.directs = directs;
     }
 
     public getGuess(): string[] {
-        if (this.role >= 1) {
-            return this.guess;
-        }else {
-            return [];
-        }
+        return this.guess;
     }
 
     public addGuess(guess: string): void {
-        if (this.role >= 1) {
-            this.guess.push(guess);
-        }
+        this.guess.push(guess);
     }
 
     public setGuess(guess: string[]): void {
-        if (this.role >= 1) {
-            this.guess = guess;
-        }
+        this.guess = guess;
     }
 }
 

@@ -51,17 +51,21 @@ import ChangeDescriptionPlaylistDTO from "../../../adapters/dto/user/ChangeDescr
 import RemovePodcastToPlaylistDTO from "../../../adapters/dto/user/RemovePodcastToPlaylistDTO";
 import DirectRepositoryInterface from "../../repositoryInterface/DirectRepositoryInterface";
 import Direct from "../../domain/entities/direct/Direct";
+import UserRepositoryInterface from "../../repositoryInterface/UserRepositoryInterface";
+import PodcastServiceBadDataException from "./PodcastServiceBadDataException";
 
 class PodcastService implements PodcastServiceInterface {
 
     private instancePodcast: PodcastRepositoryInterface;
     private instancePlaylist: PlaylistRepositoryInterface;
     private instanceDirect: DirectRepositoryInterface;
+    private instanceUser: UserRepositoryInterface;
 
-    constructor(instancePodcast: PodcastRepositoryInterface, instancePlaylist: PlaylistRepositoryInterface, instanceDirect: DirectRepositoryInterface) {
+    constructor(instancePodcast: PodcastRepositoryInterface, instancePlaylist: PlaylistRepositoryInterface, instanceDirect: DirectRepositoryInterface, instanceUser: UserRepositoryInterface) {
         this.instancePodcast = instancePodcast;
         this.instancePlaylist = instancePlaylist;
         this.instanceDirect = instanceDirect;
+        this.instanceUser = instanceUser;
     }
 
     public getPodcastById(id: string): Promise<DisplayDetailsPodcastDTO> {
@@ -810,16 +814,55 @@ class PodcastService implements PodcastServiceInterface {
         throw new Error('Method not implemented.');
     }
 
-    public subscribeToBroadcaster(dto: SubscribeToBroacasterDTO): Promise<DisplayPodcastDTO> {
-        throw new Error('Method not implemented.');
+    public async subscribeToBroadcaster(dto: SubscribeToBroacasterDTO): Promise<DisplayUserDTO> {
+        try{
+            const broadcaster = await this.instanceUser.find(dto.get('broadcasterId'))
+            broadcaster.addSubscriber(dto.get('userId'));
+            await this.instanceUser.save(broadcaster);
+            return new DisplayUserDTO(broadcaster);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while subscribing to broadcaster");
+            }
+        }
     }
 
-    public unsubscribeToBroadcaster(dto: UnsubscribeToBroacasterDTO): Promise<DisplayPodcastDTO> {
-        throw new Error('Method not implemented.');
+    public async unsubscribeToBroadcaster(dto: UnsubscribeToBroacasterDTO): Promise<DisplayUserDTO> {
+        try{
+            const broadcaster = await this.instanceUser.find(dto.get('broadcasterId'))
+            broadcaster.removeSubscriber(dto.get('userId'));
+            await this.instanceUser.save(broadcaster);
+            return new DisplayUserDTO(broadcaster);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while subscribing to broadcaster");
+            }
+        }
     }
 
-    public upgradeListerToBroadcaster(dto: UpgradeListenerToBroadcasterDTO): Promise<DisplayUserDTO> {
-        throw new Error('Method not implemented.');
+    public async upgradeListerToBroadcaster(dto: UpgradeListenerToBroadcasterDTO): Promise<DisplayUserDTO> {
+        try{
+            const user = await this.instanceUser.find(dto.get('userId'))
+            user.setRole(2);
+            await this.instanceUser.save(user);
+            return new DisplayUserDTO(user);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while upgrading user to broadcaster");
+            }
+        }
     }
 }
 

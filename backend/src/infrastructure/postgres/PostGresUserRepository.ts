@@ -38,12 +38,18 @@ class PostGresUserRepository implements UserRepositoryInterface {
             let user_guesses = await this.db.any('SELECT direct_id FROM guess WHERE user_id = $1', id);
             let user: User = new User(user_response.email, user_response.password, user_response.pseudo, user_response.role);
             user.setId(user_response.id);
-            user.setSubscribers(user_subscribers);
-            user.setSubscriptions(user_subscriptions);
-            user.setPlaylists(user_playlists);
-            user.setMixers(user_mixers);
-            user.setDirects(user_directs);
-            user.setGuess(user_guesses);
+            let subscribers = await user_subscribers;
+            user.setSubscribers(subscribers.map((subscriber: any) => subscriber.listener_id));
+            let subscriptions = await user_subscriptions;
+            user.setSubscriptions(subscriptions.map((subscription: any) => subscription.creator_id));
+            let playlists = await user_playlists;
+            user.setPlaylists(playlists.map((playlist: any) => playlist.id));
+            let mixers = await user_mixers;
+            user.setMixers(mixers.map((mixer: any) => mixer.music_id));
+            let directs = await user_directs;
+            user.setDirects(directs.map((direct: any) => direct.id));
+            let guesses = await user_guesses;
+            user.setGuess(guesses.map((guess: any) => guess.direct_id));
             return user;
         }catch (error) {
             if (error instanceof errors.QueryResultError) {
@@ -68,12 +74,18 @@ class PostGresUserRepository implements UserRepositoryInterface {
                 let user_guesses = await this.db.any('SELECT direct_id FROM guess WHERE user_id = $1', user.id);
                 let u: User = new User(user.email, user.password, user.pseudo, user.role);
                 u.setId(user.id);
-                u.setSubscribers(user_subscribers);
-                u.setSubscriptions(user_subscriptions);
-                u.setPlaylists(user_playlists);
-                u.setMixers(user_mixers);
-                u.setDirects(user_directs);
-                u.setGuess(user_guesses);
+                let subscribers = await user_subscribers;
+                u.setSubscribers(subscribers.map((subscriber: any) => subscriber.listener_id));
+                let subscriptions = await user_subscriptions;
+                u.setSubscriptions(subscriptions.map((subscription: any) => subscription.creator_id));
+                let playlists = await user_playlists;
+                u.setPlaylists(playlists.map((playlist: any) => playlist.id));
+                let mixers = await user_mixers;
+                u.setMixers(mixers.map((mixer: any) => mixer.music_id));
+                let directs = await user_directs;
+                u.setDirects(directs.map((direct: any) => direct.id));
+                let guesses = await user_guesses;
+                u.setGuess(guesses.map((guess: any) => guess.direct_id));
                 return u;
             });
             return Promise.all(users);
@@ -94,12 +106,18 @@ class PostGresUserRepository implements UserRepositoryInterface {
             let user_guesses = await this.db.any('SELECT direct_id FROM guess WHERE user_id = $1', user_response.id);
             let user: User = new User(user_response.email, user_response.password, user_response.pseudo, user_response.role);
             user.setId(user_response.id);
-            user.setSubscribers(user_subscribers);
-            user.setSubscriptions(user_subscriptions);
-            user.setPlaylists(user_playlists);
-            user.setMixers(user_mixers);
-            user.setDirects(user_directs);
-            user.setGuess(user_guesses);
+            let subscribers = await user_subscribers;
+            user.setSubscribers(subscribers.map((subscriber: any) => subscriber.listener_id));
+            let subscriptions = await user_subscriptions;
+            user.setSubscriptions(subscriptions.map((subscription: any) => subscription.creator_id));
+            let playlists = await user_playlists;
+            user.setPlaylists(playlists.map((playlist: any) => playlist.id));
+            let mixers = await user_mixers;
+            user.setMixers(mixers.map((mixer: any) => mixer.music_id));
+            let directs = await user_directs;
+            user.setDirects(directs.map((direct: any) => direct.id));
+            let guesses = await user_guesses;
+            user.setGuess(guesses.map((guess: any) => guess.direct_id));
             return user;
         }catch (error) {
             if (error instanceof errors.QueryResultError) {
@@ -123,12 +141,18 @@ class PostGresUserRepository implements UserRepositoryInterface {
             let user_guesses = await this.db.any('SELECT direct_id FROM guess WHERE user_id = $1', user_response.id);
             let user: User = new User(user_response.email, user_response.password, user_response.pseudo, user_response.role);
             user.setId(user_response.id);
-            user.setSubscribers(user_subscribers);
-            user.setSubscriptions(user_subscriptions);
-            user.setPlaylists(user_playlists);
-            user.setMixers(user_mixers);
-            user.setDirects(user_directs);
-            user.setGuess(user_guesses);
+            let subscribers = await user_subscribers;
+            user.setSubscribers(subscribers.map((subscriber: any) => subscriber.listener_id));
+            let subscriptions = await user_subscriptions;
+            user.setSubscriptions(subscriptions.map((subscription: any) => subscription.creator_id));
+            let playlists = await user_playlists;
+            user.setPlaylists(playlists.map((playlist: any) => playlist.id));
+            let mixers = await user_mixers;
+            user.setMixers(mixers.map((mixer: any) => mixer.music_id));
+            let directs = await user_directs;
+            user.setDirects(directs.map((direct: any) => direct.id));
+            let guesses = await user_guesses;
+            user.setGuess(guesses.map((guess: any) => guess.direct_id));
             return user;
         }catch (error) {
             if (error instanceof errors.QueryResultError) {
@@ -153,12 +177,18 @@ class PostGresUserRepository implements UserRepositoryInterface {
                 let user_guesses = await this.db.any('SELECT direct_id FROM guess WHERE user_id = $1', user.id);
                 let u: User = new User(user.email, user.password, user.pseudo, user.role);
                 u.setId(user.id);
-                u.setSubscribers(user_subscribers);
-                u.setSubscriptions(user_subscriptions);
-                u.setPlaylists(user_playlists);
-                u.setMixers(user_mixers);
-                u.setDirects(user_directs);
-                u.setGuess(user_guesses);
+                let subscribers = await user_subscribers;
+                u.setSubscribers(subscribers.map((subscriber: any) => subscriber.listener_id));
+                let subscriptions = await user_subscriptions;
+                u.setSubscriptions(subscriptions.map((subscription: any) => subscription.creator_id));
+                let playlists = await user_playlists;
+                u.setPlaylists(playlists.map((playlist: any) => playlist.id));
+                let mixers = await user_mixers;
+                u.setMixers(mixers.map((mixer: any) => mixer.music_id));
+                let directs = await user_directs;
+                u.setDirects(directs.map((direct: any) => direct.id));
+                let guesses = await user_guesses;
+                u.setGuess(guesses.map((guess: any) => guess.direct_id));
                 return u;
             });
             return Promise.all(users);
@@ -177,6 +207,18 @@ class PostGresUserRepository implements UserRepositoryInterface {
                 user.setId(id);
             } else {
                 await this.db.none('UPDATE users SET email = $1, password = $2, pseudo = $3, role = $4 WHERE id = $5', [user.getEmail(), user.getPassword(), user.getPseudo(), user.getRole(), user.getId()]);
+
+                await this.db.none('DELETE FROM subscriber WHERE creator_id = $1', user.getId());
+
+                for (let subscriber of user.getSubscribers()) {
+                    await this.db.none('INSERT INTO subscriber(creator_id, listener_id) VALUES($1, $2)', [user.getId(), subscriber]);
+                }
+
+                await this.db.none('DELETE FROM subscriber WHERE listener_id = $1', user.getId());
+
+                for (let subscription of user.getSubscriptions()) {
+                    await this.db.none('INSERT INTO subscriber(creator_id, listener_id) VALUES($1, $2)', [subscription, user.getId()]);
+                }
             }
             return user.getId() as string;
         } catch (error) {

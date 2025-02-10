@@ -93,8 +93,8 @@ interface PodcastServiceInterface {
     addMusicToMixer(dto: AddMusicToMixerDTO): Promise<DisplayMusicDTO>;
     removeMusicToMixer(dto: RemoveMusicToMixerDTO): Promise<DisplayMusicDTO>;
     searchMusicInfo(dto: SearchMusicDTO): Promise<DisplayMusicDTO[]>;
-    subscribeToBroadcaster(dto: SubscribeToBroacasterDTO): Promise<DisplayPodcastDTO>;
-    unsubscribeToBroadcaster(dto: UnsubscribeToBroacasterDTO): Promise<DisplayPodcastDTO>;
+    subscribeToBroadcaster(dto: SubscribeToBroacasterDTO): Promise<DisplayUserDTO>;
+    unsubscribeToBroadcaster(dto: UnsubscribeToBroacasterDTO): Promise<DisplayUserDTO>;
     upgradeListerToBroadcaster(dto: UpgradeListenerToBroadcasterDTO): Promise<DisplayUserDTO>;
 }
 
