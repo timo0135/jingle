@@ -93,6 +93,40 @@ export async function getPlaylist(req: Request, res: Response) {
     }
 }
 
+export async function getPlaylistByUser(req: Request, res: Response) {
+    try {
+        const playlists = await podcastService.getPlaylistsByUserId(req.params.id);
+        const filteredPlaylists = playlists.map(playlist => {
+            return {
+                id: playlist.get('id'),
+                name: playlist.get('name'),
+                description: playlist.get('description'),
+                user: playlist.get('user'),
+                links: [
+                    {
+                        rel: 'self',
+                        href: '/playlists/' + playlist.get('id')
+                    }
+                ]
+            }
+        });
+        let response = {
+            type: 'resource',
+            locale: 'fr-FR',
+            playlists: filteredPlaylists,
+            links: [
+                {
+                    rel: 'self',
+                    href: '/playlists'
+                }
+            ]
+        }
+        res.status(200).json(response);
+    } catch (error) {
+        handleError(res, error);
+    }
+}
+
 export async function createPlaylist(req: Request, res: Response) {
     try {
         let data = {
@@ -292,6 +326,7 @@ function handleError(res: Response, error: any) {
     } else if (error instanceof PodcastServiceInternalServerErrorException) {
         res.status(500).json({ message: error.message });
     } else {
+        console.log(error);
         res.status(500).json({ message: "An unexpected error occurred" });
     }
 }

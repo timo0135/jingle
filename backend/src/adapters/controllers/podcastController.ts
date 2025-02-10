@@ -91,6 +91,48 @@ export async function getPodcast(req: Request, res: Response) {
     }
 }
 
+export async function getPodcastByCreator(req: Request, res: Response) {
+    try {
+        const podcasts = await podcastService.getPodcastsByUserId(req.params.id);
+        let filteredPodcasts = podcasts.map(podcast => {
+            return {
+                id: podcast.get('id'),
+                name: podcast.get('name'),
+                description: podcast.get('description'),
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/podcasts/${podcast.get('id')}`
+                    },
+                    {
+                        rel: 'delete',
+                        href: `/podcasts/${podcast.get('id')}`
+                    },
+                    {
+                        rel: 'update',
+                        href: `/podcasts/${podcast.get('id')}`
+                    }
+                ]
+            }
+        });
+        let response = {
+            type: 'resource',
+            locale: 'fr-FR',
+            podcasts: filteredPodcasts,
+            links: [
+                {
+                    rel: 'self',
+                    href: `/users/${req.params.id}/podcasts`
+                }
+            ]
+        }
+
+        res.status(200).json(response);
+    } catch (error) {
+        handleError(res, error);
+    }
+}
+
 export async function createPodcast(req: Request, res: Response) {
     try {
         let data = req.body;
@@ -742,6 +784,7 @@ function handleError(res: Response, error: any) {
     } else if (error instanceof PodcastServiceInternalServerErrorException) {
         res.status(500).json({ message: error.message });
     } else {
+        console.log(error);
         res.status(500).json({ message: "An unexpected error occurred" });
     }
 }

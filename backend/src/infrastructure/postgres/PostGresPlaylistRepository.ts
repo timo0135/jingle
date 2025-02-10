@@ -81,11 +81,12 @@ class PostGresPlaylistRepository implements PlaylistRepositoryInterface {
     async getPlaylistsByUserId(userId: string): Promise<Playlist[]> {
         try{
             let playlists_response = await this.db.any('SELECT * FROM playlist WHERE user_id = $1', userId);
-            return playlists_response.map((playlist :any) => {
+            return playlists_response.map(async (playlist: any) => {
                 let playlist_content_response = this.db.any('SELECT podcast_id FROM content WHERE playlist_id = $1', playlist.id);
                 let p = new Playlist(playlist.name, playlist.description, playlist.user_id);
                 p.setId(playlist.id);
-                p.setContent(playlist_content_response.map((content: any) => content.podcast_id));
+                let content = await playlist_content_response;
+                p.setContent(content.map((content: any) => content.podcast_id));
                 return p;
             });
         }catch (error) {

@@ -59,7 +59,7 @@ class PostGresPodcastRepository implements PodcastRepositoryInterface {
         }
     }
 
-    async findAvisById(id: string): Promise<Avis | null> {
+    async findAvisById(id: string): Promise<Avis> {
         try{
             let avis_response = await this.db.one('SELECT * FROM avis WHERE id = $1', id);
             let avis = new Avis(avis_response.title, avis_response.description, avis_response.podcast_id, avis_response.user_id);
@@ -76,7 +76,7 @@ class PostGresPodcastRepository implements PodcastRepositoryInterface {
         }
     }
 
-    async findById(id: string): Promise<Podcast | null> {
+    async findById(id: string): Promise<Podcast> {
         try{
             let podcast_response = await this.db.one('SELECT * FROM podcast WHERE id = $1', id);
             let podcast_content = await this.db.any('SELECT playlist_id FROM content WHERE podcast_id = $1', id);

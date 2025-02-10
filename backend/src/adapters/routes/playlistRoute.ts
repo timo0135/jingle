@@ -12,6 +12,7 @@ router.delete('/playlists/:id', authenticate, PlaylistController.deletePlaylist)
 router.post('/playlists/:id/podcast', authenticate, PlaylistController.addPodcastToPlaylist);
 router.put('/playlists/:id', authenticate, PlaylistController.updatePlaylist);
 router.delete('/playlists/:id/podcast', authenticate, PlaylistController.removePodcastToPlaylist);
+router.get('/users/:id/playlists', PlaylistController.getPlaylistByUser);
 
 
 export default router;

@@ -101,12 +101,11 @@ class PodcastService implements PodcastServiceInterface {
         }
     }
 
-    public getPodcastsByUserId(userId: string): Promise<DisplayPodcastDTO[]> {
+    public async getPodcastsByUserId(userId: string): Promise<DisplayPodcastDTO[]> {
         try {
-            let podcasts = this.instancePodcast.getPodcastsByUserId(userId);
-            return podcasts.then((podcasts) => {
-                return podcasts.map((podcast) => new DisplayPodcastDTO(podcast as Podcast));
-            });
+            let promise_podcasts = await this.instancePodcast.getPodcastsByUserId(userId);
+            let podcasts = await Promise.all(promise_podcasts);
+            return podcasts.map((podcast) => new DisplayPodcastDTO(podcast));
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
                 throw new PodcastServiceInternalServerErrorException(error.message);
@@ -422,7 +421,8 @@ class PodcastService implements PodcastServiceInterface {
 
     public async getPlaylistsByUserId(userId: string): Promise<DisplayPlaylistDTO[]> {
         try{
-            const playlists = await this.instancePlaylist.getPlaylistsByUserId(userId);
+            const promise_playlists = await this.instancePlaylist.getPlaylistsByUserId(userId);
+            const playlists = await Promise.all(promise_playlists);
             return playlists.map((playlist) => new DisplayPlaylistDTO(playlist));
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
