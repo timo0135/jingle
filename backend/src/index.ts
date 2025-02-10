@@ -5,6 +5,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import podcastRoute from "./adapters/routes/podcastRoute";
 import userRoute from "./adapters/routes/userRoute";
 import playlistRoute from "./adapters/routes/playlistRoute";
+import directRoute from "./adapters/routes/directRoute";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -28,6 +29,7 @@ app.get("/", (req, res) => {
 app.use("/", podcastRoute);
 app.use("/", userRoute);
 app.use("/", playlistRoute);
+app.use("/", directRoute);
 
 const wss = new WebSocketServer({ server });
 

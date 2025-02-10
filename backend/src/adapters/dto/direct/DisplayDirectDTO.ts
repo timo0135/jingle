@@ -7,7 +7,7 @@ class DisplayDirectDTO extends DTO{
     protected name: string;
     protected description: string;
     protected image: string;
-    protected host: string;
+    protected hostId: string;
     protected date: Date;
     protected duration: number;
     protected guess: string[] = [];
@@ -18,7 +18,7 @@ class DisplayDirectDTO extends DTO{
         this.name = direct.getName();
         this.description = direct.getDescription();
         this.image = direct.getImage();
-        this.host = direct.getHost();
+        this.hostId = direct.getHost();
         this.date = direct.getDate();
         this.duration = direct.getDuration();
         this.guess = direct.getGuess();

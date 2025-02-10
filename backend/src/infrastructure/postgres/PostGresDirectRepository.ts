@@ -49,11 +49,14 @@ class PostGresDirectRepository implements DirectRepositoryInterface {
     async findAll(): Promise<Direct[]> {
         try {
             let directs_response = await this.db.any('SELECT * FROM direct');
-            return directs_response.map((direct :any) => {
+            return directs_response.map(async (direct: any) => {
                 let direct_guests_response = this.db.any('SELECT user_id FROM guess WHERE direct_id = $1', direct.id);
                 let d = new Direct(direct.name, direct.description, direct.image, direct.host_id, direct.date, direct.duration);
                 d.setId(direct.id);
-                d.setGuess(direct_guests_response);
+                let guests = await direct_guests_response;
+                if (guests.length > 0) {
+                    d.setGuess(direct_guests_response);
+                }
                 return d;
             });
         }catch (error) {

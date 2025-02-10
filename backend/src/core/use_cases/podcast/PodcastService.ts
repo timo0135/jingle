@@ -544,7 +544,8 @@ class PodcastService implements PodcastServiceInterface {
 
     public async getDirects(): Promise<DisplayDirectDTO[]> {
         try{
-            const directs = await this.instanceDirect.findAll();
+            const promise_directs = await this.instanceDirect.findAll();
+            const directs = await Promise.all(promise_directs);
             return directs.map((direct) => new DisplayDirectDTO(direct));
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
@@ -552,6 +553,7 @@ class PodcastService implements PodcastServiceInterface {
             } else if (error instanceof RepositoryNotFoundException) {
                 throw new PodcastServiceNotFoundException(error.message);
             } else {
+                console.log(error);
                 throw new PodcastServiceInternalServerErrorException("An error occurred while fetching directs");
             }
         }
@@ -596,7 +598,7 @@ class PodcastService implements PodcastServiceInterface {
 
     public async createDirect(direct: CreateDirectDTO): Promise<DisplayDirectDTO> {
         try{
-            const d = new Direct(direct.get('name'), direct.get('description'), direct.get('image'), direct.get('host'), direct.get('date'), direct.get('duration'));
+            const d = new Direct(direct.get('name'), direct.get('description'), direct.get('image'), direct.get('hostId'), direct.get('date'), direct.get('duration'));
             const id = await this.instanceDirect.save(d);
             d.setId(id);
             return new DisplayDirectDTO(d);
@@ -632,6 +634,7 @@ class PodcastService implements PodcastServiceInterface {
                 throw new PodcastServiceNotFoundException('Direct not found');
             }
             direct.setName(dto.get("name"));
+            await this.instanceDirect.save(direct);
             return new DisplayDirectDTO(direct);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
@@ -650,7 +653,8 @@ class PodcastService implements PodcastServiceInterface {
             if(direct === null){
                 throw new PodcastServiceNotFoundException('Direct not found');
             }
-            direct.setName(dto.get("description"));
+            direct.setDescription(dto.get("description"));
+            await this.instanceDirect.save(direct);
             return new DisplayDirectDTO(direct);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
@@ -669,7 +673,8 @@ class PodcastService implements PodcastServiceInterface {
             if(direct === null){
                 throw new PodcastServiceNotFoundException('Direct not found');
             }
-            direct.setName(dto.get("image"));
+            direct.setImage(dto.get("image"));
+            await this.instanceDirect.save(direct);
             return new DisplayDirectDTO(direct);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
@@ -688,7 +693,8 @@ class PodcastService implements PodcastServiceInterface {
             if(direct === null){
                 throw new PodcastServiceNotFoundException('Direct not found');
             }
-            direct.setName(dto.get("date"));
+            direct.setDate(dto.get("date"));
+            await this.instanceDirect.save(direct);
             return new DisplayDirectDTO(direct);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
@@ -703,11 +709,13 @@ class PodcastService implements PodcastServiceInterface {
 
     public async updateDurationDirect(dto: ChangeDurationDirectDTO): Promise<DisplayDirectDTO> {
         try{
+            console.log(dto.get('directId'));
             const direct = await this.instanceDirect.find(dto.get('directId'));
             if(direct === null){
                 throw new PodcastServiceNotFoundException('Direct not found');
             }
-            direct.setName(dto.get("duration"));
+            direct.setDuration(dto.get("duration"));
+            await this.instanceDirect.save(direct);
             return new DisplayDirectDTO(direct);
         } catch (error) {
             if (error instanceof RepositoryInternalServerErrorException) {
