@@ -30,7 +30,7 @@ const store = useAuth();
         <!--Si l'utilisateur n'est pas connecté-->
         <div class="basis-1/4 flex gap-3 justify-end" v-if="store.user === null">
           <nuxt-link to="/signin">
-            <p>Se connecter</p>
+            <p class="text-nowrap">Se connecter</p>
           </nuxt-link>
         </div>
 
