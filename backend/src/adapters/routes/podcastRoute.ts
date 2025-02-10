@@ -14,5 +14,7 @@ router.get('/avis/:id', PodcastController.getAvisById);
 router.delete('/avis/:id', PodcastController.deleteAvis);
 router.put('/avis/:id', PodcastController.updateAvis);
 router.put('/users/:id/subscribers', PodcastController.subscribeToBroadcaster);
+router.delete('/users/:id/subscribers', PodcastController.unsubscribeToBroadcaster);
+router.patch('/users/:id/upgrade', PodcastController.upgradeUserToBroadcaster);
 
 export default router;

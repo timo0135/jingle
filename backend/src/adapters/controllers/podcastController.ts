@@ -18,6 +18,8 @@ import CreateAvisDTO from "../dto/podcast/CreateAvisDTO";
 import UpdateTitleAvisDTO from "../dto/podcast/UpdateTitleAvisDTO";
 import UpdateContentAvisDTO from "../dto/podcast/UpdateContentAvisDTO";
 import SubscribeToBroacasterDTO from "../dto/user/SubscribeToBroacasterDTO";
+import UnsubscribeToBroacasterDTO from "../dto/user/UnsubscribeToBroacasterDTO";
+import UpgradeListenerToBroadcasterDTO from "../dto/user/UpgradeListenerToBroadcasterDTO";
 
 
 const podcastService : PodcastServiceInterface = podcastServiceInterface;
@@ -602,6 +604,131 @@ export async function subscribeToBroadcaster(req: Request, res: Response){
             ]
         }
         res.status(200).json(response);
+    }catch (error){
+        handleError(res, error);
+    }
+}
+
+export async function unsubscribeToBroadcaster(req: Request, res: Response){
+    try {
+        if (!validator.isUUID(req.params.id)) {
+            throw new PodcastServiceBadDataException('Invalid broadcaster');
+        }
+        if (!validator.isUUID(req.body.userId)) {
+            throw new PodcastServiceBadDataException('Invalid listener');
+        }
+        let broadcaster = await podcastService.unsubscribeToBroadcaster(new UnsubscribeToBroacasterDTO(req.params.id, req.body.userId));
+
+        let filteredSubscribers = broadcaster.get('subscribers').map((subscriber: string) => {
+            return {
+                id: subscriber,
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/users/${subscriber}`
+                    }
+                ]
+            }
+        });
+
+        let filteredSubscriptions = broadcaster.get('subscriptions').map((subscription: string) => {
+            return {
+                id: subscription,
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/users/${subscription}`
+                    }
+                ]
+            }
+        });
+
+        let filteredPlaylists = broadcaster.get('playlists').map((playlist: string) => {
+            return {
+                id: playlist,
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/playlists/${playlist}`
+                    }
+                ]
+            }
+        });
+
+        let filteredMixers = broadcaster.get('mixers').map((mixer: string) => {
+            return {
+                id: mixer,
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/mixers/${mixer}`
+                    }
+                ]
+            }
+        });
+
+        let filteredDirects = broadcaster.get('directs').map((direct: string) => {
+            return {
+                id: direct,
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/directs/${direct}`
+                    }
+                ]
+            }
+        });
+
+        let filteredInvitations = broadcaster.get('guess').map((invitation: string) => {
+            return {
+                id: invitation,
+                links: [
+                    {
+                        rel: 'self',
+                        href: `/directs/${invitation}`
+                    }
+                ]
+            }
+        });
+
+        let filteredBroadcaster = {
+            id: broadcaster.get('id'),
+            email: broadcaster.get('email'),
+            pseudo: broadcaster.get('pseudo'),
+            subscribers: filteredSubscribers,
+            subscriptions: filteredSubscriptions,
+            playlists: filteredPlaylists,
+            mixers: filteredMixers,
+            directs: filteredDirects,
+            invitations: filteredInvitations
+        }
+
+        let response = {
+            type: 'resource',
+            locale: 'fr-FR',
+            broadcaster: filteredBroadcaster,
+            links: [
+                {
+                    rel: 'self',
+                    href: `/users/${req.params.id}`
+                }
+            ]
+        }
+
+        res.status(200).json(response);
+    }catch (error){
+        handleError(res, error);
+    }
+}
+
+export async function upgradeUserToBroadcaster(req: Request, res: Response){
+    try {
+        if (!validator.isUUID(req.params.id)) {
+            throw new PodcastServiceBadDataException('Invalid user');
+        }
+        await podcastService.upgradeListerToBroadcaster(new UpgradeListenerToBroadcasterDTO(req.params.id));
+
+        res.status(204).send();
     }catch (error){
         handleError(res, error);
     }
