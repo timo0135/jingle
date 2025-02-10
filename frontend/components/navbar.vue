@@ -16,7 +16,7 @@ const store = useAuth();
     </div>
 
     <!--Searchbar and nav icons container-->
-    <div class="basis-1/4 gap-2 flex justify-end items-center">
+    <div class="basis-1/3 gap-8 flex justify-end items-center">
 
       <!--Searchbar-->
       <div class="basis-3/4 border-primary bg-secondary gap-2 border-4 flex h-full px-2 rounded-2xl w-2/3">
@@ -30,7 +30,7 @@ const store = useAuth();
         <!--Si l'utilisateur n'est pas connecté-->
         <div class="basis-1/4 flex gap-3 justify-end" v-if="store.user === null">
           <nuxt-link to="/signin">
-            <p class="text-nowrap">Se connecter</p>
+            <p class="font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition">Se connecter</p>
           </nuxt-link>
         </div>
 
