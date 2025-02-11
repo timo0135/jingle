@@ -4,9 +4,9 @@
 
 <template>
   <div>
-    <footer class="absolute bottom-0 w-[95%] border-t-4 border-primary font-inter flex left-[2.5%] justify-between py-3 text-primary"> <!--left : w/2-->
-      <a class="font-bold" href="">Liens utiles du projet</a>
-      <a href="">Vadim / Benjamin / Timothée / Maxime</a>
+    <footer class="w-[95%] border-t-4 border-primary font-inter flex m-auto my-4 justify-between py-3 text-primary"> <!--left : w/2-->
+      <nuxt-link to="/about" class="text-underline font-bold">À propos</nuxt-link>
+      <a href="">Jingle&#169; 2025</a>
     </footer>
   </div>
 </template>
