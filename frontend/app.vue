@@ -1,7 +1,10 @@
+<script setup>
+
+</script>
+
 <template>
-  <div>
-    <NuxtPage/>
-    <NuxtLoadingIndicator/>
+  <div id="app">
+    <nuxt-page/>
   </div>
 </template>
 
@@ -15,4 +18,5 @@
 html{
   background-color: var(--secondary-color);
 }
+
 </style>
