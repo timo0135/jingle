@@ -790,6 +790,7 @@ class PodcastService implements PodcastServiceInterface {
             } else if (error instanceof RepositoryNotFoundException) {
                 throw new PodcastServiceNotFoundException(error.message);
             } else {
+                console.log(error);
                 throw new PodcastServiceInternalServerErrorException("An error occurred while fetching musics");
             }
         }

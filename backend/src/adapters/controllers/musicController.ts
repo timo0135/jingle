@@ -52,15 +52,161 @@ export async function createMusic(req: Request, res: Response) {
         }
 
         const music = await podcastService.createMusic(new CreateMusicDTO(data.name, data.file, data.userId));
+        const filteredUsers = music.get('users').map((user: string) => {
+            return {
+                id: user,
+                link : {
+                    rel: 'self',
+                    href: `/users/${user}`
+                }
+            }
+        });
 
         const filteredMusic = {
             id: music.get('id'),
             name: music.get('name'),
             file: music.get('file'),
-            users: music.get('users')
+            users: filteredUsers
         }
 
-        res.status(201).json(filteredMusic);
+        const response = {
+            type: 'resource',
+            locale: 'fr-FR',
+            music: filteredMusic,
+            links : [
+                {
+                    rel: 'self',
+                    href: `/musics/${music.get('id')}`
+                },
+                {
+                    rel: 'update',
+                    href: `/musics/${music.get('id')}`
+                },
+                {
+                    rel: 'delete',
+                    href: `/musics/${music.get('id')}`
+                }
+            ]
+        }
+
+        res.status(201).json(response);
+
+    } catch (error) {
+        handleError(res, error);
+    }
+}
+
+export async function getMusic(req: Request, res: Response) {
+    try {
+        const music = await podcastService.getMusicById(req.params.id);
+        const filteredUsers = music.get('users').map((user: string) => {
+            return {
+                id: user,
+                link : {
+                    rel: 'self',
+                    href: `/users/${user}`
+                }
+            }
+        });
+
+        const filteredMusic = {
+            id: music.get('id'),
+            name: music.get('name'),
+            file: music.get('file'),
+            users: filteredUsers
+        }
+
+        const response = {
+            type: 'resource',
+            locale: 'fr-FR',
+            music: filteredMusic,
+            links : [
+                {
+                    rel: 'self',
+                    href: `/musics/${music.get('id')}`
+                },
+                {
+                    rel: 'update',
+                    href: `/musics/${music.get('id')}`
+                },
+                {
+                    rel: 'delete',
+                    href: `/musics/${music.get('id')}`
+                }
+            ]
+        }
+
+        res.status(200).json(response);
+
+    } catch (error) {
+        handleError(res, error);
+    }
+}
+
+export async function getMusics(req: Request, res: Response) {
+    try {
+        const musics = await podcastService.getMusics();
+        const filteredMusics = musics.map((music: any) => {
+            const filteredUsers = music.get('users').map((user: string) => {
+                return {
+                    id: user,
+                    link : {
+                        rel: 'self',
+                        href: `/users/${user}`
+                    }
+                }
+            });
+
+            return {
+                id: music.get('id'),
+                name: music.get('name'),
+                file: music.get('file'),
+                users: filteredUsers
+            }
+        });
+
+        const response = {
+            type: 'resource',
+            locale: 'fr-FR',
+            musics: filteredMusics
+        }
+
+        res.status(200).json(response);
+
+    } catch (error) {
+        handleError(res, error);
+    }
+}
+
+export async function getMusicsByUserId(req: Request, res: Response) {
+    try {
+        const musics = await podcastService.getMusicsByUserId(req.params.userId);
+        const filteredMusics = musics.map((music: any) => {
+            const filteredUsers = music.get('users').map((user: string) => {
+                return {
+                    id: user,
+                    link : {
+                        rel: 'self',
+                        href: `/users/${user}`
+                    }
+                }
+            });
+
+            return {
+                id: music.get('id'),
+                name: music.get('name'),
+                file: music.get('file'),
+                users: filteredUsers
+            }
+        });
+
+        const response = {
+            type: 'resource',
+            locale: 'fr-FR',
+            musics: filteredMusics
+        }
+
+        res.status(200).json(response);
 
     } catch (error) {
         handleError(res, error);

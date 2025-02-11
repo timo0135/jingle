@@ -36,6 +36,7 @@ class PostGresMusicRepository implements MusicRepositoryInterface {
                 m.setId(music.id);
                 let mixers: string[] = await mixers_reponse
                 m.setUser(mixers.map((mixer: any) => mixer.user_id));
+                return m;
             });
         }catch (error){
             console.error('Error getting musics:', error);
@@ -70,10 +71,10 @@ class PostGresMusicRepository implements MusicRepositoryInterface {
             FROM music m
             JOIN mixer mx ON m.id = mx.music_id
             WHERE mx.user_id = $1
-        `, userId);
+        `, [userId]);
 
             return musics_reponse.map(async (music: any) => {
-                let mixers_reponse = await this.db.any('SELECT user_id FROM mixer WHERE music_id = $1', music.id);
+                let mixers_reponse = await this.db.any('SELECT user_id FROM mixer WHERE music_id = $1', [music.id]);
                 let m: Music = new Music(music.name, music.file);
                 m.setId(music.id);
                 let mixers: string[] = mixers_reponse.map((mixer: any) => mixer.user_id);
