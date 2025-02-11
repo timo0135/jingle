@@ -6,6 +6,8 @@ import podcastRoute from "./adapters/routes/podcastRoute";
 import userRoute from "./adapters/routes/userRoute";
 import playlistRoute from "./adapters/routes/playlistRoute";
 import directRoute from "./adapters/routes/directRoute";
+import musicRoute from "./adapters/routes/musicRoute";
+import multer from "multer";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -15,6 +17,10 @@ const options = {
 };
 app.use(cors(options));
 app.use(express.json());
+const upload2 = multer({ dest: "uploads/" }); // Définir où stocker le fichier
+app.use(upload2.single("file")); // 'file' doit correspondre au nom du champ dans Postman
+
+
 
 const server = app.listen(PORT, () => {
     console.log("Server running at PORT: ", PORT);
@@ -30,6 +36,7 @@ app.use("/", podcastRoute);
 app.use("/", userRoute);
 app.use("/", playlistRoute);
 app.use("/", directRoute);
+app.use("/", musicRoute);
 
 const wss = new WebSocketServer({ server });
 

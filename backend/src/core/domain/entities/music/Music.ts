@@ -4,13 +4,12 @@ import User from "../user/User";
 class Music extends Entity{
     protected name: string;
     protected file: string;
-    protected userId: string;
+    protected users: string[] = [];
 
-    constructor(name: string, file: string, userId: string) {
+    constructor(name: string, file: string) {
         super();
         this.name = name;
         this.file = file;
-        this.userId = userId;
     }
 
     public getName(): string {
@@ -29,12 +28,20 @@ class Music extends Entity{
         this.file = file;
     }
 
-    public getUserID(): string {
-        return this.userId;
+    public getUsers(): string[] {
+        return this.users;
     }
 
-    public setUserID(userId: string): void {
-        this.userId = userId
+    public setUser(userId: string[]): void {
+        this.users = userId
+    }
+
+    public addUser(userId: string): void {
+        this.users.push(userId);
+    }
+
+    public removeUser(userId: string): void {
+        this.users = this.users.filter((user) => user !== userId);
     }
 }
 

@@ -13,14 +13,11 @@ async function createDatabaseAndTables() {
             pseudo VARCHAR(255) UNIQUE NOT NULL,
             role INT NOT NULL
         )`,
-        // `CREATE TABLE IF NOT EXISTS "Music" (
-        //     id UUID PRIMARY KEY,
-        //     title VARCHAR(255) NOT NULL,
-        //     artist VARCHAR(255) NOT NULL,
-        //     album VARCHAR(255),
-        //     genre VARCHAR(50),
-        //     release_date DATE
-        // )`,
+        `CREATE TABLE IF NOT EXISTS "music" (
+            id UUID PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            file VARCHAR(255) NOT NULL
+        )`,
         `CREATE TABLE IF NOT EXISTS "direct" (
             id UUID PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
@@ -46,7 +43,8 @@ async function createDatabaseAndTables() {
             name VARCHAR(255) NOT NULL,
             description TEXT NOT NULL,
             host_id UUID NOT NULL,
-            image VARCHAR(255)
+            image VARCHAR(255),
+            file VARCHAR(255) NOT NULL
         )`,
         `CREATE TABLE IF NOT EXISTS "avis" (
             id UUID PRIMARY KEY,

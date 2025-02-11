@@ -6,14 +6,14 @@ class DisplayMusicDTO extends DTO{
     protected id: string | null;
     protected name: string;
     protected file: string;
-    protected userId: string
+    protected users: string[]
 
     constructor(music: Music) {
         super();
         this.id = music.getId();
         this.name = music.getName();
         this.file = music.getFile();
-        this.userId = music.getUserID();
+        this.users = music.getUsers();
     }
 }
 

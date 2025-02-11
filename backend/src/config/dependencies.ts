@@ -12,6 +12,8 @@ import {db_jingle} from "../infrastructure/postgres/PostGresClient";
 import PostGresPodcastRepository from "../infrastructure/postgres/PostGresPodcastRepository";
 import PostGresPlaylistRepository from "../infrastructure/postgres/PostGresPlaylistRepository";
 import PostGresDirectRepository from "../infrastructure/postgres/PostGresDirectRepository";
+import FileServiceHTTP from "../infrastructure/http/FileServiceHTTP";
+import PostGresMusicRepository from "../infrastructure/postgres/PostGresMusicRepository";
 
 // ! Only instance of mongoClient
 export const mongoClient = getMongoClient();
@@ -19,8 +21,10 @@ export const podcastRepositoryInterface = new PostGresPodcastRepository(db_jingl
 export const userRepositoryInterface = new PostGresUserRepository(db_jingle);
 export const playlistRepositoryInterface = new PostGresPlaylistRepository(db_jingle);
 export const directRepositoryInterface = new PostGresDirectRepository(db_jingle);
+export const musicRepositoryInterface = new PostGresMusicRepository(db_jingle);
 export const jwtManager = new JWTManager();
 
-export const podcastServiceInterface = new PodcastService(podcastRepositoryInterface, playlistRepositoryInterface, directRepositoryInterface, userRepositoryInterface);
+export const podcastServiceInterface = new PodcastService(podcastRepositoryInterface, playlistRepositoryInterface, directRepositoryInterface, userRepositoryInterface, musicRepositoryInterface);
 export const authentificationServiceInterface = new AuthentificationService(userRepositoryInterface);
 export const authentificationProvider = new JWTAuthProvider(jwtManager, authentificationServiceInterface);
+export const fileServiceInterface = new FileServiceHTTP();

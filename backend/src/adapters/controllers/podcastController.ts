@@ -1,6 +1,6 @@
 import PodcastServiceInterface from "../../core/use_cases/podcast/PodcastServiceInterface";
 import { Request, Response } from "express";
-import { podcastServiceInterface } from "../../config/dependencies";
+import {fileServiceInterface, podcastServiceInterface} from "../../config/dependencies";
 import PodcastServiceNotFoundException from "../../core/use_cases/podcast/PodcastServiceNotFoundException";
 import PodcastServiceInternalServerErrorException
     from "../../core/use_cases/podcast/PodcastServiceInternalServerErrorException";
@@ -20,9 +20,14 @@ import UpdateContentAvisDTO from "../dto/podcast/UpdateContentAvisDTO";
 import SubscribeToBroacasterDTO from "../dto/user/SubscribeToBroacasterDTO";
 import UnsubscribeToBroacasterDTO from "../dto/user/UnsubscribeToBroacasterDTO";
 import UpgradeListenerToBroadcasterDTO from "../dto/user/UpgradeListenerToBroadcasterDTO";
+import * as fs from 'fs';
+import axios from 'axios';
+import FormData from 'form-data';
+import FileServiceInterface from "../../core/use_cases/file/FileServiceInterface";
 
 
 const podcastService : PodcastServiceInterface = podcastServiceInterface;
+const fileService : FileServiceInterface = fileServiceInterface;
 
 export async function getPodcasts(req: Request, res: Response) {
     try {
@@ -136,6 +141,21 @@ export async function getPodcastByCreator(req: Request, res: Response) {
 export async function createPodcast(req: Request, res: Response) {
     try {
         let data = req.body;
+        let fileURI: string | null = null;
+        fileURI = await fileService.uploadFile(req);
+        if(fileURI == null || fileURI == ""){
+            throw new PodcastServiceBadDataException('Error uploading file');
+        }
+
+        data = {
+            date: req.body.date,
+            name: req.body.name,
+            description: req.body.description,
+            creatorId: req.body.creatorId,
+            image: req.body.image,
+            fileId: fileURI
+        }
+
         const formattedDate = moment(data.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
         try{
             const contactInput = plainToInstance(CreatePodcastDTO, data);
@@ -163,8 +183,12 @@ export async function createPodcast(req: Request, res: Response) {
                 throw new PodcastServiceBadDataException(errors.message);
             }
         }
+
+
+
+
         const dateObject = moment(formattedDate, 'YYYY-MM-DD').toDate();
-        const dto = new CreatePodcastDTO(dateObject, data.name, data.description, data.creatorId, data.image);
+        const dto = new CreatePodcastDTO(dateObject, data.name, data.description, data.creatorId, data.image, fileURI as string);
         const podcast = await podcastService.createPodcast(dto);
         const filteredPodcast = {
             id: podcast.get('id'),
@@ -172,6 +196,7 @@ export async function createPodcast(req: Request, res: Response) {
             description: podcast.get('description'),
             date: podcast.get('date'),
             image: podcast.get('image'),
+            fileId: fileURI,
             creator: {
                 id: podcast.get('creator'),
                 links: [

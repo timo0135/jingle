@@ -7,7 +7,7 @@ const router = Router();
 router.get('/podcasts', PodcastController.getPodcasts);
 router.get('/podcasts/:id', PodcastController.getPodcast);
 router.get('/users/:id/podcasts', PodcastController.getPodcastByCreator);
-router.post('/podcasts', authenticate, PodcastController.createPodcast);
+router.post('/podcasts', PodcastController.createPodcast);
 router.put('/podcasts/:id', authenticate, PodcastController.updatePodcast);
 router.delete('/podcasts/:id', authenticate, PodcastController.deletePodcast);
 router.post('/podcasts/:id/avis', authenticate, PodcastController.createAvis);
