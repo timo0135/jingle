@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  ssr: false,
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
@@ -17,6 +18,7 @@ export default defineNuxtConfig({
         usePolling: true,
       },
       hmr: {
+        protocol: "ws",
         host: "0.0.0.0",
         port: 24678,
       },
