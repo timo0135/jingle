@@ -54,6 +54,8 @@ import Direct from "../../domain/entities/direct/Direct";
 import UserRepositoryInterface from "../../repositoryInterface/UserRepositoryInterface";
 import PodcastServiceBadDataException from "./PodcastServiceBadDataException";
 import * as constants from "../../../config/constantes";
+import MusicRepositoryInterface from "../../repositoryInterface/MusicRepositoryInterface";
+import Music from "../../domain/entities/music/Music";
 
 class PodcastService implements PodcastServiceInterface {
 
@@ -61,12 +63,14 @@ class PodcastService implements PodcastServiceInterface {
     private instancePlaylist: PlaylistRepositoryInterface;
     private instanceDirect: DirectRepositoryInterface;
     private instanceUser: UserRepositoryInterface;
+    private instanceMusic: MusicRepositoryInterface;
 
-    constructor(instancePodcast: PodcastRepositoryInterface, instancePlaylist: PlaylistRepositoryInterface, instanceDirect: DirectRepositoryInterface, instanceUser: UserRepositoryInterface) {
+    constructor(instancePodcast: PodcastRepositoryInterface, instancePlaylist: PlaylistRepositoryInterface, instanceDirect: DirectRepositoryInterface, instanceUser: UserRepositoryInterface, instanceMusic: MusicRepositoryInterface) {
         this.instancePodcast = instancePodcast;
         this.instancePlaylist = instancePlaylist;
         this.instanceDirect = instanceDirect;
         this.instanceUser = instanceUser;
+        this.instanceMusic = instanceMusic;
     }
 
     public async getPodcastById(id: string): Promise<DisplayDetailsPodcastDTO> {
@@ -120,7 +124,7 @@ class PodcastService implements PodcastServiceInterface {
 
     public async createPodcast(podcast: CreatePodcastDTO): Promise<DisplayDetailsPodcastDTO> {
         try {
-            let p = new Podcast(podcast.get('date'), podcast.get('name'), podcast.get('description'), podcast.get('creatorId'), podcast.get('image'));
+            let p = new Podcast(podcast.get('date'), podcast.get('name'), podcast.get('description'), podcast.get('creatorId'), podcast.get('image'), podcast.get('fileId'));
             const id = await this.instancePodcast.save(p);
             p.setId(id);
             return new DisplayDetailsPodcastDTO(p);
@@ -775,40 +779,142 @@ class PodcastService implements PodcastServiceInterface {
         }
     }
 
-    public getMusics(): Promise<DisplayMusicDTO[]> {
-        throw new Error('Method not implemented.');
+    public async getMusics(): Promise<DisplayMusicDTO[]> {
+        try{
+            let promise_music = await this.instanceMusic.findAll();
+            let musics = await Promise.all(promise_music);
+            return musics.map((music) => new DisplayMusicDTO(music));
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                console.log(error);
+                throw new PodcastServiceInternalServerErrorException("An error occurred while fetching musics");
+            }
+        }
     }
 
-    public getMusicById(id: string): Promise<DisplayMusicDTO> {
-        throw new Error('Method not implemented.');
+    public async getMusicById(id: string): Promise<DisplayMusicDTO> {
+        try{
+            let music = await this.instanceMusic.findById(id);
+            return new DisplayMusicDTO(music);
+        }catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while getting music");
+            }
+        }
     }
 
-    public getMusicsByUserId(userId: string): Promise<DisplayMusicDTO[]> {
-        throw new Error('Method not implemented.');
+    public async getMusicsByUserId(userId: string): Promise<DisplayMusicDTO[]> {
+        try{
+            let promise_music = await this.instanceMusic.getMusicsByUserId(userId);
+            let musics = await Promise.all(promise_music);
+            return musics.map((music) => new DisplayMusicDTO(music));
+        }catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                console.log(error);
+                throw new PodcastServiceInternalServerErrorException("An error occurred while fetching musics");
+            }
+        }
     }
 
-    public createMusic(music: CreateMusicDTO): Promise<DisplayMusicDTO> {
-        throw new Error('Method not implemented.');
+    public async createMusic(music: CreateMusicDTO): Promise<DisplayMusicDTO> {
+        try{
+            let m = new Music(music.get('name'), music.get('file'));
+            m.addUser(music.get('userId'));
+            let id = await this.instanceMusic.save(m);
+            m.setId(id);
+            return new DisplayMusicDTO(m);
+        }catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof PodcastServiceBadDataException) {
+                throw new PodcastServiceBadDataException(error.message);
+            } else {
+                console.log(error);
+                throw new PodcastServiceInternalServerErrorException("An error occurred while creating music");
+            }
+        }
     }
 
-    public deleteMusic(id: string): Promise<void> {
-        throw new Error('Method not implemented.');
+    public async deleteMusic(id: string): Promise<void> {
+        try{
+            await this.instanceMusic.delete(id);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof PodcastServiceBadDataException) {
+                throw new PodcastServiceBadDataException(error.message);
+            } else {
+                console.log(error);
+                throw new PodcastServiceInternalServerErrorException("An error occurred while creating music");
+            }
+        }
     }
 
-    public updateNameMusic(dto: ChangeNameMusicDTO): Promise<DisplayMusicDTO> {
-        throw new Error('Method not implemented.');
+    public async updateNameMusic(dto: ChangeNameMusicDTO): Promise<DisplayMusicDTO> {
+        try{
+            let music = await this.instanceMusic.findById(dto.get('musicId'));
+            music.setName(dto.get('name'));
+            await this.instanceMusic.save(music);
+            return new DisplayMusicDTO(music);
+        }catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof PodcastServiceBadDataException) {
+                throw new PodcastServiceBadDataException(error.message);
+            } else {
+                console.log(error);
+                throw new PodcastServiceInternalServerErrorException("An error occurred while creating music");
+            }
+        }
     }
 
-    public updateFileMusic(dto: ChangeFileMusicDTO): Promise<DisplayMusicDTO> {
-        throw new Error('Method not implemented.');
+    public async addMusicToMixer(dto: AddMusicToMixerDTO): Promise<DisplayMusicDTO> {
+        try{
+            let music = await this.instanceMusic.findById(dto.get('musicId'));
+            music.addUser(dto.get('userId'));
+            await this.instanceMusic.save(music);
+            return new DisplayMusicDTO(music);
+        }catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof PodcastServiceBadDataException) {
+                throw new PodcastServiceBadDataException(error.message);
+            } else {
+                console.log(error);
+                throw new PodcastServiceInternalServerErrorException("An error occurred while creating music");
+            }
+        }
     }
 
-    public addMusicToMixer(dto: AddMusicToMixerDTO): Promise<DisplayMusicDTO> {
-        throw new Error('Method not implemented.');
-    }
+    public async removeMusicToMixer(dto: RemoveMusicToMixerDTO): Promise<DisplayMusicDTO> {
+        try{
+            let music = await this.instanceMusic.findById(dto.get('musicId'));
+            music.removeUser(dto.get('userId'));
+            await this.instanceMusic.save(music);
+            return new DisplayMusicDTO(music);
 
-    public removeMusicToMixer(dto: RemoveMusicToMixerDTO): Promise<DisplayMusicDTO> {
-        throw new Error('Method not implemented.');
+        }catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof PodcastServiceBadDataException) {
+                throw new PodcastServiceBadDataException(error.message);
+            } else {
+                console.log(error);
+                throw new PodcastServiceInternalServerErrorException("An error occurred while creating music");
+            }
+        }
     }
 
     public searchMusicInfo(dto: SearchMusicDTO): Promise<DisplayMusicDTO[]> {

@@ -29,8 +29,8 @@ const store = useAuth();
 
         <!--Si l'utilisateur n'est pas connecté-->
         <div class="basis-1/4 flex gap-3 justify-end" v-if="store.user === null">
-          <nuxt-link to="/signin">
-            <p class="text-nowrap">Se connecter</p>
+          <nuxt-link class="font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition" to="/signin">
+            <p>Se connecter</p>
           </nuxt-link>
         </div>
 

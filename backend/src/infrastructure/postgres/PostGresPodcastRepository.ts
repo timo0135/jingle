@@ -47,7 +47,7 @@ class PostGresPodcastRepository implements PodcastRepositoryInterface {
             return podcasts_response.map(async (podcast: any) => {
                 let podcast_content = await this.db.any('SELECT playlist_id FROM content WHERE podcast_id = $1', podcast.id);
                 let podcast_avis = await this.db.any('SELECT id FROM avis WHERE podcast_id = $1', podcast.id);
-                let p = new Podcast(podcast.date, podcast.name, podcast.description, podcast.host_id, podcast.image);
+                let p = new Podcast(podcast.date, podcast.name, podcast.description, podcast.host_id, podcast.image, podcast.file);
                 p.setId(podcast.id);
                 p.setContent(podcast_content);
                 p.setAvis(podcast_avis);
@@ -81,7 +81,7 @@ class PostGresPodcastRepository implements PodcastRepositoryInterface {
             let podcast_response = await this.db.one('SELECT * FROM podcast WHERE id = $1', id);
             let podcast_content = await this.db.any('SELECT playlist_id FROM content WHERE podcast_id = $1', id);
             let podcast_avis = await this.db.any('SELECT id FROM avis WHERE podcast_id = $1', id);
-            let p = new Podcast(podcast_response.date, podcast_response.name, podcast_response.description, podcast_response.host_id, podcast_response.image);
+            let p = new Podcast(podcast_response.date, podcast_response.name, podcast_response.description, podcast_response.host_id, podcast_response.image, podcast_response.file);
             p.setId(podcast_response.id);
             p.setContent(podcast_content);
             p.setAvis(podcast_avis);
@@ -131,7 +131,7 @@ class PostGresPodcastRepository implements PodcastRepositoryInterface {
             return podcasts_response.map(async (podcast: any) => {
                 let podcast_content = await this.db.any('SELECT playlist_id FROM content WHERE podcast_id = $1', podcast.id);
                 let podcast_avis = await this.db.any('SELECT id FROM avis WHERE podcast_id = $1', podcast.id);
-                let p = new Podcast(podcast.date, podcast.name, podcast.description, podcast.host_id, podcast.image);
+                let p = new Podcast(podcast.date, podcast.name, podcast.description, podcast.host_id, podcast.image, podcast.file);
                 p.setId(podcast.id);
                 p.setContent(podcast_content);
                 p.setAvis(podcast_avis);
@@ -147,10 +147,10 @@ class PostGresPodcastRepository implements PodcastRepositoryInterface {
         try{
             if (podcast.getId() === null) {
                 let id = uuidv4();
-                this.db.none('INSERT INTO podcast(id, date, name, description, host_id, image) VALUES($1, $2, $3, $4, $5, $6)', [id, podcast.getDate(), podcast.getName(), podcast.getDescription(), podcast.getCreator(), podcast.getImage()]);
+                this.db.none('INSERT INTO podcast(id, date, name, description, host_id, image, file) VALUES($1, $2, $3, $4, $5, $6, $7)', [id, podcast.getDate(), podcast.getName(), podcast.getDescription(), podcast.getCreator(), podcast.getImage(), podcast.getFile()]);
                 podcast.setId(id);
             }else{
-                this.db.none('UPDATE podcast SET date = $1, name = $2, description = $3, host_id = $4, image = $5 WHERE id = $6', [podcast.getDate(), podcast.getName(), podcast.getDescription(), podcast.getCreator(), podcast.getImage(), podcast.getId()]);
+                this.db.none('UPDATE podcast SET date = $1, name = $2, description = $3, host_id = $4, image = $5, file = $6 WHERE id = $7', [podcast.getDate(), podcast.getName(), podcast.getDescription(), podcast.getCreator(), podcast.getImage(), podcast.getFile(), podcast.getId()]);
             }
             return podcast.getId() as string;
         }catch (error) {

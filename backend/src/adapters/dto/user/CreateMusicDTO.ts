@@ -9,10 +9,14 @@ class CreateMusicDTO extends DTO{
     @IsNotEmpty()
     protected file: string;
 
-    constructor(name: string, file: string) {
+    @IsNotEmpty()
+    protected userId: string;
+
+    constructor(name: string, file: string, userId: string) {
         super();
         this.name = name;
         this.file = file;
+        this.userId = userId;
     }
 }
 

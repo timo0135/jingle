@@ -9,16 +9,26 @@ class Podcast extends Entity{
     protected description: string;
     protected creator: string;
     protected image: string;
+    protected file: string;
     protected content: string[] = [];
     protected avis: string[] = [];
 
-    constructor(date: Date, name: string, description: string, creator: string, image: string) {
+    constructor(date: Date, name: string, description: string, creator: string, image: string, file: string) {
         super();
         this.date = date;
         this.name = name;
         this.description = description;
         this.creator = creator;
         this.image = image;
+        this.file = file;
+    }
+
+    public getFile(): string {
+        return this.file;
+    }
+
+    public setFile(file: string): void {
+        this.file = file;
     }
 
     public getDate(): Date {

@@ -89,7 +89,6 @@ interface PodcastServiceInterface {
     createMusic(music: CreateMusicDTO): Promise<DisplayMusicDTO>;
     deleteMusic(id: string): Promise<void>;
     updateNameMusic(dto: ChangeNameMusicDTO): Promise<DisplayMusicDTO>;
-    updateFileMusic(dto: ChangeFileMusicDTO): Promise<DisplayMusicDTO>;
     addMusicToMixer(dto: AddMusicToMixerDTO): Promise<DisplayMusicDTO>;
     removeMusicToMixer(dto: RemoveMusicToMixerDTO): Promise<DisplayMusicDTO>;
     searchMusicInfo(dto: SearchMusicDTO): Promise<DisplayMusicDTO[]>;

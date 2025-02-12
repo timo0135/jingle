@@ -18,13 +18,16 @@ class CreatePodcastDTO extends DTO{
     @IsNotEmpty()
     protected image: string;
 
-    constructor(date: Date, name: string, description: string, creatorId: string, image: string) {
+    protected fileId: string;
+
+    constructor(date: Date, name: string, description: string, creatorId: string, image: string, file: string) {
         super();
         this.date = date;
         this.name = name;
         this.description = description;
         this.creatorId = creatorId;
         this.image = image;
+        this.fileId = file
     }
 }
 
