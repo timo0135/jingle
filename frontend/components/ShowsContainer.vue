@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div class="font-bold font-inter m-auto text-primary w-[110vw]" id="shows_container">
+  <div class="font-bold font-inter mx-8 my-8 text-primary w-[110vw]" id="shows_container">
     <h2 class="my-4 text-3xl underline">Podcasts au top :</h2>
     <div class="flex gap-4">
       <ShowCard title="Manu dans le 54" time_slot="20h-21h30" description="Manu et son équipe animent une emission nocturne à l’heure où batman oeuvre et à laquelle les gens normaux dorment, ils vont retourné la nuit."/>
