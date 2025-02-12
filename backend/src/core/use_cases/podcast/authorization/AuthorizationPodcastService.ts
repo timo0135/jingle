@@ -4,6 +4,7 @@ import PlaylistRepositoryInterface from "../../../repositoryInterface/PlaylistRe
 import DirectRepositoryInterface from "../../../repositoryInterface/DirectRepositoryInterface";
 import UserRepositoryInterface from "../../../repositoryInterface/UserRepositoryInterface";
 import * as constants from "../../../../config/constantes";
+import MusicRepositoryInterface from "../../../repositoryInterface/MusicRepositoryInterface";
 
 class AuthorizationPodcastService implements AuthorizationPodcastServiceInterface {
 
@@ -11,12 +12,14 @@ class AuthorizationPodcastService implements AuthorizationPodcastServiceInterfac
     private instancePlaylist: PlaylistRepositoryInterface;
     private instanceDirect: DirectRepositoryInterface;
     private instanceUser: UserRepositoryInterface;
+    private instanceMusic: MusicRepositoryInterface;
 
-    constructor(instancePodcast: PodcastRepositoryInterface, instancePlaylist: PlaylistRepositoryInterface, instanceDirect: DirectRepositoryInterface, instanceUser: UserRepositoryInterface) {
+    constructor(instancePodcast: PodcastRepositoryInterface, instancePlaylist: PlaylistRepositoryInterface, instanceDirect: DirectRepositoryInterface, instanceUser: UserRepositoryInterface, instanceMusic: MusicRepositoryInterface) {
         this.instancePodcast = instancePodcast;
         this.instancePlaylist = instancePlaylist;
         this.instanceDirect = instanceDirect;
         this.instanceUser = instanceUser;
+        this.instanceMusic = instanceMusic;
     }
 
     async isGranted(userId: string, operation: number, resourceId: string): Promise<boolean> {
@@ -33,6 +36,9 @@ class AuthorizationPodcastService implements AuthorizationPodcastServiceInterfac
             case constants.IS_MY_AVIS:
                 let avis = await this.instancePodcast.findAvisById(resourceId);
                 return avis.getUserId() === userId;
+            case constants.IS_MY_MUSIC:
+                let music =  await this.instanceMusic.getMusicsByUserId(userId);
+                return music.some(m => m.getId() === resourceId);
             default:
                 return false;
         }

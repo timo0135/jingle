@@ -1,4 +1,4 @@
-import {authentificationProvider} from "../../config/dependencies";
+import {authentificationProvider, authentificationServiceInterface} from "../../config/dependencies";
 import { Request, Response } from "express";
 import {plainToInstance} from "class-transformer";
 import CreatePodcastDTO from "../dto/podcast/CreatePodcastDTO";
@@ -13,9 +13,16 @@ import AuthentificationServiceInternalServerErrorException
     from "../../core/use_cases/authentification/AuthentificationServiceInternalServerErrorException";
 import CreateUserListenerDTO from "../dto/user/CreateUserListenerDTO";
 import SignInDTO from "../dto/user/SignInDTO";
+import PodcastServiceNotFoundException from "../../core/use_cases/podcast/PodcastServiceNotFoundException";
+import PodcastServiceBadDataException from "../../core/use_cases/podcast/PodcastServiceBadDataException";
+import PodcastServiceInternalServerErrorException
+    from "../../core/use_cases/podcast/PodcastServiceInternalServerErrorException";
+import AuthentificationServiceInterface from "../../core/use_cases/authentification/AuthentificationServiceInterface";
+import DisplayUserDTO from "../dto/user/DisplayUserDTO";
 
 
 const instance : AuthProviderInterface = authentificationProvider;
+const serviceAuth : AuthentificationServiceInterface = authentificationServiceInterface;
 
 export async function signin(req: Request, res: Response) {
     const token = req.get('Authorization') as string;
@@ -184,5 +191,126 @@ export async function refresh(req: Request, res: Response) {
         } else {
             res.status(500).send({ message: "An unexpected error occurred" });
         }
+    }
+}
+
+export async function getUser(req: Request, res: Response) {
+    try{
+        const user: DisplayUserDTO = await serviceAuth.getUser(req.params.id);
+    //     protected id: string | null;
+        //     protected email: string;
+        //     protected password: string;
+        //     protected pseudo: string;
+        //     protected role: number;
+        //     protected subscribers: string[] = [];
+        //     protected subscriptions: string[] = [];
+        //     protected playlists: string[] = [];
+        //     protected mixers: string[] = [];
+        //     protected directs: string[] = [];
+        //     protected guess: string[] = [];
+
+        let filteredSubscribers = user.get('subscribers').map((subscriber : string) => {
+            return {
+                id: subscriber,
+                link:{
+                    rel: 'self',
+                    href: `/users/${subscriber}`
+                }
+            }
+        });
+
+        let filteredSubscriptions = user.get('subscriptions').map((subscription : string) => {
+            return {
+                id: subscription,
+                link:{
+                    rel: 'self',
+                    href: `/users/${subscription}`
+                }
+            }
+        });
+
+        let filteredPlaylists = user.get('playlists').map((playlist : string) => {
+            return {
+                id: playlist,
+                link:{
+                    rel: 'self',
+                    href: `/playlists/${playlist}`
+                }
+            }
+        });
+
+        let filteredMixers = user.get('mixers').map((mixer : string) => {
+            return {
+                id: mixer,
+                link:{
+                    rel: 'self',
+                    href: `/musics/${mixer}`
+                }
+            }
+        });
+
+        let filteredDirects = user.get('directs').map((direct : string) => {
+            return {
+                id: direct,
+                link:{
+                    rel: 'self',
+                    href: `/directs/${direct}`
+                }
+            }
+        });
+
+        let filteredGuess = user.get('guess').map((guess : string) => {
+            return {
+                id: guess,
+                link:{
+                    rel: 'self',
+                    href: `/directs/${guess}`
+                }
+            }
+        });
+
+        const user_response = {
+            id: user.get('id'),
+            email: user.get('email'),
+            pseudo: user.get('pseudo'),
+            role: user.get('role'),
+            subscribers: filteredSubscribers,
+            subscriptions: filteredSubscriptions,
+            playlists: filteredPlaylists,
+            mixers: filteredMixers,
+            directs: filteredDirects,
+            guests: filteredGuess
+        }
+
+        const response = {
+            type: 'ressource',
+            locale: 'fr-FR',
+            user: user_response,
+            links: [
+                {
+                    rel: 'self',
+                    href: `/users/${user.get('id')}`
+                }
+            ]
+        }
+
+        res.status(200).json(response);
+
+
+    }catch (error) {
+        handleError(res, error);
+    }
+}
+
+function handleError(res: Response, error: any) {
+    if (error instanceof PodcastServiceNotFoundException) {
+        res.status(404).json({ message: error.message });
+    } else if (error instanceof PodcastServiceBadDataException) {
+        res.status(400).json({ message: error.message });
+    } else if (error instanceof PodcastServiceInternalServerErrorException) {
+        res.status(500).json({ message: error.message });
+    } else {
+        console.error(error);
+        res.status(500).json({ message: "An unexpected error occurred" });
     }
 }
