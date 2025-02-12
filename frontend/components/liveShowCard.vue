@@ -12,7 +12,7 @@ defineProps<{
   <div
     class="card bg-white border-4 border-primary px-10 py-12 rounded-3xl text-primary overflow-visible m-auto w-auto">
     <p class="text-xl" id="live_text">En direct</p>
-    <img :src="`/img/${img}`" alt="Image de l'émission"
+    <img :src="img" alt="Image de l'émission"
       class="border-4 border-primary object-cover rounded-2xl w-full h-40" />
     <h2 class="text-3xl font-bungee">{{ title }}</h2>
     <span class="font-bold font-inter text-md">{{ time_slot }}</span>

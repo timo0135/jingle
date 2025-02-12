@@ -10,7 +10,7 @@
         <button class="border-4 bg-white border-primary font-inter font-extrabold px-16 py-4 rounded-full text-2xl w-fit hover:bg-primary hover:text-white hover:border-white transition" >Ecouter</button>
       </div>
       <div class="basis-3/12" id="live_show_card">
-        <live-show-card title="Manu dans le 54" img="radio.jpg" time_slot="4h30-5h30" description="Manu et son équipe animent une emission nocturne à l’heure où batman oeuvre et à laquelle ..." />
+        <live-show-card title="Manu dans le 54" img="/assets/img/radio.jpg" time_slot="4h30-5h30" description="Manu et son équipe animent une emission nocturne à l’heure où batman oeuvre et à laquelle ..." />
       </div>
     </div>
   </main>
