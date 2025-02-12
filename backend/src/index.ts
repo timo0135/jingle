@@ -9,6 +9,7 @@ import directRoute from "./adapters/routes/directRoute";
 import musicRoute from "./adapters/routes/musicRoute";
 import fileRoute from "./adapters/routes/fileRoute";
 import multer from "multer";
+import path from "path";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -18,8 +19,21 @@ const options = {
 };
 app.use(cors(options));
 app.use(express.json());
-const upload2 = multer({ dest: "uploads/" }); // Définir où stocker le fichier
-app.use(upload2.single("file")); // 'file' doit correspondre au nom du champ dans Postman
+const storage = multer.diskStorage({
+    destination: "uploads/",
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname); // Récupère l'extension
+        const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+        cb(null, fileName);
+    }
+});
+
+const upload = multer({ storage });
+
+app.use(upload.fields([
+    { name: "file", maxCount: 1 },       // Audio
+    { name: "fileImage", maxCount: 1 }   // Image
+]));
 
 
 

@@ -22,9 +22,14 @@ export async function createMusic(req: Request, res: Response) {
     try {
         let data = req.body;
         let fileURI: string | null = null;
-        fileURI = await fileService.uploadFile(req);
-        if(fileURI == null || fileURI == ""){
-            throw new PodcastServiceBadDataException('Error uploading file');
+        if (req.files && !Array.isArray(req.files)) {
+            const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+            fileURI = await fileService.uploadFile(files.file);
+            if(fileURI == null || fileURI == "") {
+                throw new PodcastServiceBadDataException('Error uploading file');
+            }
+        }else{
+            throw new PodcastServiceBadDataException('No file uploaded');
         }
 
         data = {

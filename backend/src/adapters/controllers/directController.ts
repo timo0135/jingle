@@ -1,5 +1,5 @@
 import PodcastServiceInterface from "../../core/use_cases/podcast/PodcastServiceInterface";
-import {podcastServiceInterface} from "../../config/dependencies";
+import {fileServiceInterface, podcastServiceInterface} from "../../config/dependencies";
 import {Request, Response} from "express";
 import PodcastServiceNotFoundException from "../../core/use_cases/podcast/PodcastServiceNotFoundException";
 import PodcastServiceBadDataException from "../../core/use_cases/podcast/PodcastServiceBadDataException";
@@ -18,8 +18,10 @@ import ChangeDateDirectDTO from "../dto/direct/ChangeDateDirectDTO";
 import ChangeDurationDirectDTO from "../dto/direct/ChangeDurationDirectDTO";
 import InviteGuessToDirectDTO from "../dto/direct/InviteGuessToDirectDTO";
 import CancelGuessToDirectDTO from "../dto/direct/CancelGuessToDirectDTO";
+import FileServiceInterface from "../../core/use_cases/file/FileServiceInterface";
 
 const podcastService: PodcastServiceInterface = podcastServiceInterface;
+const fileService : FileServiceInterface = fileServiceInterface;
 
 export async function getDirects(req: Request, res: Response) {
     try {
@@ -145,10 +147,21 @@ export async function getDirect(req: Request, res: Response) {
 
 export async function createDirect(req: Request, res: Response) {
     try {
+        let fileURIImage: string | null = null;
+        if (req.files && !Array.isArray(req.files)) {
+            const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+            fileURIImage = await fileService.uploadFileImage(files.fileImage);
+            if(fileURIImage == null || fileURIImage == ""){
+                throw new PodcastServiceBadDataException('Error uploading file image');
+            }
+        }else{
+            throw new PodcastServiceBadDataException('No file uploaded');
+        }
+
         let data = {
             name: req.body.name,
             description: req.body.description,
-            image: req.body.image,
+            image: fileURIImage,
             hostId: req.body.hostId,
             date: req.body.date,
             duration: req.body.duration
@@ -162,11 +175,6 @@ export async function createDirect(req: Request, res: Response) {
             }
             if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.description)){
                 throw new PodcastServiceBadDataException('Invalid description');
-            }
-            const imagePattern = /^(http:\/\/|https:\/\/)?([a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+)+(\/[a-zA-Z0-9-_]+)*\.(png|jpeg|jpg|gif|bmp|webp)|([a-zA-Z0-9-_]+\.(png|jpeg|jpg|gif|bmp|webp))$/;
-
-            if (!imagePattern.test(data.image)) {
-                throw new PodcastServiceBadDataException('Invalid image');
             }
 
             if(!validator.isUUID(data.hostId)){

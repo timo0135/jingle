@@ -141,19 +141,30 @@ export async function getPodcastByCreator(req: Request, res: Response) {
 export async function createPodcast(req: Request, res: Response) {
     try {
         let data = req.body;
-        let fileURI: string | null = null;
-        fileURI = await fileService.uploadFile(req);
-        if(fileURI == null || fileURI == ""){
-            throw new PodcastServiceBadDataException('Error uploading file');
+        let fileURIAudio: string | null = null;
+        let fileURIImage: string | null = null;
+        if (req.files && !Array.isArray(req.files)) {
+            const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+            fileURIAudio = await fileService.uploadFile(files.file);
+            if(fileURIAudio == null || fileURIAudio == ""){
+                throw new PodcastServiceBadDataException('Error uploading file');
+            }
+            fileURIImage = await fileService.uploadFileImage(files.fileImage);
+            if(fileURIImage == null || fileURIImage == ""){
+                throw new PodcastServiceBadDataException('Error uploading file image');
+            }
+        }else{
+            throw new PodcastServiceBadDataException('No file uploaded');
         }
+
 
         data = {
             date: req.body.date,
             name: req.body.name,
             description: req.body.description,
             creatorId: req.body.creatorId,
-            image: req.body.image,
-            fileId: fileURI
+            image: fileURIImage,
+            fileId: fileURIAudio
         }
 
         const formattedDate = moment(data.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
@@ -169,11 +180,6 @@ export async function createPodcast(req: Request, res: Response) {
             if (!validator.isUUID(data.creatorId)) {
                 throw new PodcastServiceBadDataException('Invalid host_id');
             }
-            const imagePattern = /^(http:\/\/|https:\/\/)?([a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+)+(\/[a-zA-Z0-9-_]+)*\.(png|jpeg|jpg|gif|bmp|webp)|([a-zA-Z0-9-_]+\.(png|jpeg|jpg|gif|bmp|webp))$/;
-
-            if (!imagePattern.test(data.image)) {
-                throw new PodcastServiceBadDataException('Invalid image');
-            }
         } catch (errors) {
             if (errors instanceof Array && errors[0] instanceof ValidationError) {
                 const messages = errors.map(error => Object.values(error.constraints || {}).join(', ')).join(', ');
@@ -188,7 +194,7 @@ export async function createPodcast(req: Request, res: Response) {
 
 
         const dateObject = moment(formattedDate, 'YYYY-MM-DD').toDate();
-        const dto = new CreatePodcastDTO(dateObject, data.name, data.description, data.creatorId, data.image, fileURI as string);
+        const dto = new CreatePodcastDTO(dateObject, data.name, data.description, data.creatorId, fileURIImage as string, fileURIAudio as string);
         const podcast = await podcastService.createPodcast(dto);
         const filteredPodcast = {
             id: podcast.get('id'),
@@ -196,7 +202,7 @@ export async function createPodcast(req: Request, res: Response) {
             description: podcast.get('description'),
             date: podcast.get('date'),
             image: podcast.get('image'),
-            fileId: fileURI,
+            file: podcast.get('file'),
             creator: {
                 id: podcast.get('creator'),
                 links: [
@@ -265,14 +271,6 @@ export async function updatePodcast(req: Request, res: Response) {
             }
             podcast = await podcastService.updateDescriptionPodcast(new UpdateDescriptionPodcastDTO(data.description, req.params.id));
         }
-        if(data.image != undefined){
-            const imagePattern = /^(http:\/\/|https:\/\/)?([a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+)+(\/[a-zA-Z0-9-_]+)*\.(png|jpeg|jpg|gif|bmp|webp)|([a-zA-Z0-9-_]+\.(png|jpeg|jpg|gif|bmp|webp))$/;
-
-            if (!imagePattern.test(data.image)) {
-                throw new PodcastServiceBadDataException('Invalid image');
-            }
-            podcast = await podcastService.updateImagePodcast(new UpdateImagePodcastDTO(data.image, req.params.id));
-        }
         if(podcast == null){
             throw new PodcastServiceBadDataException('No data to update');
         }
@@ -282,6 +280,7 @@ export async function updatePodcast(req: Request, res: Response) {
             description: podcast.get('description'),
             date: podcast.get('date'),
             image: podcast.get('image'),
+            file: podcast.get('file'),
             creator: {
                 id: podcast.get('creator'),
                 links: [

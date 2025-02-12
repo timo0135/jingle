@@ -13,6 +13,7 @@ class DisplayDetailsPodcastDTO extends DTO{
     protected image: string;
     protected content: string[] = [];
     protected avis: string[] = [];
+    protected file: string;
 
     constructor(podcast: Podcast) {
         super();
@@ -24,6 +25,7 @@ class DisplayDetailsPodcastDTO extends DTO{
         this.image = podcast.getImage();
         this.content = podcast.getContent();
         this.avis = podcast.getAvis();
+        this.file = podcast.getFile();
     }
 }
 

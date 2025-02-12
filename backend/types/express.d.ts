@@ -5,6 +5,7 @@ declare global {
         interface Request {
             auth: DisplayUserDTO;
             file?: Express.Multer.File;
+            files?: { [key: string]: Express.Multer.File[] };
         }
     }
 }

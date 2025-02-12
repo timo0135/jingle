@@ -9,6 +9,7 @@ class DisplayPodcastDTO extends DTO{
     protected date: Date;
     protected name: string;
     protected description: string;
+    protected file: string;
 
     constructor(podcast: Podcast) {
         super();
@@ -16,6 +17,7 @@ class DisplayPodcastDTO extends DTO{
         this.date = podcast.getDate();
         this.name = podcast.getName();
         this.description = podcast.getDescription();
+        this.file = podcast.getFile();
     }
 }
 

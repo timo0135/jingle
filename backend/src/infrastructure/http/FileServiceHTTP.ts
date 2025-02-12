@@ -24,14 +24,52 @@ class FileServiceHTTP implements FileServiceInterface {
 
         return response.data.data.access_token;
     }
-    async uploadFile(req: Request): Promise<string> {
+    async uploadFile(file :any): Promise<string> {
+        console.log(file);
+        let f = file[0];
         const token = await this.token;
-        if (req.file && req.file.path) {
-            const filePath: string = req.file.path;
+        if (f && f.path) {
+            const filePath: string = f.path;
             const fileUpload = new FormData();
             fileUpload.append("file", fs.createReadStream(filePath), {
-                filename: req.file.originalname,
+                filename: f.originalname,
                 contentType: 'audio/mpeg'
+            });
+
+            try {
+                const directusResponse = await axios.post(
+                    "http://directus:8055/files",
+                    fileUpload,
+                    {
+                        headers: {
+                            ...fileUpload.getHeaders(),
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                fs.unlinkSync(filePath);
+                return `/assets/${directusResponse.data.data.id}`;
+            } catch (error) {
+                console.error("Error uploading file:", error);
+                fs.unlinkSync(filePath);
+                return "";
+            }
+        }else {
+            return "";
+        }
+    }
+
+    async uploadFileImage(file :any): Promise<string> {
+
+        const token = await this.token;
+        let f = file[0];
+        if (f && f.path) {
+            const filePath: string = f.path;
+            const fileUpload = new FormData();
+            fileUpload.append("file", fs.createReadStream(filePath), {
+                filename: f.originalname,
+                contentType: 'image/jpeg'
             });
 
             try {
