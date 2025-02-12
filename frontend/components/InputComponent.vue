@@ -31,9 +31,9 @@ const updateValue = (event: Event) => {
 </script>
 
 <template>
-  <div class="flex items-center gap-2 border-4 border-primary bg-secondary p-2 rounded-2xl w-2/3">
-    <img v-if="imgSrc" :src="imgSrc" height="25px" width="25px" alt="">
-    <input :placeholder="placeholder" class="bg-secondary font-inter w-full h-full rounded-2xl focus:outline-none"
+  <div class="flex items-center gap-2 border-4 border-primary rounded-2xl p-2">
+    <img v-if="imgSrc" :src="imgSrc" height="25px" width="25px" alt="Icon" class="cursor-pointer">
+    <input :placeholder="placeholder" class="bg-secondary font-inter focus:outline-none w-full h-full placeholder:text-gray-400 text-gray-700"
            :type="type" :value="modelValue" @input="updateValue">
   </div>
 </template>
