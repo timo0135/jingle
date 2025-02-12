@@ -72,7 +72,7 @@ class PostGresMusicRepository implements MusicRepositoryInterface {
             JOIN mixer mx ON m.id = mx.music_id
             WHERE mx.user_id = $1
         `, [userId]);
-
+            console.log(musics_reponse);
             return musics_reponse.map(async (music: any) => {
                 let mixers_reponse = await this.db.any('SELECT user_id FROM mixer WHERE music_id = $1', [music.id]);
                 let m: Music = new Music(music.name, music.file);

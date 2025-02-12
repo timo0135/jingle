@@ -12,6 +12,7 @@ import CreatePodcastDTO from "../dto/podcast/CreatePodcastDTO";
 import {validateOrReject, ValidationError} from "class-validator";
 import validator from "validator";
 import CreateMusicDTO from "../dto/user/CreateMusicDTO";
+import ChangeNameMusicDTO from "../dto/user/ChangeNameMusicDTO";
 
 
 const podcastService : PodcastServiceInterface = podcastServiceInterface;
@@ -180,7 +181,7 @@ export async function getMusics(req: Request, res: Response) {
 
 export async function getMusicsByUserId(req: Request, res: Response) {
     try {
-        const musics = await podcastService.getMusicsByUserId(req.params.userId);
+        const musics = await podcastService.getMusicsByUserId(req.params.id);
         const filteredMusics = musics.map((music: any) => {
             const filteredUsers = music.get('users').map((user: string) => {
                 return {
@@ -207,6 +208,87 @@ export async function getMusicsByUserId(req: Request, res: Response) {
         }
 
         res.status(200).json(response);
+
+    } catch (error) {
+        handleError(res, error);
+    }
+}
+
+export async function updateMusic(req: Request, res: Response) {
+    try {
+        let data = {
+            name: req.body.name,
+            musicId: req.params.id,
+        }
+        let music = null;
+        try{
+            if (data.name !== undefined){
+                if(!validator.isAlphanumeric(data.name)){
+                    throw new PodcastServiceBadDataException('Invalid name');
+                }
+                music = await podcastService.updateNameMusic(new ChangeNameMusicDTO(data.name, data.musicId));
+            }
+        } catch (errors) {
+            if (errors instanceof Array && errors[0] instanceof ValidationError) {
+                const messages = errors.map(error => Object.values(error.constraints || {}).join(', ')).join(', ');
+                throw new PodcastServiceBadDataException(messages);
+            }
+            if (errors instanceof PodcastServiceBadDataException) {
+                throw new PodcastServiceBadDataException(errors.message);
+            }
+        }
+        if(music === null){
+            throw new PodcastServiceBadDataException('Vous devez renseigner un nom');
+        }
+
+        const filteredUsers = music.get('users').map((user: string) => {
+            return {
+                id: user,
+                link : {
+                    rel: 'self',
+                    href: `/users/${user}`
+                }
+            }
+        });
+
+        const filteredMusic = {
+            id: music.get('id'),
+            name: music.get('name'),
+            file: music.get('file'),
+            users: filteredUsers
+        }
+
+        const response = {
+            type: 'resource',
+            locale: 'fr-FR',
+            music: filteredMusic,
+            links : [
+                {
+                    rel: 'self',
+                    href: `/musics/${music.get('id')}`
+                },
+                {
+                    rel: 'update',
+                    href: `/musics/${music.get('id')}`
+                },
+                {
+                    rel: 'delete',
+                    href: `/musics/${music.get('id')}`
+                }
+            ]
+        }
+
+        res.status(200).json(response);
+
+    } catch (error) {
+        handleError(res, error);
+    }
+}
+
+export async function deleteMusic(req: Request, res: Response) {
+    try {
+        await podcastService.deleteMusic(req.params.id);
+        res.status(204).send();
 
     } catch (error) {
         handleError(res, error);
