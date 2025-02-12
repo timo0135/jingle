@@ -140,17 +140,28 @@ export default defineComponent({
 </script>
 
 <template>
-    <Navbar/>
+    <Navbar />
 
     <h1>Broadcasting</h1>
-    <button id="start">Start Broadcasting</button>
-    <button id="stop">Stop Broadcasting</button>
-
+    <div class="flex gap-8">
+        <button
+            class="rounded-lg  font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all"
+            id="start">Start Broadcasting</button>
+        <button
+            class="rounded-lg  font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all"
+            id="stop">Stop Broadcasting</button>
+    </div>
     <h1>Table de Mixage</h1>
     <div class="drop-zone" id="drop-zone">Déposez vos fichiers audio ici</div>
     <div class="controls">
-        <button id="play-audio">Lire l'audio</button>
-        <button id="stop-audio">Arrêter l'audio</button>
+        <div class="flex gap-8">
+        <button
+            class="rounded-lg  font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all"
+            id="play-audio">Lire l'audio</button>
+        <button
+            class="rounded-lg  font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all"
+            id="stop-audio">Arrêter l'audio</button>
+        </div>
         <label for="micro-volume">Volume Micro:</label>
         <input type="range" id="micro-volume" min="0" max="100" value="50">
         <label for="desktop-volume">Volume Bureau:</label>
@@ -158,22 +169,5 @@ export default defineComponent({
     </div>
     <audio id="audio-player" controls></audio>
 
-    <Footer/>
+    <Footer />
 </template>
-
-<style scoped>
-.drop-zone {
-    width: 300px;
-    height: 100px;
-    border: 2px dashed #ccc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-.controls {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-</style>

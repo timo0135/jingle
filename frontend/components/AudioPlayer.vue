@@ -17,8 +17,6 @@ import { AudioPlayer } from '../.nuxt/components';
         const data = JSON.parse(message.data);
 
         if (data.audio) {
-           // Log audio data receive for verification in the console commented to clear the console
-          console.log("Received audio data:", data.audio);
           audioBuffer = audioBuffer.concat(data.audio);
           playAudioBuffer();
         }
