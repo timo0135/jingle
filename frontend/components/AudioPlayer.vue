@@ -116,49 +116,6 @@ function setVolumeIcon() : void
   }
 }
 
-let previousVolume = 50;
-
-function toggleMuteVolume() {
-  const audio_player_volume = document.getElementById('audio_player_volume') as HTMLInputElement;
-  //On remet le volume à sa valeur précédente :
-  if (audio_player_volume.value === '0') {
-    audio_player_volume.value = previousVolume.toString();
-  }
-  //On mute le volume :
-  else {
-    previousVolume = parseInt(audio_player_volume.value);
-    audio_player_volume.value = '0';
-  }
-  setVolumeIcon();
-}
-
-function initDirect(){
-  const play_icon = document.querySelector('#play_icon') as HTMLImageElement;
-  play_icon.src = '_nuxt/public/svg/play-solid.svg';
-}
-
-function pauseDirect() {
-  const play_icon = document.querySelector('#play_icon') as HTMLImageElement;
-  console.log("ca clique");
-  console.log(play_icon.src);
-
-  // Toggle:
-  if (play_icon.src.includes('play-solid.svg')) {
-    play_icon.src = 'http://localhost:8084/_nuxt/public/svg/pause-solid.svg';
-  }
-  else {
-    play_icon.src = 'http://localhost:8084/_nuxt/public/svg/play-solid.svg';
-  }
-}
-
-onMounted(() => {
-  initDirect();
-  initVolume(100);
-  const audio_player_volume = document.getElementById('audio_player_volume') as HTMLInputElement;
-  //On initialise le volume au début à la moitié du volume maximal :
-  audio_player_volume.addEventListener('input', setVolumeIcon);
-
-});
 </script>
 
 <template>

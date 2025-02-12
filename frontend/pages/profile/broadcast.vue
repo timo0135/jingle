@@ -1,11 +1,11 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
-import Navbar from '~/components/Navbar.vue';
+import NavbarComponent from '~/components/NavbarComponent.vue';
 import Footer from '~/components/Footer.vue';
 
 export default defineComponent({
     components: {
-        Navbar,
+        NavbarComponent,
         Footer,
     },
     setup() {
@@ -139,7 +139,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <Navbar />
+    <NavbarComponent />
     <div class="m-10 gap-5 flex flex-col">
         <h1 class="text-6xl font-bold text-primary">Poste de diffusion</h1>
 
