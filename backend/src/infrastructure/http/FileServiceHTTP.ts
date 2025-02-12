@@ -3,10 +3,12 @@ import FormData from "form-data";
 import fs from "fs";
 import axios from "axios";
 import { Request } from "express";
+import dotenv from "dotenv";
+dotenv.config();
 
-const DIRECTUS_URL = "http://directus:8055"; // URL de ton Directus
-const ADMIN_EMAIL = "admin@example.com"; // Email de l'admin
-const ADMIN_PASSWORD = "d1r3ctu5"; // Mot de passe de l'admin
+const DIRECTUS_URL = process.env.DIRECTUS_URL; // URL de ton Directus
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL; // Email de l'admin
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD; // Mot de passe de l'admin
 
 class FileServiceHTTP implements FileServiceInterface {
 

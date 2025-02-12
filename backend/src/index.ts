@@ -7,6 +7,7 @@ import userRoute from "./adapters/routes/userRoute";
 import playlistRoute from "./adapters/routes/playlistRoute";
 import directRoute from "./adapters/routes/directRoute";
 import musicRoute from "./adapters/routes/musicRoute";
+import fileRoute from "./adapters/routes/fileRoute";
 import multer from "multer";
 
 dotenv.config();
@@ -37,6 +38,7 @@ app.use("/", userRoute);
 app.use("/", playlistRoute);
 app.use("/", directRoute);
 app.use("/", musicRoute);
+app.use("/", fileRoute);
 
 const wss = new WebSocketServer({ server });
 
