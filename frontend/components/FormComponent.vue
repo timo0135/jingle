@@ -78,9 +78,9 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center" id="form">
-    <h1 class="font-bungee text-primary text-center py-4 text-5xl">{{ title }}</h1>
-    <form @submit.prevent="handleSubmit" class="font-inter flex flex-col items-center gap-6 w-full">
+  <div class="flex flex-col items-center justify-start mx-auto md:max-w-screen-lg border-4 border-primary p-4 rounded-2xl" id="form">
+    <h1 class="font-bungee text-primary text-center py-10 text-6xl">{{ title }}</h1>
+    <form @submit.prevent="handleSubmit" class="font-inter flex flex-col gap-6 items-center">
       <div v-if="isSignup" class="input-container">
         <label class="text-primary text-2xl" for="pseudo">{{ pseudoLabel }}</label>
         <InputComponent v-model="user.pseudo" :placeholder="pseudoPlaceholder" type="text"/>
@@ -93,11 +93,11 @@ const handleSubmit = async () => {
         <label class="text-primary text-2xl" for="password">{{ passwordLabel }}</label>
         <InputComponent v-model="user.password" :placeholder="passwordPlaceholder" type="password"/>
       </div>
-      <div class="bg-primary cursor-pointer font-bold text-white rounded-xl py-3 px-12">
+      <div class="bg-primary cursor-pointer font-bold text-white rounded-xl py-5 px-16">
         <input class="cursor-pointer" type="submit" :value="buttonText">
       </div>
     </form>
-    <div class="text-primary self-end">
+    <div class="text-primary self-end text-xl mt-4">
       <nuxt-link :to="linkTo">{{ textLink }}</nuxt-link>
     </div>
   </div>
@@ -108,16 +108,8 @@ const handleSubmit = async () => {
 .input-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 50%;
-}
-
-.input-style {
-  border: 2px solid #000;
-  padding: 10px;
-  border-radius: 8px;
-  width: 100%;
-  max-width: 300px;
-  box-sizing: border-box;
+  gap: 0.5rem;
+  height: 110px;
+  width: 300px;
 }
 </style>
