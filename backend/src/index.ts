@@ -39,11 +39,11 @@ app.use(upload.fields([
 
 const server = app.listen(PORT, () => {
     console.log("Server running at PORT: ", PORT);
-}).on("error", (error) => {
+}).on("error", (error : any) => {
     throw new Error(error.message);
 });
 
-app.get("/", (req, res) => {
+app.get("/", (req : any, res : any ) => {
     res.json({ message: "ça marche !" });
 });
 

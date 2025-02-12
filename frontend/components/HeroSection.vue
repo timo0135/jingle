@@ -7,7 +7,7 @@
     <div class="font-bungee flex gap-10 items-center justify-between text-primary m-auto w-[95%]" id="hero_section">
       <div class="basis-9/12 flex flex-col g-4">
         <h1 class="text-9xl" id="live_text">Jingle <br>en direct</h1>
-        <a class="border-4 bg-white border-primary font-inter font-extrabold px-16 py-4 rounded-full text-2xl w-fit hover:bg-primary hover:text-white hover:border-white transition" href="">Ecouter</a>
+        <button class="border-4 bg-white border-primary font-inter font-extrabold px-16 py-4 rounded-full text-2xl w-fit hover:bg-primary hover:text-white hover:border-white transition" >Ecouter</button>
       </div>
       <div class="basis-3/12" id="live_show_card">
         <live-show-card title="Manu dans le 54" img="radio.jpg" time_slot="4h30-5h30" description="Manu et son équipe animent une emission nocturne à l’heure où batman oeuvre et à laquelle ..." />

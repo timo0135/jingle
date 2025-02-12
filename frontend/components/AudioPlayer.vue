@@ -1,3 +1,4 @@
+import { AudioPlayer } from '../.nuxt/components';
 <script setup lang="ts">
 
 import { DefineProps } from 'vue';
@@ -9,14 +10,97 @@ const props = defineProps<{
   };
 }>();
 
-function initVolume(volume : number = 100) {
-  const audio_player_time = document.getElementById('audio_player_volume') as HTMLInputElement;
-  audio_player_time.setAttribute('min', '0');
-  audio_player_time.setAttribute('max', volume.toString());
-  audio_player_time.setAttribute('value', (volume / 2).toString());
-}
+    let audioContext : any ;
+    let audioBuffer : any  = [];
+    let ws : any;
 
-function setVolumeIcon() {
+    function startListening() {
+      ws = new WebSocket('ws://localhost:8080');
+
+      ws.onopen = () => {
+        console.log("WebSocket connection opened for listener.");
+        ws.send(JSON.stringify({ type: 'listen' }));
+      };
+
+      ws.onmessage = (message: MessageEvent) => {
+        const data = JSON.parse(message.data);
+
+        if (data.audio) {
+          audioBuffer = audioBuffer.concat(data.audio);
+          playAudioBuffer();
+        }
+      };
+
+      ws.onerror = (error: Event) => {
+        console.error("WebSocket error:", error);
+      };
+
+      ws.onclose = (event: CloseEvent) => {
+        console.log("WebSocket connection closed. Code:", event.code, "Reason:", event.reason);
+      };
+
+      audioContext = new AudioContext();
+    }
+
+    function stopListening() {
+      if (ws) {
+        ws.send(JSON.stringify({ type: 'stopListening' }));
+        ws.close();
+        console.log("Stopped listening and WebSocket connection closed.");
+      }
+    }
+
+    function playAudioBuffer() : void
+      {
+      if (audioBuffer.length === 0 || !audioContext) return;
+
+      const buffer = audioContext.createBuffer(1, audioBuffer.length, audioContext.sampleRate);
+      buffer.getChannelData(0).set(audioBuffer);
+
+      const source = audioContext.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioContext.destination);
+      source.start();
+
+      console.log("Playing audio buffer");
+      audioBuffer = [];
+    }
+
+    onMounted(() => {
+      play();
+      toggleMuteVolume();
+      setVolumeIcon();
+    });
+
+    function play() : void
+    {
+    const button = document.getElementById('play_icon') as HTMLImageElement;
+    button.addEventListener('click', () => {
+      if (button.src.includes('play-solid.svg')) {
+        startListening();
+        button.src = 'http://localhost:8084/_nuxt/public/svg/pause-solid.svg';
+      }
+      else {
+        stopListening();
+        button.src = 'http://localhost:8084/_nuxt/public/svg/play-solid.svg';
+      }
+    });
+  };
+
+  function toggleMuteVolume() {
+    let AudioPlayer = document.getElementById('audio_player') as HTMLDivElement;
+    AudioPlayer.addEventListener('input', () => {
+      const volume = document.getElementById('audio_player_volume') as HTMLInputElement;
+      const volumeValue = parseInt(volume.value) / 100;
+      if (audioContext) {
+        audioContext.destination.volume = volumeValue;
+      }
+      setVolumeIcon();
+    });
+  };
+
+function setVolumeIcon() : void
+{
   const audio_player_volume = document.getElementById('audio_player_volume') as HTMLInputElement;
   const volume = audio_player_volume.value;
 
@@ -24,7 +108,7 @@ function setVolumeIcon() {
   if (volume === '0') {
     volume_icon.src = '_nuxt/public/svg/volume-xmark-solid.svg';
   }
-  else if (parseInt(volume) < 50) {
+  else if (parseInt(volume) < 55) {
     volume_icon.src = '_nuxt/public/svg/volume-low-solid.svg';
   }
   else {
@@ -32,60 +116,6 @@ function setVolumeIcon() {
   }
 }
 
-let previousVolume = 50;
-
-function toggleMuteVolume() {
-  const audio_player_volume = document.getElementById('audio_player_volume') as HTMLInputElement;
-  //On remet le volume à sa valeur précédente :
-  if (audio_player_volume.value === '0') {
-    audio_player_volume.value = previousVolume.toString();
-  }
-  //On mute le volume :
-  else {
-    previousVolume = parseInt(audio_player_volume.value);
-    audio_player_volume.value = '0';
-  }
-  setVolumeIcon();
-}
-
-function initDirect(){
-  const play_icon = document.querySelector('#play_icon') as HTMLImageElement;
-  play_icon.src = '_nuxt/public/svg/play-solid.svg';
-}
-
-function pauseDirect() {
-  const play_icon = document.querySelector('#play_icon') as HTMLImageElement;
-  console.log("ca clique");
-  console.log(play_icon.src);
-
-  // Toggle:
-  if (play_icon.src.includes('play-solid.svg')) {
-    play_icon.src = 'http://localhost:8084/_nuxt/public/svg/pause-solid.svg';
-  }
-  else {
-    play_icon.src = 'http://localhost:8084/_nuxt/public/svg/play-solid.svg';
-  }
-}
-
-function likeDirect(){
-  const like_icon = document.querySelector('#like_icon') as HTMLImageElement;
-
-  if(like_icon.src.includes('heart-regular.svg')){
-    like_icon.src = 'http://localhost:8084/_nuxt/public/svg/heart-solid.svg';
-  }
-  else{
-    like_icon.src = 'http://localhost:8084/_nuxt/public/svg/heart-regular.svg';
-  }
-}
-
-onMounted(() => {
-  initDirect();
-  initVolume(100);
-  const audio_player_volume = document.getElementById('audio_player_volume') as HTMLInputElement;
-  //On initialise le volume au début à la moitié du volume maximal :
-  audio_player_volume.addEventListener('input', setVolumeIcon);
-
-});
 </script>
 
 <template>
@@ -121,15 +151,11 @@ onMounted(() => {
         </div>
       </div>
 
-      <div v-else>
-        <img @click="pauseDirect" class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="@/public/svg/play-solid.svg" alt="" id="play_icon">
-      </div>
-      <!--------------------------->
+      <img class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="@/public/svg/play-solid.svg" alt="" id="play_icon">
 
-      <!--Audio player volume-->
-      <div class="basis-1/3 flex justify-center gap-4" id="audio_player_volume_container">
-        <input class="accent-primary" type="range" min="0" max="100" value="50" id="audio_player_volume">
-        <img @click="toggleMuteVolume" class="cursor-pointer w-6 h-auto" src="@/public/svg/volume-high-solid.svg" alt="">
+      <div class="flex gap-4" id="audio_player_volume_container">
+        <input @click="play" class="accent-primary" type="range" min="0" max="100" id="audio_player_volume">
+        <img @click="toggleMuteVolume" class="cursor-pointer w-6 h-auto" src="@/public/svg/volume-low-solid.svg" alt="">
       </div>
       <!-------------------------->
     </div>
