@@ -26,7 +26,7 @@ onMounted(() => {
 
 <template>
   <div class="relative">
-    <navbar/>
+    <NavbarComponent/>
 
     <sectionTitle title="Mon profil :"/>
     <profileCard img="./img/profile_picture.jpg" :name="username" :mail="email" :phone="phone"/>
