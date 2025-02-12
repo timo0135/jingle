@@ -78,11 +78,11 @@ const props = defineProps<{
     button.addEventListener('click', () => {
       if (button.src.includes('play-solid.svg')) {
         startListening();
-        button.src = 'http://localhost:8084/_nuxt/public/svg/pause-solid.svg';
+        button.src = 'http://localhost:8084/_nuxt/public/assets/svg/pause-solid.svg';
       }
       else {
         stopListening();
-        button.src = 'http://localhost:8084/_nuxt/public/svg/play-solid.svg';
+        button.src = 'http://localhost:8084/_nuxt/public/assets/svg/play-solid.svg';
       }
     });
   };
@@ -126,7 +126,7 @@ function setVolumeIcon() : void
       <div class="basis-1/3 flex gap-4 items-center" id="audio_player_direct_details">
 
         <div class="w-16 h-16" id="audio_player_direct_details_image">
-          <img class="object-cover w-full h-full" src="@/public/img/radio.jpg" alt="">
+          <img class="object-cover w-full h-full" src="/assets/img/radio.jpg" alt="">
         </div>
 
         <div class="text-white" id="audio_player_direct_details_text">
@@ -136,14 +136,14 @@ function setVolumeIcon() : void
           <p v-else>Rediffusion du podcast</p>
         </div>
 
-        <img @click="likeDirect" class="h-8 w-8 cursor-pointer" id="like_icon" src="@/public/svg/heart-regular.svg" alt="">
+        <img @click="likeDirect" class="h-8 w-8 cursor-pointer" id="like_icon" src="/assets/svg/heart-regular.svg" alt="">
       </div>
       <!--------------------------->
 
       <!--Audio player play button-->
 
       <div class="basis-1/3 flex flex-col items-center gap-2" v-if="!direct">
-        <img @click="pauseDirect" class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="@/public/svg/play-solid.svg" alt="" id="play_icon">
+        <img @click="pauseDirect" class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="/assets/svg/play-solid.svg" alt="" id="play_icon">
         <div class="flex justify-between gap-4 w-full">
           <p class="text-white">00:00</p> <!--Valeur a définir en store-->
           <input class="accent-primary w-full" type="range" min="0" max="100" value="0" id="audio_player_time">
@@ -151,11 +151,11 @@ function setVolumeIcon() : void
         </div>
       </div>
 
-      <img class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="@/public/svg/play-solid.svg" alt="" id="play_icon">
+      <img class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="/assets/svg/play-solid.svg" alt="" id="play_icon">
 
       <div class="flex gap-4" id="audio_player_volume_container">
         <input @click="play" class="accent-primary" type="range" min="0" max="100" id="audio_player_volume">
-        <img @click="toggleMuteVolume" class="cursor-pointer w-6 h-auto" src="@/public/svg/volume-low-solid.svg" alt="">
+        <img @click="toggleMuteVolume" class="cursor-pointer w-6 h-auto" src="/assets/svg/volume-low-solid.svg" alt="">
       </div>
       <!-------------------------->
     </div>
