@@ -39,7 +39,7 @@ export const useUserStore = defineStore('user', {
         }
 
         return response.data;
-      } catch (error) {
+      } catch (error: any) {
         this.showErrorToast(error.response.data.message);
       }
     },
@@ -62,7 +62,7 @@ export const useUserStore = defineStore('user', {
           await router.push('/');
         }
 
-      } catch (error) {
+      } catch (error: any) {
         this.showErrorToast(error.response.data.message);
       }
     }
