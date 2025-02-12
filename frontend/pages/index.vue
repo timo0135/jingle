@@ -7,7 +7,7 @@ import AudioPlayer from "~/components/AudioPlayer.vue";
 
 <template>
   <div class="relative overflow-hidden" id="landing">
-    <navbar/>
+    <NavbarComponent/>
     <HeroSection/>
 
 

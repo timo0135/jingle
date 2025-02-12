@@ -11,8 +11,8 @@
       <ShowCard title="Manu dans le 54" time_slot="20h-21h30" description="Manu et son équipe animent une emission nocturne à l’heure où batman oeuvre et à laquelle les gens normaux dorment, ils vont retourné la nuit."/>
     </div>
     <div class="flex gap-4 my-2" id="show_navigation">
-      <img class="cursor-pointer" width="50px" height="50px" src="../assets/svg/arrow_left.svg" alt="Flèche de gauche">
-      <img class="cursor-pointer" width="50px" height="50px" src="../assets/svg/arrow_right.svg" alt="Flèche de droite">
+      <img class="cursor-pointer" width="50px" height="50px" src="../public/assets/svg/arrow_left.svg" alt="Flèche de gauche">
+      <img class="cursor-pointer" width="50px" height="50px" src="../public/assets/svg/arrow_right.svg" alt="Flèche de droite">
     </div>
   </div>
 </template>
