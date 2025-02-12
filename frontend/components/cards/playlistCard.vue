@@ -7,8 +7,8 @@ defineProps<{
 
 import { ref } from 'vue';
 
-const starEmpty = '/assets/icons/star-empty.svg';
-const starFull = '/assets/icons/star-full.svg';
+const starEmpty = '/assets/svg/star-empty.svg';
+const starFull = '/assets/svg/star-full.svg';
 
 const currentImgSrc = ref(starFull);
 
