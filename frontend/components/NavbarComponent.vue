@@ -34,7 +34,7 @@ const handleLogout = async () => {
         <!--Si l'utilisateur n'est pas connectÃ©-->
         <div class="basis-1/4 flex gap-3 justify-end" v-if="userStore.user_id === null">
           <nuxt-link
-              class="font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition"
+              class="rounded-xl font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition"
               to="/signin">
             <p>Se connecter</p>
           </nuxt-link>
