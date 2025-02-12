@@ -1,27 +1,24 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRoute } from '#app';
+import {ref, onMounted} from 'vue';
+import {useRoute} from '#app';
+import ProfileCard from "~/components/cards/profileCard.vue";
+import ShowCard from "~/components/cards/showCard.vue";
+import PlaylistCard from "~/components/cards/playlistCard.vue";
+import {useUserStore} from "~/stores/userStore";
 
 const route = useRoute();
-const profileId = route.params.id;
+const userStore = useUserStore();
 
-const email = ref('');
-const username = ref('');
-const phone = ref('');
-
-async function fetchProfile() {
-  await fetch(`https://fakeapi.net/users/${profileId}`)
-      .then(response => response.json())
-      .then(data => {
-        email.value = data.email;
-        username.value = [data.name.firstname, data.name.lastname].join(' ');
-        phone.value = data.phone;
-      });
-}
+let user = ref({
+  pseudo: '',
+  email: '',
+});
 
 onMounted(() => {
-  fetchProfile();
+  user.value.pseudo = userStore.pseudo ?? '';
+  user.value.email = userStore.email ?? '';
 });
+
 </script>
 
 <template>
@@ -29,10 +26,11 @@ onMounted(() => {
     <NavbarComponent/>
 
     <sectionTitle title="Mon profil :"/>
-    <profileCard img="./img/profile_picture.jpg" :name="username" :mail="email" :phone="phone"/>
+    <profileCard img="/assets/img/image.png" :name="user.pseudo" :mail="user.email"/>
 
     <sectionTitle title="Mes favoris :"/>
-    <showCard title="Manu dans le 54" time_slot="4h-6h" description="Manu et son équipe animent une emission nocturne à l’heure où batman oeuvre et à laquelle les gens normaux dorment, ils vont retourné la nuit." />
+    <showCard title="Manu dans le 54" time_slot="4h-6h"
+              description="Manu et son équipe animent une emission nocturne à l’heure où batman oeuvre et à laquelle les gens normaux dorment, ils vont retourné la nuit."/>
 
     <sectionTitle title="Mes playlists :"/>
     <playlistCard title="Playlist du midi" :number="20"/>
