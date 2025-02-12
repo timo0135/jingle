@@ -1,15 +1,23 @@
 <script setup lang="ts">
 
+import { DefineProps } from 'vue';
+
+const props = defineProps<{
+  direct: {
+    type: Boolean;
+    required: true;
+  };
+}>();
+
 function initVolume(volume : number = 100) {
   const audio_player_time = document.getElementById('audio_player_volume') as HTMLInputElement;
   audio_player_time.setAttribute('min', '0');
-  audio_player_time.setAttribute('max', volume / 2);
+  audio_player_time.setAttribute('max', volume.toString());
+  audio_player_time.setAttribute('value', (volume / 2).toString());
 }
 
 function setVolumeIcon() {
-  console.log("CA CHANGE")
   const audio_player_volume = document.getElementById('audio_player_volume') as HTMLInputElement;
-  console.log("Volume : ", audio_player_volume.value)
   const volume = audio_player_volume.value;
 
   const volume_icon = document.querySelector('#audio_player_volume_container img') as HTMLImageElement;
@@ -59,6 +67,17 @@ function pauseDirect() {
   }
 }
 
+function likeDirect(){
+  const like_icon = document.querySelector('#like_icon') as HTMLImageElement;
+
+  if(like_icon.src.includes('heart-regular.svg')){
+    like_icon.src = 'http://localhost:8084/_nuxt/public/svg/heart-solid.svg';
+  }
+  else{
+    like_icon.src = 'http://localhost:8084/_nuxt/public/svg/heart-regular.svg';
+  }
+}
+
 onMounted(() => {
   initDirect();
   initVolume(100);
@@ -71,9 +90,10 @@ onMounted(() => {
 
 <template>
   <div id="audio_player">
-    <div class="bg-gray-700 px-[10%] py-2 fixed border-primary border-2 rounded-full w-9/10 bottom-4 left-1/2 -translate-x-1/2 justify-between items-center flex w-[90vw]">
+    <div class="bg-gray-700 px-[10%] py-4 fixed border-primary border-2 rounded-full w-9/10 bottom-4 left-1/2 -translate-x-1/2 justify-between items-center flex w-[90vw]">
 
-      <div class="flex gap-4 items-center" id="audio_player_direct_details">
+      <!--Audio player direct details-->
+      <div class="basis-1/3 flex gap-4 items-center" id="audio_player_direct_details">
 
         <div class="w-16 h-16" id="audio_player_direct_details_image">
           <img class="object-cover w-full h-full" src="@/public/img/radio.jpg" alt="">
@@ -82,16 +102,36 @@ onMounted(() => {
         <div class="text-white" id="audio_player_direct_details_text">
           <p>Valeur du store direct emission title</p>
           <p>Valeur du store direct emission</p>
-          <p id="live_text">En direct</p>
+          <p v-if="direct" class="text-primary" id="live_text">En direct</p>
+          <p v-else>Rediffusion du podcast</p>
+        </div>
+
+        <img @click="likeDirect" class="h-8 w-8 cursor-pointer" id="like_icon" src="@/public/svg/heart-regular.svg" alt="">
+      </div>
+      <!--------------------------->
+
+      <!--Audio player play button-->
+
+      <div class="basis-1/3 flex flex-col items-center gap-2" v-if="!direct">
+        <img @click="pauseDirect" class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="@/public/svg/play-solid.svg" alt="" id="play_icon">
+        <div class="flex justify-between gap-4 w-full">
+          <p class="text-white">00:00</p> <!--Valeur a définir en store-->
+          <input class="accent-primary w-full" type="range" min="0" max="100" value="0" id="audio_player_time">
+          <p class="text-white">00:00</p> <!--Valeur a définir en store-->
         </div>
       </div>
 
-      <img @click="pauseDirect" class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="@/public/svg/play-solid.svg" alt="" id="play_icon">
+      <div v-else>
+        <img @click="pauseDirect" class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="@/public/svg/play-solid.svg" alt="" id="play_icon">
+      </div>
+      <!--------------------------->
 
-      <div class="flex gap-4" id="audio_player_volume_container">
-        <input class="accent-primary" type="range" min="0" max="100" id="audio_player_volume">
+      <!--Audio player volume-->
+      <div class="basis-1/3 flex justify-center gap-4" id="audio_player_volume_container">
+        <input class="accent-primary" type="range" min="0" max="100" value="50" id="audio_player_volume">
         <img @click="toggleMuteVolume" class="cursor-pointer w-6 h-auto" src="@/public/svg/volume-high-solid.svg" alt="">
       </div>
+      <!-------------------------->
     </div>
   </div>
 </template>
