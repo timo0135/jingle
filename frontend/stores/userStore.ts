@@ -6,8 +6,6 @@ export const useUserStore = defineStore('user', {
     return {
       user_token: null,
       user_id: null,
-      pseudo: null,
-      email: null,
       isVisible: ref(false),
       toastMessage: ref(''),
     };
@@ -16,8 +14,6 @@ export const useUserStore = defineStore('user', {
     reset() {
       this.user_token = null;
       this.user_id = null;
-      this.pseudo = null;
-      this.email = null;
     },
     showErrorToast(message: string) {
       this.toastMessage = message;

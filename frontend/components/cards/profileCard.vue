@@ -14,7 +14,7 @@ defineProps<{
   <div id="profile_card" class="border-primary border-4 flex gap-10 px-12 py-4 w-fit">
 
     <div class="profile_picture">
-      <img :src="`/img/${img}`" alt="Image de l'émission" class="border-4 border-primary h-auto object-cover rounded-2xl w-40 h-40"/>
+      <img :src="img" alt="Image de l'émission" class="border-4 border-primary h-auto object-cover rounded-2xl w-40 h-40"/>
     </div>
 
     <div class="details flex flex-col justify-between text-primary">
