@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
+import { useAPI, useRouter } from '#imports';
+
+const router = useRouter();
 
 interface FormField {
   type: string;
@@ -43,6 +46,11 @@ const formData = ref({});
 const handleSubmit = async () => {
   try {
     console.log('Form data:', formData.value);
+    formData.value.user_id = useUserStore().user_id;
+    const response = await useAPI().post(`/directs`, formData.value);
+      console.log('Direct created : ', response);
+      router.push({ name: 'profile-broadcast'});
+
   } catch (error) {
     console.error(error);
   }

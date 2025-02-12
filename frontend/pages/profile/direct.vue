@@ -19,8 +19,7 @@ import FormGlobalComponent from '~/components/FormGlobalComponent.vue';
         buttonText="Créer un direct"
         textLink="retour au profil"
         paragraph="profile"
-        linkTo="/profile"   
-    
+        linkTo="/profile"
     />
 
 
