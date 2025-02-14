@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import { useAPI, useRouter } from '#imports';
+import {useAPI, useRouter, useUserStore} from '#imports';
 
 const router = useRouter();
 
@@ -43,17 +43,44 @@ const props = defineProps({
 
 
 
-const formData = ref({});
+interface FormData {
+  name: string;
+  description: string;
+  fileImage: File | null;
+  hostId: string | null;
+  date: string;
+  duration: number;
+  [key: string]: any; // Add index signature
+}
+
+const formData = ref<FormData>({
+  name: '',
+  description: '',
+  fileImage: null,
+  hostId: useUserStore().user_id,
+  date: '',
+  duration: 0,
+});
 
 const handleSubmit = async () => {
   try {
     console.log('formData.value : ', formData.value);
     formData.value.hostId = useUserStore().user_id;
-    const response = await useAPI().post(`/directs`, formData.value, {
-      headers: {'Authorization': `Bearer ${useUserStore().user_token}`}
+
+    const formDataToSend = new FormData();
+    for (const key in formData.value) {
+      formDataToSend.append(key, formData.value[key]);
+    }
+
+    const response = await useAPI().post(`/directs`, formDataToSend, {
+      headers: {
+        'Authorization': `Bearer ${useUserStore().user_token}`,
+        'Content-Type': 'multipart/form-data'
+      }
     });
-      console.log('Direct created : ', response);
-      router.push({ name: 'profile-broadcast'});
+
+    console.log('Direct created : ', response);
+    router.push({ name: 'profile-broadcast' });
 
   } catch (error) {
     console.error(error);
@@ -87,10 +114,11 @@ const handleSubmit = async () => {
           />
         </template>
         <template v-else-if="field.type === 'file'">
+          {{ formData[field.name] }}
           <input
             :id="field.name"
             type="file"
-            @change="e => formData[field.name] = e.target.files[0]"
+            @change="e => formData[field.name] = e.target?.files[0]"
             class="w-full p-2"
             :required="field.required"
           />
