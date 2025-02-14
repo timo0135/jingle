@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {defineProps} from 'vue';
+import { useUserStore } from '~/stores/userStore';
 
 const props = defineProps({
   title: {
