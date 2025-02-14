@@ -7,17 +7,13 @@ const props = defineProps<{
   title: string;
 }>();
 
+const podcasts = ref([]);
+
 async function fecthPodacsts() {
   try {
     const response  = await useAPI().get('/podcasts');
-    const podcasts = response.data;
-    podcasts.forEach((podcast: any) => {
-      const showCard = document.createElement('show-card');
-      showCard.setAttribute('title', podcast.title);
-      showCard.setAttribute('time_slot', podcast.time_slot);
-      showCard.setAttribute('description', podcast.description);
-      document.getElementById('shows_container')?.appendChild(showCard);
-    });
+    console.log(response.data);
+    podcasts.value = response.data.podcasts;
     
   }
   catch (error) {
@@ -63,10 +59,8 @@ onMounted(() => {
     <h2 class="my-4 text-3xl underline">{{ props.title }}</h2>
     <div class="flex gap-4 overflow-x-scroll no-scrollbar overflow-auto" id="shows_container">
 
-      <ShowCard title="Manu dans le 54" time_slot="20h-21h30"
-        description="Manu et son équipe animent une emission nocturne gdhsjfdgkhflhfgdsqkjhqdsskqndcbnsqjhqdqsjsqdshjqdhsjsqds" />
+      <ShowCard v-for="podcast in podcasts" :key="podcast.id" :title="podcast.name" :time_slot="new Date(podcast.date).toLocaleString()" :description="podcast.description" />
       </div>
-
       <div class="flex gap-4 my-2" id="show_navigation">
         <img id="flecheGauche" class="cursor-pointer" width="50px" height="50px"
           src="../public/assets/svg/arrow_left.svg" alt="Flèche de gauche">
