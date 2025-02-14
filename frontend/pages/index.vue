@@ -3,6 +3,7 @@
 import HeroSection from "~/components/HeroSection.vue";
 import ShowsContainer from "~/components/ShowsContainer.vue";
 import AudioPlayer from "~/components/AudioPlayer.vue";
+
 </script>
 
 <template>
@@ -12,10 +13,10 @@ import AudioPlayer from "~/components/AudioPlayer.vue";
 
 
         <!-- Shows container -->
-        <ShowsContainer/>
-        <ShowsContainer/>
+        <ShowsContainer :title="'Podcasts au top'"/>
+\
 
-        <AudioPlayer/>
+        <!-- <AudioPlayer/> -->
 
 
     <Footer/>
