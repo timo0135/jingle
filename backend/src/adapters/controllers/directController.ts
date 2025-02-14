@@ -166,8 +166,8 @@ export async function createDirect(req: Request, res: Response) {
             date: req.body.date,
             duration: req.body.duration
         }
+        // const formattedDate = moment(data.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
         try{
-            const formattedDate = moment(data.date, 'DD/MM/YYYY').format('YYYY-MM-DD');
             const contactInput = plainToInstance(CreateDirectDTO, data);
             await validateOrReject(contactInput);
             if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.name)){
@@ -181,7 +181,7 @@ export async function createDirect(req: Request, res: Response) {
                 throw new PodcastServiceBadDataException('Invalid hostId');
             }
 
-            if(!validator.isDate(formattedDate)){
+            if(!validator.isDate(data.date)){
                 throw new PodcastServiceBadDataException('Invalid date');
             }
 

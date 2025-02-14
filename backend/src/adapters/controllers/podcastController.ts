@@ -59,6 +59,7 @@ export async function getPodcast(req: Request, res: Response) {
             description: podcast.get('description'),
             date: podcast.get('date'),
             image: podcast.get('image'),
+            file: podcast.get('file'),
             creator: {
                 id: podcast.get('creator'),
                 links: [
@@ -140,6 +141,7 @@ export async function getPodcastByCreator(req: Request, res: Response) {
 
 export async function createPodcast(req: Request, res: Response) {
     try {
+        console.log('ici')
         let data = req.body;
         let fileURIAudio: string | null = null;
         let fileURIImage: string | null = null;
