@@ -14,7 +14,7 @@ const userStore = useUserStore();
 interface Playlist {
   id: string;
   name: string;
-  nbPodcasts: number;
+  description: string;
 }
 
 interface Podcast {
