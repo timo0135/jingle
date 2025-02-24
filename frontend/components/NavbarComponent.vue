@@ -13,20 +13,23 @@ const handleLogout = async () => {
 <template>
 
   <!-- Navbar -->
-  <div class="border-t-4 border-primary flex justify-between navbar px-6 my-4 py-3 m-auto w-[95%]">
+  <div class="border-t-4 border-primary flex justify-between gap-8 navbar my-4 py-3 m-auto w-[95%]">
 
     <!--Logo container-->
-    <div class="" id="logo_container">
+    <div class="basis-2/4" id="logo_container">
       <nuxt-link to="/">
-        <img src="/assets/img/Logo.png" alt="Logo de Jingle" class="logo">
+        <img src="/assets/img/Logo.png" alt="Logo de Jingle" class="">
       </nuxt-link>
     </div>
 
     <!--Searchbar and nav icons container-->
-    <div class="basis-1/4 gap-2 flex justify-end items-center">
+    <div class="basis-2/4 gap-2 flex justify-end items-center">
 
       <!--Searchbar-->
-      <InputComponent imgSrc="/assets/svg/search.svg" type="text"/>
+      <InputComponent class="hidden md:flex" imgSrc="/assets/svg/search.svg" type="text"/>
+      <div class="fixed bottom-4 right-4 bg-primary w-12 h-12 rounded-full flex justify-center items-center">
+        <img class="w-6 h-auto" src="../public/assets/svg/search_white.svg" alt="">
+      </div>
 
       <!--Nav icons-->
       <div class="basis-1/4 flex gap-3 justify-end">

@@ -9,7 +9,7 @@ const props = defineProps<{
 
 const podcasts = ref([]);
 
-async function fecthPodacsts() {
+async function fecthPodcasts() {
   try {
     const response  = await useAPI().get('/podcasts');
     podcasts.value = response.data.podcasts;
@@ -31,7 +31,7 @@ onMounted(() => {
   const flecheGauche : HTMLElement | null = document.getElementById('flecheGauche');
   const flecheDroit : HTMLElement | null = document.getElementById('flecheDroit');
 
-  fecthPodacsts();
+  fecthPodcasts();
 
   if (flecheGauche && showsContainer) {
     flecheGauche.addEventListener('click', () => {
@@ -55,7 +55,7 @@ onMounted(() => {
 
 <template>
   <div class="font-bold font-inter mx-8 my-8 text-primary">
-    <h2 class="my-4 text-3xl underline">{{ props.title }}</h2>
+    <h2 class="my-4 text-xl sm:text-3xl underline">{{ props.title }}</h2>
     <div class="flex gap-4 overflow-x-scroll no-scrollbar overflow-auto" id="shows_container">
 
       <ShowCard v-for="podcast in podcasts" :key="podcast.id" :title="podcast.name" :time_slot="new Date(podcast.date).toLocaleString()" :description="podcast.description" />

@@ -38,6 +38,10 @@ const props = defineProps({
   linkTo: {
     type: String,
     required: true
+  },
+  onInputClick: {
+    type: Function,
+    required: false
   }
 });
 
@@ -126,7 +130,7 @@ const handleSubmit = async () => {
         </template>
       </div>
       <div class="bg-primary cursor-pointer font-bold text-white rounded-xl py-5 px-16">
-        <input class="cursor-pointer" type="submit" :value="buttonText">
+        <input class="cursor-pointer" type="submit" :value="buttonText" @click="props.onInputClick">
       </div>
     </form>
     <div class="text-primary self-end text-xl mt-4">

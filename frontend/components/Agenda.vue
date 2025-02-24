@@ -15,6 +15,7 @@ function onDirectClick() {
 
   td.forEach((td) => {
     td.addEventListener('click', (e) => {
+
       // Show the modal
       showModal.value = true;
 
@@ -48,6 +49,14 @@ function onDirectClick() {
     });
   });
 }
+
+function addDirect() {
+  console.log('Adding direct...');
+}
+
+
+
+
 
 // Watch for modal opening and update the input field
 watch(showModal, async (newVal) => {
@@ -126,6 +135,7 @@ onMounted(() => {
         paragraph="Vous pouvez ajouter un direct en remplissant le formulaire ci-dessous."
         linkTo="/calendar"
         :isSignup="false"
+        :onInputClick="addDirect"
     />
   </div>
 </template>
