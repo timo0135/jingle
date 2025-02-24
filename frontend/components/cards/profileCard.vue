@@ -11,7 +11,7 @@ const props = defineProps({
 <template>
   <div id="profile_card" class="border-primary border-4 rounded-2xl flex gap-10 px-12 py-4 w-fit bg-white">
 
-    <img src="/assets/img/image.png" alt="Image de l'émission"
+    <img src="/assets/img/radio.jpg" alt="Image de l'émission"
          class="border-4 border-primary object-cover rounded-2xl w-40 h-40"/>
 
     <div class="details flex flex-col justify-between text-primary">
