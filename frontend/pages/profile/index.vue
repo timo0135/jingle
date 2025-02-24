@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {ref, onMounted} from 'vue';
-import {useRoute} from '#app';
 import ProfileCard from "~/components/cards/profileCard.vue";
 import ShowCard from "~/components/cards/showCard.vue";
 import PlaylistCard from "~/components/cards/playlistCard.vue";
@@ -8,7 +7,7 @@ import {useUserStore} from "~/stores/userStore";
 import {useAPI} from "#imports";
 
 const api = useAPI();
-const route = useRoute();
+const router = useRouter();
 const userStore = useUserStore();
 
 interface Playlist {
@@ -22,6 +21,7 @@ interface Podcast {
   title: string;
   time_slot: string;
   description: string;
+  isFavorite: boolean;
 }
 
 let user = ref({
@@ -60,7 +60,13 @@ async function getFavoritePodcasts(playlistId: string) {
         Authorization: `Bearer ${userStore.user_token}`,
       },
     }).then((response) => {
-      favoritePodcasts.value = response.data.podcast.content;
+      favoritePodcasts.value = response.data.podcast.content.map((podcast: any) => ({
+        id: podcast.id,
+        title: podcast.name,
+        time_slot: podcast.date,
+        description: podcast.description,
+        isFavorite: true,
+      }));
       return favoritePodcasts.value;
     });
 
@@ -90,10 +96,18 @@ async function getPodcast(id: string) {
         title: podcastData.name,
         time_slot: podcastData.date,
         description: podcastData.description,
+        isFavorite: true,
       };
     }
   } catch (error: any) {
     userStore.showErrorToast(error.message);
+  }
+}
+
+async function toggleFavorite(podcastId: string) {
+  const podcast = favoritePodcasts.value.find(p => p.id === podcastId);
+  if (podcast) {
+    podcast.isFavorite = !podcast.isFavorite;
   }
 }
 
@@ -116,8 +130,9 @@ onMounted(async () => {
       <sectionTitle title="Mes favoris :"/>
       <div class="flex flex-col gap-2">
         <div v-for="podcast in favoritePodcasts" :key="podcast.id">
-          <showCard :id="podcast.id" :title="podcast.title" :time_slot="podcast.time_slot"
-                    :description="podcast.description" :is-favorite="true"/>
+          <ShowCard :id="podcast.id" :title="podcast.title" :time_slot="podcast.time_slot"
+                    :description="podcast.description" :is-favorite="podcast.isFavorite"
+                    @update-favorite="toggleFavorite"/>
         </div>
       </div>
 

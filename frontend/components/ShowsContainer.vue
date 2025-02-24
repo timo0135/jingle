@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import ShowCard from "~/components/cards/showCard.vue";
-import { onMounted, ref } from "vue";
-import { useAPI } from "#imports";
-import { useUserStore } from "~/stores/userStore";
-import { useRouter } from "vue-router";
+import {onMounted, ref} from "vue";
+import {useAPI} from "#imports";
+import {useUserStore} from "~/stores/userStore";
+import {useRouter} from "vue-router";
 
 const api = useAPI();
 const userStore = useUserStore();
@@ -51,24 +51,7 @@ async function getFavoritePlaylist() {
     const favoritePlaylist = response.data.playlists.find((playlist: any) => playlist.name === 'favoris');
     if (favoritePlaylist) {
       favoritePlaylistId.value = favoritePlaylist.id;
-    } else {
-      await createFavoritePlaylist();
     }
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-async function createFavoritePlaylist() {
-  try {
-    const response = await api.post('/playlists', {
-      name: 'favoris',
-    }, {
-      headers: {
-        Authorization: `Bearer ${userStore.user_token}`,
-      },
-    });
-    favoritePlaylistId.value = response.data.id;
   } catch (error) {
     console.error(error);
   }
@@ -94,43 +77,10 @@ async function getFavoritePodcasts() {
   }
 }
 
-async function toggleFavorite(podcastId: string) {
-  if (!userStore.user_id) {
-    await router.push('/signin');
-    return;
-  }
-
-  if (!favoritePlaylistId.value) {
-    await getFavoritePlaylist();
-  }
-
-  try {
-    const podcast = podcasts.value.find(p => p.id === podcastId);
-    if (!podcast) return;
-
-    if (podcast.isFavorite) {
-      // Remove from favorites
-      await api.delete(`/playlists/${favoritePlaylistId.value}/podcast`, {
-        data: {
-          podcastId: podcast.id,
-        },
-        headers: {
-          Authorization: `Bearer ${userStore.user_token}`,
-        },
-      });
-    } else {
-      // Add to favorites
-      await api.post(`/playlists/${favoritePlaylistId.value}/podcast`, {
-        podcastId: podcast.id,
-      }, {
-        headers: {
-          Authorization: `Bearer ${userStore.user_token}`,
-        },
-      });
-    }
+function updateFavorite(podcastId: string) {
+  const podcast = podcasts.value.find(p => p.id === podcastId);
+  if (podcast) {
     podcast.isFavorite = !podcast.isFavorite;
-  } catch (error) {
-    console.error(error);
   }
 }
 
@@ -165,7 +115,7 @@ onMounted(async () => {
     <div class="flex gap-4 overflow-x-scroll no-scrollbar overflow-auto" id="shows_container">
       <ShowCard v-for="podcast in podcasts" :key="podcast.id" :id="podcast.id" :title="podcast.title"
                 :time_slot="podcast.time_slot" :description="podcast.description" :isFavorite="podcast.isFavorite"
-                @toggle-favorite="toggleFavorite"/>
+                @update-favorite="updateFavorite"/>
     </div>
     <div class="flex gap-4 my-2" id="show_navigation">
       <img id="flecheGauche" class="cursor-pointer" width="50px" height="50px"

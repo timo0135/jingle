@@ -12,10 +12,11 @@ const props = defineProps({
   isFavorite: Boolean,
 });
 
-const emit = defineEmits(['toggle-favorite']);
+const emit = defineEmits(['update-favorite']);
 
 const userStore = useUserStore();
 const router = useRouter();
+const api = useAPI();
 
 const starEmpty = '/assets/svg/star-empty.svg';
 const starFull = '/assets/svg/star-full.svg';
@@ -25,24 +26,59 @@ watch(() => props.isFavorite, (newVal) => {
   currentImgSrc.value = newVal ? starFull : starEmpty;
 });
 
-async function toggleImage() {
+async function toggleFavorite() {
   if (!userStore.user_id) {
     await router.push('/signin');
     return;
   }
 
-  console.log(props)
-  emit('toggle-favorite', props.id);
-}
+  if (!userStore.favoritePlaylistId) {
+    try {
+      const response = await api.get(`users/${userStore.user_id}/playlists`, {
+        headers: {Authorization: `Bearer ${userStore.user_token}`},
+      });
+      const favoritePlaylist = response.data.playlists.find((playlist: any) => playlist.name === 'favoris');
+      if (favoritePlaylist) {
+        userStore.favoritePlaylistId = favoritePlaylist.id;
+      } else {
+        const response = await api.post(`/users/${userStore.user_id}/playlists`, {
+          name: 'favoris',
+          description: 'favorite podcast'
+        }, {
+          headers: {Authorization: `Bearer ${userStore.user_token}`},
+        });
+        userStore.favoritePlaylistId = response.data.podcast.id;
+      }
+    } catch (error) {
+      console.error(error);
+      return;
+    }
+  }
 
-onMounted(() => {
-})
+  try {
+    if (props.isFavorite) {
+      await api.delete(`/playlists/${userStore.favoritePlaylistId}/podcast`, {
+        data: {podcastId: props.id},
+        headers: {Authorization: `Bearer ${userStore.user_token}`},
+      });
+    } else {
+      await api.post(`/playlists/${userStore.favoritePlaylistId}/podcast`, {
+        podcastId: props.id,
+      }, {
+        headers: {Authorization: `Bearer ${userStore.user_token}`},
+      });
+    }
+    emit('update-favorite', props.id);
+  } catch (error) {
+    console.error(error);
+  }
+}
 </script>
 
 <template>
   <div
       class="card bg-white border-4 border-primary px-10 py-12 rounded-3xl text-primary overflow-visible w-4/12 relative">
-    <img :src="currentImgSrc" @click="toggleImage" height="50px" width="50px"
+    <img :src="currentImgSrc" @click="toggleFavorite" height="50px" width="50px"
          class="absolute cursor-pointer top-4 right-4" alt="Icon favorite">
     <h2 class="text-3xl font-bungee">{{ title }}</h2>
     <span class="font-bold font-inter text-md">{{ time_slot }}</span>
