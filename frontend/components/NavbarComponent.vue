@@ -8,6 +8,13 @@ const handleLogout = async () => {
   userStore.reset();
   await router.push('/');
 };
+
+const searchString = ref('');
+
+const searchPodcast = async () => {
+  await router.push(`/search?search=${searchString.value}`);
+};
+
 </script>
 
 <template>
@@ -26,12 +33,12 @@ const handleLogout = async () => {
     <div class="basis-1/4 gap-2 flex justify-end items-center">
 
       <!--Searchbar-->
-      <InputComponent imgSrc="/assets/svg/search.svg" type="text"/>
+      <InputComponent imgSrc="/assets/svg/search.svg" type="text" v-model="searchString" @keyup.enter="searchPodcast" />
 
       <!--Nav icons-->
       <div class="basis-1/4 flex gap-3 justify-end">
 
-        <!--Si l'utilisateur n'est pas connectÃ©-->
+        <!--Si l'utilisateur n'est pas connecté-->
         <div class="basis-1/4 flex gap-3 justify-end" v-if="userStore.user_id === null">
           <nuxt-link
               class="font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition rounded-2xl"
@@ -40,7 +47,7 @@ const handleLogout = async () => {
           </nuxt-link>
         </div>
 
-        <!--Si l'utilisateur est connectÃ©-->
+        <!--Si l'utilisateur est connecté-->
         <div v-else class="basis-1/2 flex gap-3 justify-end cursor-pointer">
           <nuxt-link @click="handleLogout">
             <img src="/assets/svg/logout.svg" alt="Icone de déconnexion">
