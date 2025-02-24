@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import ShowCard from "~/components/cards/showCard.vue";
-import {onMounted, ref} from "vue";
-import {useAPI} from "#imports";
-import {useUserStore} from "~/stores/userStore";
-import {useRouter} from "vue-router";
+import { onMounted, ref } from "vue";
+import { useAPI } from "#imports";
+import { useUserStore } from "~/stores/userStore";
+import { useRouter } from "vue-router";
 
 const api = useAPI();
 const userStore = useUserStore();
@@ -31,6 +31,7 @@ async function getPodcasts() {
       ...podcast,
       isFavorite: false,
     }));
+
     if (userStore.user_id) {
       await getFavoritePlaylist();
       await getFavoritePodcasts();
@@ -94,8 +95,14 @@ async function getFavoritePodcasts() {
 }
 
 async function toggleFavorite(podcastId: string) {
-  console.log("toggleFavorite", podcastId);
-  if (!favoritePlaylistId.value) return;
+  if (!userStore.user_id) {
+    await router.push('/signin');
+    return;
+  }
+
+  if (!favoritePlaylistId.value) {
+    await getFavoritePlaylist();
+  }
 
   try {
     const podcast = podcasts.value.find(p => p.id === podcastId);
@@ -103,7 +110,6 @@ async function toggleFavorite(podcastId: string) {
 
     if (podcast.isFavorite) {
       // Remove from favorites
-      console.log('remove from favorites');
       await api.delete(`/playlists/${favoritePlaylistId.value}/podcast`, {
         data: {
           podcastId: podcast.id,

@@ -10,6 +10,7 @@ export const useUserStore = defineStore('user', {
       email: null,
       isVisible: ref(false),
       toastMessage: ref(''),
+      favoritePlaylistId: null,
     };
   },
   actions: {
@@ -18,6 +19,7 @@ export const useUserStore = defineStore('user', {
       this.user_id = null;
       this.pseudo = null;
       this.email = null;
+      this.favoritePlaylistId = null;
     },
     showErrorToast(message: string) {
       this.toastMessage = message;

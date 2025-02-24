@@ -60,7 +60,6 @@ async function getFavoritePodcasts(playlistId: string) {
         Authorization: `Bearer ${userStore.user_token}`,
       },
     }).then((response) => {
-      console.log("response", response.data.podcast.content);
       favoritePodcasts.value = response.data.podcast.content;
       return favoritePodcasts.value;
     });
@@ -117,7 +116,8 @@ onMounted(async () => {
       <sectionTitle title="Mes favoris :"/>
       <div class="flex flex-col gap-2">
         <div v-for="podcast in favoritePodcasts" :key="podcast.id">
-          <showCard :title="podcast.title" :time_slot="podcast.time_slot" :description="podcast.description" :is-favorite="true"/>
+          <showCard :id="podcast.id" :title="podcast.title" :time_slot="podcast.time_slot"
+                    :description="podcast.description" :is-favorite="true"/>
         </div>
       </div>
 

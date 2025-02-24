@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { useUserStore } from '~/stores/userStore';
+import {ref, watch} from 'vue';
+import {useRouter} from 'vue-router';
+import {useUserStore} from '~/stores/userStore';
+import {useAPI} from "#imports";
 
 const props = defineProps({
   id: String,
@@ -30,12 +31,17 @@ async function toggleImage() {
     return;
   }
 
+  console.log(props)
   emit('toggle-favorite', props.id);
 }
+
+onMounted(() => {
+})
 </script>
 
 <template>
-  <div class="card bg-white border-4 border-primary px-10 py-12 rounded-3xl text-primary overflow-visible w-4/12 relative">
+  <div
+      class="card bg-white border-4 border-primary px-10 py-12 rounded-3xl text-primary overflow-visible w-4/12 relative">
     <img :src="currentImgSrc" @click="toggleImage" height="50px" width="50px"
          class="absolute cursor-pointer top-4 right-4" alt="Icon favorite">
     <h2 class="text-3xl font-bungee">{{ title }}</h2>
