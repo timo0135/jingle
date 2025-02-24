@@ -14,6 +14,7 @@ const userStore = useUserStore();
 interface Playlist {
   id: string;
   name: string;
+  nbPodcasts: number;
 }
 
 interface Podcast {
@@ -30,14 +31,16 @@ let user = ref({
 
 let favoritePodcasts = ref<Podcast[]>([]);
 let favoritePlaylist = ref<Playlist | null>(null);
+let playlists = ref<Playlist[]>([]);
 
-async function getFavoritePlaylist() {
+async function getPlaylists() {
   try {
     const response = await api.get(`users/${userStore.user_id}/playlists`, {
       headers: {
         Authorization: `Bearer ${userStore.user_token}`,
       },
     }).then((response) => {
+      playlists.value = response.data.playlists;
       favoritePlaylist.value = response.data.playlists.find((playlist: Playlist) => playlist.name === 'favoris');
       return favoritePlaylist.value;
     });
@@ -98,7 +101,7 @@ onMounted(async () => {
   await userStore.getUser();
   user.value.pseudo = userStore.pseudo ?? '';
   user.value.email = userStore.email ?? '';
-  await getFavoritePlaylist();
+  await getPlaylists();
 });
 </script>
 
@@ -118,8 +121,11 @@ onMounted(async () => {
       </div>
 
       <sectionTitle title="Mes playlists :"/>
-      <playlistCard title="Playlist du midi" :number="20"/>
-
+      <div class="flex flex-col gap-2">
+        <div v-for="playlist in playlists" :key="playlist.id">
+          <playlistCard :title="playlist.name" :number="0"/> <!-- TODO: Add number of podcasts in playlist -->
+        </div>
+      </div>
     </div>
     <Footer/>
   </div>
