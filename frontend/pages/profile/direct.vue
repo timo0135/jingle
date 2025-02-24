@@ -1,7 +1,4 @@
 <script lang="ts"> 
-import NavbarComponent from '~/components/NavbarComponent.vue';
-import Footer from '~/components/Footer.vue';
-import FormGlobalComponent from '~/components/FormGlobalComponent.vue';
 
 </script>
 

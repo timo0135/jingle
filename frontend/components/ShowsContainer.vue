@@ -12,7 +12,6 @@ const podcasts = ref([]);
 async function fecthPodacsts() {
   try {
     const response  = await useAPI().get('/podcasts');
-    console.log(response.data);
     podcasts.value = response.data.podcasts;
     
   }

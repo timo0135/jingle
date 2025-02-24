@@ -6,6 +6,8 @@ export const useUserStore = defineStore('user', {
     return {
       user_token: null,
       user_id: null,
+      pseudo: null,
+      email: null,
       isVisible: ref(false),
       toastMessage: ref(''),
     };
@@ -14,6 +16,8 @@ export const useUserStore = defineStore('user', {
     reset() {
       this.user_token = null;
       this.user_id = null;
+      this.pseudo = null;
+      this.email = null;
     },
     showErrorToast(message: string) {
       this.toastMessage = message;
@@ -25,13 +29,12 @@ export const useUserStore = defineStore('user', {
     async signin(email: string, password: string) {
       try {
         const api = useAPI();
-        const userStore = useUserStore();
         const router = useRouter();
         const response = await api.post('/signin', {}, {
           headers: {'Authorization': `Basic ${btoa(`${email}:${password}`)}`}
         }).then(res => {
-          userStore.user_id = res.data.user.id;
-          userStore.user_token = res.data.user.token;
+          this.user_id = res.data.user.id;
+          this.user_token = res.data.user.token;
           return res;
         });
         if (response) {
@@ -46,15 +49,14 @@ export const useUserStore = defineStore('user', {
     async register(pseudo: string, email: string, password: string) {
       try {
         const api = useAPI();
-        const userStore = useUserStore();
         const router = useRouter();
         const response = await api.post('/register', {
           pseudo: pseudo,
         }, {
           headers: {'Authorization': `Basic ${btoa(`${email}:${password}`)}`}
         }).then(res => {
-          userStore.user_id = res.data.user.id;
-          userStore.user_token = res.data.user.token;
+          this.user_id = res.data.user.id;
+          this.user_token = res.data.user.token;
           return res;
         });
         if (response) {
@@ -62,6 +64,20 @@ export const useUserStore = defineStore('user', {
           await router.push('/');
         }
 
+      } catch (error: any) {
+        this.showErrorToast(error.response.data.message);
+      }
+    },
+    async getUser() {
+      try {
+        const api = useAPI();
+        await api.get(`/users/${this.user_id}`, {
+          headers: {'Authorization': `Bearer ${this.user_token}`}
+        }).then(res => {
+          this.pseudo = res.data.user.pseudo;
+          this.email = res.data.user.email;
+          return res;
+        });
       } catch (error: any) {
         this.showErrorToast(error.response.data.message);
       }

@@ -2,8 +2,34 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import NavbarComponent from '~/components/NavbarComponent.vue';
 import Footer from '~/components/Footer.vue';
+import { useUserStore } from '#imports';
+import { useAPI } from '#imports';
+
+const api = useAPI();
+
+interface FormData {
+    name: string;
+    description: string;
+    fileImage: File | null;
+    file: File | null;
+    creatorId: string | null;
+    date: string;
+    [key: string]: any;
+}
+
+
+const formData = ref<FormData>({
+    name: 'podcats',
+    description: 'gshfhijezjfijeizfi',
+    fileImage: null,
+    file: null,
+    creatorId: '',
+    date: new Date().toLocaleDateString('Fr-fr'),
+});
 
 export default defineComponent({
+
+
     components: {
         NavbarComponent,
         Footer,
@@ -55,11 +81,19 @@ export default defineComponent({
                 mediaRecorder.onstop = () => {
                     const blob = new Blob(recordedChunks, { type: 'audio/webm' });
                     const file = new File([blob], 'broadcast.webm', { type: 'audio/webm' });
-                    const formData = new FormData();
-                    formData.append('audio', file);
-                    fetch('http://localhost:8080/podcast', {
-                        method: 'POST',
-                        body: formData,
+
+                    formData.value.fileImage = new File([new Blob()], 'image.png', { type: 'image/png' });
+                    formData.value.file = file;
+                    formData.value.creatorId = useUserStore().user_id;
+                    const formDataToSend = new FormData();
+                    for (const key in formData.value) {
+                        formDataToSend.append(key, formData.value[key]);
+                    }
+                    api.post(`/podcasts`, formDataToSend, {
+                        headers: {
+                            'Authorization': `Bearer ${useUserStore().user_token}`,
+                            'Content-Type': 'multipart/form-data'
+                        },
                     });
                     recordedChunks = [];
                 };
