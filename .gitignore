@@ -23,6 +23,8 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+/uploads/
+/backend/uploads/
 
 uploads/*
 
