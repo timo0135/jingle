@@ -14,6 +14,7 @@ interface Playlist {
   id: string;
   name: string;
   description: string;
+  nbPodcasts: number;
 }
 
 interface Podcast {
@@ -39,11 +40,21 @@ async function getPlaylists() {
       headers: {
         Authorization: `Bearer ${userStore.user_token}`,
       },
-    }).then((response) => {
-      playlists.value = response.data.playlists;
-      favoritePlaylist.value = response.data.playlists.find((playlist: Playlist) => playlist.name === 'favoris');
-      return favoritePlaylist.value;
     });
+    playlists.value = await Promise.all(response.data.playlists.map(async (playlist: any) => {
+      const podcastCountResponse = await api.get(`playlists/${playlist.id}`, {
+        headers: {
+          Authorization: `Bearer ${userStore.user_token}`,
+        },
+      });
+      return {
+        id: playlist.id,
+        name: playlist.name,
+        description: playlist.description,
+        nbPodcasts: podcastCountResponse.data.podcast.content.length,
+      };
+    }));
+    favoritePlaylist.value = playlists.value.find((playlist: Playlist) => playlist.name === 'favoris') || null;
 
     if (favoritePlaylist.value) {
       await getFavoritePodcasts(favoritePlaylist.value.id);
@@ -139,7 +150,7 @@ onMounted(async () => {
       <sectionTitle title="Mes playlists :"/>
       <div class="flex flex-col gap-2">
         <div v-for="playlist in playlists" :key="playlist.id">
-          <playlistCard :title="playlist.name" :number="0"/> <!-- TODO: Add number of podcasts in playlist -->
+          <playlistCard :title="playlist.name" :number="playlist.nbPodcasts"/>
         </div>
       </div>
     </div>
