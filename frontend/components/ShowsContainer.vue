@@ -104,7 +104,10 @@ async function toggleFavorite(podcastId: string) {
     if (podcast.isFavorite) {
       // Remove from favorites
       console.log('remove from favorites');
-      await api.delete(`/podcasts/${podcast.id}`, {
+      await api.delete(`/playlists/${favoritePlaylistId.value}/podcast`, {
+        data: {
+          podcastId: podcast.id,
+        },
         headers: {
           Authorization: `Bearer ${userStore.user_token}`,
         },
