@@ -41,13 +41,17 @@ const props = defineProps({
   }
 });
 
+
+
 const formData = ref({});
 
 const handleSubmit = async () => {
   try {
-    console.log('Form data:', formData.value);
-    formData.value.user_id = useUserStore().user_id;
-    const response = await useAPI().post(`/directs`, formData.value);
+    console.log('formData.value : ', formData.value);
+    formData.value.hostId = useUserStore().user_id;
+    const response = await useAPI().post(`/directs`, formData.value, {
+      headers: {'Authorization': `Bearer ${useUserStore().user_token}`}
+    });
       console.log('Direct created : ', response);
       router.push({ name: 'profile-broadcast'});
 
