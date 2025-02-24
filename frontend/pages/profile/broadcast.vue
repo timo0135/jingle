@@ -80,11 +80,10 @@ export default defineComponent({
 
                 mediaRecorder.onstop = () => {
                     const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-                    const fileMp3 = new File([blob], 'broadcast.webm', { type: 'audio/webm' });
-                    console.log(fileMp3);
+                    const file = new File([blob], 'broadcast.webm', { type: 'audio/webm' });
 
                     formData.value.fileImage = new File([new Blob()], 'image.png', { type: 'image/png' });
-                    formData.value.file = fileMp3;
+                    formData.value.file = file;
                     formData.value.creatorId = useUserStore().user_id;
                     const formDataToSend = new FormData();
                     for (const key in formData.value) {
