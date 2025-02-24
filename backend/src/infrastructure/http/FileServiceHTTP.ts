@@ -24,16 +24,17 @@ class FileServiceHTTP implements FileServiceInterface {
 
         return response.data.data.access_token;
     }
-    async uploadFile(file :any): Promise<string> {
+    async uploadFile(file: any): Promise<string> {
         console.log(file);
         let f = file[0];
         const token = await this.token;
         if (f && f.path) {
             const filePath: string = f.path;
             const fileUpload = new FormData();
+            const contentType = f.mimetype === 'video/webm' ? 'video/webm' : 'audio/mpeg';
             fileUpload.append("file", fs.createReadStream(filePath), {
                 filename: f.originalname,
-                contentType: 'audio/mpeg'
+                contentType: contentType
             });
 
             try {
@@ -55,7 +56,7 @@ class FileServiceHTTP implements FileServiceInterface {
                 fs.unlinkSync(filePath);
                 return "";
             }
-        }else {
+        } else {
             return "";
         }
     }
