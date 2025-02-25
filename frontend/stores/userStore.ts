@@ -8,6 +8,7 @@ export const useUserStore = defineStore('user', {
       user_id: null,
       pseudo: null,
       email: null,
+      refresh_token: null,
       isVisible: ref(false),
       toastMessage: ref(''),
       favoritePlaylistId: null,
@@ -19,6 +20,7 @@ export const useUserStore = defineStore('user', {
       this.user_id = null;
       this.pseudo = null;
       this.email = null;
+      this.refresh_token = null;
       this.favoritePlaylistId = null;
     },
     showErrorToast(message: string) {
@@ -37,6 +39,7 @@ export const useUserStore = defineStore('user', {
         }).then(res => {
           this.user_id = res.data.user.id;
           this.user_token = res.data.user.token;
+          this.refresh_token = res.data.user.refreshToken;
           return res;
         });
         if (response) {
@@ -68,6 +71,17 @@ export const useUserStore = defineStore('user', {
 
       } catch (error: any) {
         this.showErrorToast(error.response.data.message);
+      }
+    },
+    async refreshToken() {
+      try {
+        const api = useAPI();
+        const response = await api.post('/refresh', {}, {
+          headers: {'Authorization': `Bearer ${this.refresh_token}`}
+        });
+        this.user_token = response.data.user.token;
+      } catch (error) {
+        console.error('Failed to refresh token', error);
       }
     },
     async getUser() {
