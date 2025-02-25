@@ -173,7 +173,9 @@ export async function refresh(req: Request, res: Response) {
         let user = await instance.refresh(authHeader);
         const user_response = {
             id: user.get('id'),
-            email: user.get('email')
+            email: user.get('email'),
+            token: user.get('token'),
+            refreshToken: user.get('refresh')
         }
 
         const response = {
