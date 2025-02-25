@@ -115,13 +115,6 @@ async function getPodcast(id: string) {
   }
 }
 
-async function toggleFavorite(podcastId: string) {
-  const podcast = favoritePodcasts.value.find(p => p.id === podcastId);
-  if (podcast) {
-    podcast.isFavorite = !podcast.isFavorite;
-  }
-}
-
 onMounted(async () => {
   await userStore.getUser();
   user.value.pseudo = userStore.pseudo ?? '';
@@ -141,9 +134,8 @@ onMounted(async () => {
       <sectionTitle title="Mes favoris :"/>
       <div class="flex flex-col gap-2">
         <div v-for="podcast in favoritePodcasts" :key="podcast.id">
-          <ShowCard :id="podcast.id" :title="podcast.name" :time_slot="podcast.date"
-                    :description="podcast.description" :is-favorite="podcast.isFavorite"
-                    @update-favorite="toggleFavorite"/>
+          <ShowCard :id="podcast.id" :name="podcast.name" :date="podcast.date"
+                    :description="podcast.description" :is-favorite="podcast.isFavorite"/>
         </div>
       </div>
 
