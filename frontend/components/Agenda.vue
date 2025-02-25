@@ -132,16 +132,16 @@ onMounted(() => {
 
 <style scoped>
 .agenda {
-  height: 100vh;
-  margin: 0 2em;
+  height: 80vh;
+  margin: 2em 2em;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: Arial, sans-serif;
 }
 table {
-  height: 80vh;
-  width: 100%;
+  height: 60vh;
+  width: 80%;
   border-collapse: collapse;
 }
 th, td {
