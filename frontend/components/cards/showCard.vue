@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, watch} from 'vue';
+import {ref, watch, computed} from 'vue';
 import {useRouter} from 'vue-router';
 import {useUserStore} from '~/stores/userStore';
 import {useAPI} from "#imports";
@@ -24,6 +24,15 @@ const isFavorite = ref(props.isFavorite);
 watch(() => props.isFavorite, (newVal) => {
   isFavorite.value = newVal;
   currentImgSrc.value = newVal ? starFull : starEmpty;
+});
+
+const formattedDate = computed(() => {
+  const timestamp = Date.parse(props.date);
+  if (isNaN(timestamp)) {
+    return 'Invalid Date';
+  }
+  const date = new Date(timestamp);
+  return new Intl.DateTimeFormat('fr-FR', {dateStyle: 'long'}).format(date);
 });
 
 async function toggleFavorite() {
@@ -82,7 +91,7 @@ async function toggleFavorite() {
     <img :src="currentImgSrc" @click="toggleFavorite" height="50px" width="50px"
          class="absolute cursor-pointer top-4 right-4" alt="Icon favorite">
     <h2 class="text-3xl font-bungee">{{ name }}</h2>
-    <span class="font-bold font-inter text-md">{{ date }}</span>
+    <span class="font-bold font-inter text-md">{{ formattedDate }}</span>
     <p class="font-bold text-xl">{{ description }}</p>
   </div>
 </template>
