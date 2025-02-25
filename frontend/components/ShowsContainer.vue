@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import ShowCard from "~/components/cards/showCard.vue";
-import { onMounted } from '#imports';
-import { useAPI } from '#imports';
+import {onMounted, ref} from "vue";
+import {useAPI} from "#imports";
+import {useUserStore} from "~/stores/userStore";
+import {useRouter} from "vue-router";
+
+const api = useAPI();
+const userStore = useUserStore();
+const router = useRouter();
 
 const props = defineProps<{
   title: string;
@@ -9,31 +15,84 @@ const props = defineProps<{
 
 const emit = defineEmits(['changeVisibility']);
 
-const podcasts = ref([]);
+interface Podcast {
+  id: string;
+  title: string;
+  time_slot: string;
+  description: string;
+  isFavorite: boolean;
+}
 
-async function fecthPodacsts() {
+let podcasts = ref<Podcast[]>([]);
+let favoritePlaylistId = ref<string | null>(null);
+
+async function getPodcasts() {
   try {
     const response  = await useAPI().get('/podcasts');
     podcasts.value = response.data.podcasts;
 
   }
   catch (error) {
+    const response = await api.get('/podcasts');
+    podcasts.value = response.data.podcasts.map((podcast: any) => ({
+      ...podcast,
+      isFavorite: false,
+    }));
+
+    if (userStore.user_id) {
+      await getFavoritePlaylist();
+      await getFavoritePodcasts();
+    }
+  }
+}
+
+async function getFavoritePlaylist() {
+  try {
+    const response = await api.get(`users/${userStore.user_id}/playlists`, {
+      headers: {
+        Authorization: `Bearer ${userStore.user_token}`,
+      },
+    });
+    const favoritePlaylist = response.data.playlists.find((playlist: any) => playlist.name === 'favoris');
+    if (favoritePlaylist) {
+      favoritePlaylistId.value = favoritePlaylist.id;
+    }
+  } catch (error) {
     console.error(error);
   }
 }
 
-// const showsContainer = ref<HTMLElement | null>(null);
-// const flecheGauche = ref<HTMLElement | null>(null);
-// const flecheDroit = ref<HTMLElement | null>(null);
+async function getFavoritePodcasts() {
+  if (!favoritePlaylistId.value) return;
 
-onMounted(() => {
+  try {
+    const response = await api.get(`playlists/${favoritePlaylistId.value}`, {
+      headers: {
+        Authorization: `Bearer ${userStore.user_token}`,
+      },
+    });
+    const favoritePodcasts = response.data.podcast.content;
+    podcasts.value.forEach(podcast => {
+      if (favoritePodcasts.some((fav: any) => fav.id === podcast.id)) {
+        podcast.isFavorite = true;
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
 
+function updateFavorite(podcastId: string) {
+  const podcast = podcasts.value.find(p => p.id === podcastId);
+  if (podcast) {
+    podcast.isFavorite = !podcast.isFavorite;
+  }
+}
 
-  const showsContainer : HTMLElement | null = document.getElementById('shows_container');
-  const flecheGauche : HTMLElement | null = document.getElementById('flecheGauche');
-  const flecheDroit : HTMLElement | null = document.getElementById('flecheDroit');
-
-  fecthPodacsts();
+onMounted(async () => {
+  const showsContainer: HTMLElement | null = document.getElementById('shows_container');
+  const flecheGauche: HTMLElement | null = document.getElementById('flecheGauche');
+  const flecheDroit: HTMLElement | null = document.getElementById('flecheDroit');
 
   if (flecheGauche && showsContainer) {
     flecheGauche.addEventListener('click', () => {
@@ -51,27 +110,29 @@ onMounted(() => {
     });
   }
 
+  await getPodcasts();
 });
-
 </script>
 
 <template>
   <div class="font-bold font-inter mx-8 my-8 text-primary">
     <h2 class="my-4 text-3xl underline">{{ props.title }}</h2>
     <div class="flex gap-4 overflow-x-scroll no-scrollbar overflow-auto" id="shows_container">
-
-      <ShowCard v-for="podcast in podcasts" :key="podcast.id" :title="podcast.name" :time_slot="new Date(podcast.date).toLocaleString()" :description="podcast.description" @click="$emit('changeVisibility', [false, true])" />
-      </div>
-      <div class="flex gap-4 my-2" id="show_navigation">
-        <img id="flecheGauche" class="cursor-pointer" width="50px" height="50px"
-          src="../public/assets/svg/arrow_left.svg" alt="Flèche de gauche">
-        <img id="flecheDroit" class="cursor-pointer" width="50px" height="50px"
-          src="../public/assets/svg/arrow_right.svg" alt="Flèche de droite">
-      </div>
+      <ShowCard v-for="podcast in podcasts" :key="podcast.id" :id="podcast.id" :title="podcast.title"
+                :time_slot="podcast.time_slot" :description="podcast.description" :isFavorite="podcast.isFavorite"
+                @update-favorite="updateFavorite"
+                @click="$emit('changeVisibility', [false, true])"
+      />
     </div>
-
+    <div class="flex gap-4 my-2" id="show_navigation">
+      <img id="flecheGauche" class="cursor-pointer" width="50px" height="50px"
+           src="../public/assets/svg/arrow_left.svg" alt="Flèche de gauche">
+      <img id="flecheDroit" class="cursor-pointer" width="50px" height="50px"
+           src="../public/assets/svg/arrow_right.svg" alt="Flèche de droite">
+    </div>
+  </div>
 </template>
 
-  <style scoped>
-
-  </style>
+<style scoped>
+/* Add your styles here */
+</style>

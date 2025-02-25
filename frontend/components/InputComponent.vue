@@ -19,6 +19,10 @@ const props = defineProps({
     type: String,
     required: false,
     default: 'text',
+  },
+  action: {
+    type: String,
+    required: false,
   }
 });
 
@@ -38,6 +42,3 @@ const updateValue = (event: Event) => {
   </div>
 </template>
 
-<style scoped>
-/* Add any additional styles if needed */
-</style>

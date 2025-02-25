@@ -78,8 +78,9 @@ export default defineComponent({
                     }
                 };
 
-                mediaRecorder.onstop = () => {
-                    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+                mediaRecorder.onstop = async () => {
+                    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for data to be processed
+                    const blob = new Blob(recordedChunks, { type: 'audio/webm; codecs=opus' });
                     const file = new File([blob], 'broadcast.webm', { type: 'audio/webm' });
 
                     formData.value.fileImage = new File([new Blob()], 'image.png', { type: 'image/png' });
@@ -89,13 +90,23 @@ export default defineComponent({
                     for (const key in formData.value) {
                         formDataToSend.append(key, formData.value[key]);
                     }
-                    api.post(`/podcasts`, formDataToSend, {
-                        headers: {
-                            'Authorization': `Bearer ${useUserStore().user_token}`,
-                            'Content-Type': 'multipart/form-data'
-                        },
-                    });
+                    try {
+                        await api.post(`/podcasts`, formDataToSend, {
+                            headers: {
+                                'Authorization': `Bearer ${useUserStore().user_token}`,
+                                'Content-Type': 'multipart/form-data'
+                            },
+                        });
+                        console.log('Podcast uploaded successfully');
+                    } catch (error) {
+                        console.error('Error uploading podcast:', error);
+                    }
                     recordedChunks = [];
+
+                    microphoneSource.disconnect();
+                    desktopSource.disconnect();
+                    gainNode.disconnect();
+                    processor.disconnect();
                 };
 
                 mediaRecorder.start();
