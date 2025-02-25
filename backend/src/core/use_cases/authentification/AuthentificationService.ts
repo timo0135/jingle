@@ -42,6 +42,20 @@ class AuthentificationService implements AuthentificationServiceInterface {
     }
 
     async updateUserEmail(id: string, email: string): Promise<DisplayUserDTO> {
+        let user;
+        try {
+            await this.instance.getByEmail(email);
+        } catch (error) {
+            if (error instanceof RepositoryNotFoundException) {
+                user = null;
+            } else {
+                throw error;
+            }
+        }
+
+        if (user !== null) {
+            throw new AuthentificationServiceBadDataException("User email already exists");
+        }
         try {
             let user = await this.instance.find(id);
             if (user === null) {
@@ -57,6 +71,19 @@ class AuthentificationService implements AuthentificationServiceInterface {
     }
 
     async updateUserPseudo(id: string, pseudo: string): Promise<DisplayUserDTO> {
+        let user;
+        try {
+            await this.instance.getByPseudo(pseudo);
+        } catch (error) {
+            if (error instanceof RepositoryNotFoundException) {
+                user = null;
+            } else {
+                throw error;
+            }
+        }
+        if (user !== null) {
+            throw new AuthentificationServiceBadDataException("User pseudo already exists");
+        }
         try {
             let user = await this.instance.find(id);
             if (user === null) {
