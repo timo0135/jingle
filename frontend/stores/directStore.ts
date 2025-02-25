@@ -1,0 +1,7 @@
+export const useDirectStore = defineStore('direct', {
+    state: () => {
+        return {
+            clickedDate: null,
+        };
+    }
+});

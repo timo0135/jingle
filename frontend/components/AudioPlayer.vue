@@ -1,12 +1,12 @@
 import { AudioPlayer } from '../.nuxt/components';
 <script setup lang="ts">
 
-const props = defineProps<{
+const props = defineProps({
   direct: {
-    type: Boolean;
-    required: true;
-  };
-}>();
+    type: Boolean,
+    required: true
+  }
+});
 
     let audioContext : any ;
     let audioBuffer : any  = [];
@@ -143,9 +143,9 @@ function setVolumeIcon() : void
       <!-- <div class="basis-1/3 flex flex-col items-center gap-2" v-if="!direct">
         <img @click="pauseDirect" class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="/assets/svg/play-solid.svg" alt="" id="play_icon">
         <div class="flex justify-between gap-4 w-full">
-          <p class="text-white">00:00</p> 
+          <p class="text-white">00:00</p>
           <input class="accent-primary w-full" type="range" min="0" max="100" value="0" id="audio_player_time">
-          <p class="text-white">00:00</p> 
+          <p class="text-white">00:00</p>
         </div>
       </div> -->
 
