@@ -24,7 +24,6 @@ const search = async () => {
             if(podcasts.value.length === 0) {
                 document.getElementById('search')!.innerHTML = '<h1 class="text-3xl text-center text-primary">No podcasts found</h1>';
             }
-
         }
     } catch (error) {
         console.error('Error fetching podcasts:', error);
