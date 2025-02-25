@@ -19,8 +19,8 @@ interface Playlist {
 
 interface Podcast {
   id: string;
-  title: string;
-  time_slot: string;
+  name: string;
+  date: string;
   description: string;
   isFavorite: boolean;
 }
@@ -73,8 +73,8 @@ async function getFavoritePodcasts(playlistId: string) {
     }).then((response) => {
       favoritePodcasts.value = response.data.podcast.content.map((podcast: any) => ({
         id: podcast.id,
-        title: podcast.name,
-        time_slot: podcast.date,
+        name: podcast.name,
+        date: podcast.date,
         description: podcast.description,
         isFavorite: true,
       }));
@@ -104,21 +104,14 @@ async function getPodcast(id: string) {
     if (podcastIndex !== -1) {
       favoritePodcasts.value[podcastIndex] = {
         id: podcastData.id,
-        title: podcastData.name,
-        time_slot: podcastData.date,
+        name: podcastData.name,
+        date: podcastData.date,
         description: podcastData.description,
         isFavorite: true,
       };
     }
   } catch (error: any) {
     userStore.showErrorToast(error.message);
-  }
-}
-
-async function toggleFavorite(podcastId: string) {
-  const podcast = favoritePodcasts.value.find(p => p.id === podcastId);
-  if (podcast) {
-    podcast.isFavorite = !podcast.isFavorite;
   }
 }
 
@@ -141,9 +134,8 @@ onMounted(async () => {
       <sectionTitle title="Mes favoris :"/>
       <div class="flex flex-col gap-2">
         <div v-for="podcast in favoritePodcasts" :key="podcast.id">
-          <ShowCard :id="podcast.id" :title="podcast.title" :time_slot="podcast.time_slot"
-                    :description="podcast.description" :is-favorite="podcast.isFavorite"
-                    @update-favorite="toggleFavorite"/>
+          <ShowCard :id="podcast.id" :name="podcast.name" :date="podcast.date"
+                    :description="podcast.description" :is-favorite="podcast.isFavorite"/>
         </div>
       </div>
 

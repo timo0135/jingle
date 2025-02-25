@@ -38,7 +38,7 @@ onMounted(() => {
 <template>
     <NavbarComponent/>
     <div class="flex flex-col justify-center space-y-10 p-10 " id="search">
-        <ShowCard v-for="podcast in podcasts" :key="podcast.id" :title="podcast.name" :description="podcast.description" :time_slot="podcast.date" />
+        <ShowCard v-for="podcast in podcasts" :key="podcast.id" :id="podcast.id" :title="podcast.name" :description="podcast.description" :time_slot="podcast.date" />
     </div>
     <Footer/>
 </template>

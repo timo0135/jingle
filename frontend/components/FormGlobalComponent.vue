@@ -89,9 +89,10 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-start mx-auto md:max-w-screen-lg border-4 border-primary p-4 rounded-2xl" id="form">
-    <h1 class="font-bungee text-primary text-center py-10 text-6xl">{{ title }}</h1>
-    <form @submit.prevent="handleSubmit" class="font-inter flex flex-col gap-6 items-center">
+  <div class="flex flex-col items-center justify-start mx-auto md:max-w-screen-lg border-4 border-primary p-4 rounded-2xl transition-all max-h-[90vh] overflow-y-auto no-scrollbar" id="form">
+
+    <h1 class="font-bungee text-primary text-center py-4 text-6xl">{{ title }}</h1>
+    <form @submit.prevent="handleSubmit" class="font-inter flex flex-col gap-1 items-center">
       <div v-for="field in fields" :key="field.name" class="input-container">
         <label class="text-primary text-2xl" :for="field.name">{{ field.label }}</label>
         <template v-if="field.type === 'text' || field.type === 'password' || field.type === 'email' || field.type === 'number'">
