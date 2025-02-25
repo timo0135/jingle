@@ -15,10 +15,6 @@ const currentImgSrc = ref(starFull);
 function toggleImage() {
   currentImgSrc.value = currentImgSrc.value === starEmpty ? starFull : starEmpty;
 }
-
-onMounted(() => {
-  console.log(props)
-})
 </script>
 
 <template>
