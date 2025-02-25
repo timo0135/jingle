@@ -13,6 +13,8 @@ const props = defineProps<{
   title: string;
 }>();
 
+const emit = defineEmits(['changeVisibility']);
+
 interface Podcast {
   id: string;
   title: string;
@@ -26,6 +28,11 @@ let favoritePlaylistId = ref<string | null>(null);
 
 async function getPodcasts() {
   try {
+    const response  = await useAPI().get('/podcasts');
+    podcasts.value = response.data.podcasts;
+
+  }
+  catch (error) {
     const response = await api.get('/podcasts');
     podcasts.value = response.data.podcasts.map((podcast: any) => ({
       ...podcast,
@@ -36,8 +43,6 @@ async function getPodcasts() {
       await getFavoritePlaylist();
       await getFavoritePodcasts();
     }
-  } catch (error) {
-    console.error(error);
   }
 }
 
@@ -115,7 +120,9 @@ onMounted(async () => {
     <div class="flex gap-4 overflow-x-scroll no-scrollbar overflow-auto" id="shows_container">
       <ShowCard v-for="podcast in podcasts" :key="podcast.id" :id="podcast.id" :title="podcast.name"
                 :time_slot="podcast.time_slot" :description="podcast.description" :isFavorite="podcast.isFavorite"
-                @update-favorite="updateFavorite"/>
+                @update-favorite="updateFavorite"
+                @click="$emit('changeVisibility', [false, true])"
+      />
     </div>
     <div class="flex gap-4 my-2" id="show_navigation">
       <img id="flecheGauche" class="cursor-pointer" width="50px" height="50px"
