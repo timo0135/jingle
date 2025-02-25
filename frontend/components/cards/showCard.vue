@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import {ref, watch} from 'vue';
+import {ref, watch, computed} from 'vue';
 import {useRouter} from 'vue-router';
 import {useUserStore} from '~/stores/userStore';
 import {useAPI} from "#imports";
 
 const props = defineProps({
   id: String,
-  title: String,
-  time_slot: String,
+  name: String,
+  date: String,
   description: String,
   isFavorite: Boolean,
 });
-
-const emit = defineEmits(['update-favorite']);
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -21,9 +19,20 @@ const api = useAPI();
 const starEmpty = '/assets/svg/star-empty.svg';
 const starFull = '/assets/svg/star-full.svg';
 const currentImgSrc = ref(props.isFavorite ? starFull : starEmpty);
+const isFavorite = ref(props.isFavorite);
 
 watch(() => props.isFavorite, (newVal) => {
+  isFavorite.value = newVal;
   currentImgSrc.value = newVal ? starFull : starEmpty;
+});
+
+const formattedDate = computed(() => {
+  const timestamp = Date.parse(props.date);
+  if (isNaN(timestamp)) {
+    return 'Invalid Date';
+  }
+  const date = new Date(timestamp);
+  return new Intl.DateTimeFormat('fr-FR', {dateStyle: 'long'}).format(date);
 });
 
 async function toggleFavorite() {
@@ -56,7 +65,7 @@ async function toggleFavorite() {
   }
 
   try {
-    if (props.isFavorite) {
+    if (isFavorite.value) {
       await api.delete(`/playlists/${userStore.favoritePlaylistId}/podcast`, {
         data: {podcastId: props.id},
         headers: {Authorization: `Bearer ${userStore.user_token}`},
@@ -68,7 +77,8 @@ async function toggleFavorite() {
         headers: {Authorization: `Bearer ${userStore.user_token}`},
       });
     }
-    emit('update-favorite', props.id);
+    isFavorite.value = !isFavorite.value;
+    currentImgSrc.value = isFavorite.value ? starFull : starEmpty;
   } catch (error) {
     console.error(error);
   }
@@ -80,8 +90,8 @@ async function toggleFavorite() {
       class="card bg-white border-4 border-primary px-10 py-12 rounded-3xl text-primary overflow-visible w-4/12 relative">
     <img :src="currentImgSrc" @click="toggleFavorite" height="50px" width="50px"
          class="absolute cursor-pointer top-4 right-4" alt="Icon favorite">
-    <h2 class="text-3xl font-bungee">{{ title }}</h2>
-    <span class="font-bold font-inter text-md">{{ time_slot }}</span>
+    <h2 class="text-3xl font-bungee">{{ name }}</h2>
+    <span class="font-bold font-inter text-md">{{ formattedDate }}</span>
     <p class="font-bold text-xl">{{ description }}</p>
   </div>
 </template>
