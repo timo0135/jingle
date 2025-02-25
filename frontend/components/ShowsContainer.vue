@@ -15,8 +15,8 @@ const props = defineProps<{
 
 interface Podcast {
   id: string;
-  title: string;
-  time_slot: string;
+  name: string;
+  date: string;
   description: string;
   isFavorite: boolean;
 }
@@ -27,6 +27,7 @@ let favoritePlaylistId = ref<string | null>(null);
 async function getPodcasts() {
   try {
     const response = await api.get('/podcasts');
+    if (!response.data.podcasts) return;
     podcasts.value = response.data.podcasts.map((podcast: any) => ({
       ...podcast,
       isFavorite: false,
@@ -48,6 +49,7 @@ async function getFavoritePlaylist() {
         Authorization: `Bearer ${userStore.user_token}`,
       },
     });
+    if (!response.data.playlists) return;
     const favoritePlaylist = response.data.playlists.find((playlist: any) => playlist.name === 'favoris');
     if (favoritePlaylist) {
       favoritePlaylistId.value = favoritePlaylist.id;
@@ -66,6 +68,7 @@ async function getFavoritePodcasts() {
         Authorization: `Bearer ${userStore.user_token}`,
       },
     });
+    if (!response.data.podcast) return;
     const favoritePodcasts = response.data.podcast.content;
     podcasts.value.forEach(podcast => {
       if (favoritePodcasts.some((fav: any) => fav.id === podcast.id)) {
@@ -113,8 +116,8 @@ onMounted(async () => {
   <div class="font-bold font-inter mx-8 my-8 text-primary">
     <h2 class="my-4 text-3xl underline">{{ props.title }}</h2>
     <div class="flex gap-4 overflow-x-scroll no-scrollbar overflow-auto" id="shows_container">
-      <ShowCard v-for="podcast in podcasts" :key="podcast.id" :id="podcast.id" :title="podcast.title"
-                :time_slot="podcast.time_slot" :description="podcast.description" :isFavorite="podcast.isFavorite"
+      <ShowCard v-for="podcast in podcasts" :key="podcast.id" :id="podcast.id" :title="podcast.name"
+                :time_slot="podcast.date" :description="podcast.description" :isFavorite="podcast.isFavorite"
                 @update-favorite="updateFavorite"/>
     </div>
     <div class="flex gap-4 my-2" id="show_navigation">
