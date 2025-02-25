@@ -7,13 +7,15 @@ const props = defineProps<{
   title: string;
 }>();
 
+const emit = defineEmits(['changeVisibility']);
+
 const podcasts = ref([]);
 
 async function fecthPodacsts() {
   try {
     const response  = await useAPI().get('/podcasts');
     podcasts.value = response.data.podcasts;
-    
+
   }
   catch (error) {
     console.error(error);
@@ -58,7 +60,7 @@ onMounted(() => {
     <h2 class="my-4 text-3xl underline">{{ props.title }}</h2>
     <div class="flex gap-4 overflow-x-scroll no-scrollbar overflow-auto" id="shows_container">
 
-      <ShowCard v-for="podcast in podcasts" :key="podcast.id" :title="podcast.name" :time_slot="new Date(podcast.date).toLocaleString()" :description="podcast.description" />
+      <ShowCard v-for="podcast in podcasts" :key="podcast.id" :title="podcast.name" :time_slot="new Date(podcast.date).toLocaleString()" :description="podcast.description" @click="$emit('changeVisibility', [false, true])" />
       </div>
       <div class="flex gap-4 my-2" id="show_navigation">
         <img id="flecheGauche" class="cursor-pointer" width="50px" height="50px"
