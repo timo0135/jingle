@@ -27,7 +27,8 @@ watch(() => props.isFavorite, (newVal) => {
 });
 
 const formattedDate = computed(() => {
-  const timestamp = Date.parse(props.date);
+  const dateStr = props.date || '';
+  const timestamp = Date.parse(dateStr);
   if (isNaN(timestamp)) {
     return 'Invalid Date';
   }
