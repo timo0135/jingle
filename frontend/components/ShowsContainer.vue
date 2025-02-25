@@ -113,7 +113,7 @@ onMounted(async () => {
   <div class="font-bold font-inter mx-8 my-8 text-primary">
     <h2 class="my-4 text-3xl underline">{{ props.title }}</h2>
     <div class="flex gap-4 overflow-x-scroll no-scrollbar overflow-auto" id="shows_container">
-      <ShowCard v-for="podcast in podcasts" :key="podcast.id" :id="podcast.id" :title="podcast.title"
+      <ShowCard v-for="podcast in podcasts" :key="podcast.id" :id="podcast.id" :title="podcast.name"
                 :time_slot="podcast.time_slot" :description="podcast.description" :isFavorite="podcast.isFavorite"
                 @update-favorite="updateFavorite"/>
     </div>
