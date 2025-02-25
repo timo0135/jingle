@@ -41,6 +41,36 @@ class AuthentificationService implements AuthentificationServiceInterface {
         }
     }
 
+    async updateUserEmail(id: string, email: string): Promise<DisplayUserDTO> {
+        try {
+            let user = await this.instance.find(id);
+            if (user === null) {
+                throw new AuthentificationServiceNotFoundException("User not found");
+            }
+            user.setEmail(email);
+            await this.instance.save(user);
+            return new DisplayUserDTO(user);
+        } catch (error) {
+            this.handleErrors(error);
+            throw new AuthentificationServiceInternalServerErrorException("An unexpected error occurred");
+        }
+    }
+
+    async updateUserPseudo(id: string, pseudo: string): Promise<DisplayUserDTO> {
+        try {
+            let user = await this.instance.find(id);
+            if (user === null) {
+                throw new AuthentificationServiceNotFoundException("User not found");
+            }
+            user.setPseudo(pseudo);
+            await this.instance.save(user);
+            return new DisplayUserDTO(user);
+        } catch (error) {
+            this.handleErrors(error);
+            throw new AuthentificationServiceInternalServerErrorException("An unexpected error occurred");
+        }
+    }
+
     async getUser(id: string): Promise<DisplayUserDTO> {
         try{
             let user = await this.instance.find(id);

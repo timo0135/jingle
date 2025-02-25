@@ -38,6 +38,10 @@ class User extends Entity {
         return this.role;
     }
 
+    public setEmail(email: string): void {
+        this.email = email;
+    }
+
     public setPassword(password: string): void {
         this.password = password;
     }

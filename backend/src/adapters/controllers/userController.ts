@@ -19,6 +19,10 @@ import PodcastServiceInternalServerErrorException
     from "../../core/use_cases/podcast/PodcastServiceInternalServerErrorException";
 import AuthentificationServiceInterface from "../../core/use_cases/authentification/AuthentificationServiceInterface";
 import DisplayUserDTO from "../dto/user/DisplayUserDTO";
+import moment from "moment/moment";
+import UpdateDatePodcastDTO from "../dto/podcast/UpdateDatePodcastDTO";
+import UpdateTitlePodcastDTO from "../dto/podcast/UpdateTitlePodcastDTO";
+import UpdateDescriptionPodcastDTO from "../dto/podcast/UpdateDescriptionPodcastDTO";
 
 
 const instance : AuthProviderInterface = authentificationProvider;
@@ -298,6 +302,43 @@ export async function getUser(req: Request, res: Response) {
 
 
     }catch (error) {
+        handleError(res, error);
+    }
+}
+
+export async function updateUser(req: Request, res: Response) {
+    try {
+        let data = req.body;
+        let user = null;
+        if(data.pseudo != undefined){
+            user = await serviceAuth.updateUserPseudo(req.params.id, data.pseudo);
+        }
+        if(data.email != undefined){
+            user = await serviceAuth.updateUserEmail(req.params.id, data.email);
+        }
+        if(user == null){
+            throw new PodcastServiceBadDataException('No data to update');
+        }
+        const user_response = {
+            id: user.get('id'),
+            email: user.get('email'),
+            pseudo: user.get('pseudo')
+        }
+
+        const response = {
+            type: 'ressource',
+            locale: 'fr-FR',
+            user: user_response,
+            links: [
+                {
+                    rel: 'self',
+                    href: `/users/${user.get('id')}`
+                }
+            ]
+        }
+
+        res.status(200).json(response);
+    } catch (error) {
         handleError(res, error);
     }
 }
