@@ -14,6 +14,7 @@ const search = async () => {
         const searchQuery = new URLSearchParams(window.location.search).get('search');
 
         const response = await api.get('/podcasts');
+        console.log(response.data.podcasts);
 
         podcasts.value = response.data.podcasts;
 
@@ -38,7 +39,7 @@ onMounted(() => {
 <template>
     <NavbarComponent/>
     <div class="flex flex-col justify-center space-y-10 p-10 " id="search">
-        <ShowCard v-for="podcast in podcasts" :key="podcast.id" :id="podcast.id" :title="podcast.name" :description="podcast.description" :time_slot="podcast.date" />
+        <ShowCard v-for="podcast in podcasts" :key="podcast.id" :id="podcast.id" :name="podcast.name" :description="podcast.description" :date="podcast.date" />
     </div>
     <Footer/>
 </template>
