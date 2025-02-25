@@ -344,14 +344,13 @@ export async function updateUser(req: Request, res: Response) {
 }
 
 function handleError(res: Response, error: any) {
-    if (error instanceof PodcastServiceNotFoundException) {
+    if (error instanceof AuthentificationServiceNotFoundException) {
         res.status(404).json({ message: error.message });
-    } else if (error instanceof PodcastServiceBadDataException) {
+    } else if (error instanceof AuthentificationServiceBadDataException) {
         res.status(400).json({ message: error.message });
-    } else if (error instanceof PodcastServiceInternalServerErrorException) {
+    } else if (error instanceof AuthentificationServiceInternalServerErrorException) {
         res.status(500).json({ message: error.message });
     } else {
-        console.error(error);
         res.status(500).json({ message: "An unexpected error occurred" });
     }
 }
