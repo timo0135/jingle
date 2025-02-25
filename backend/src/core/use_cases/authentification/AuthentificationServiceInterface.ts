@@ -8,6 +8,7 @@ interface AuthentificationServiceInterface {
     getUserByEmail(email: string): Promise<DisplayUserDTO>;
     updateUserEmail(id: string, email: string): Promise<DisplayUserDTO>;
     updateUserPseudo(id: string, pseudo: string): Promise<DisplayUserDTO>;
+    getAllUsers(): Promise<DisplayUserDTO[]>;
 }
 
 export default AuthentificationServiceInterface;
