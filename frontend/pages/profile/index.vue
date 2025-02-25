@@ -128,8 +128,17 @@ onMounted(async () => {
     <NavbarComponent/>
 
     <div class="w-[95%] flex flex-col m-auto">
+
       <sectionTitle title="Mon profil :"/>
+      <div class="flex justify-between">
       <profileCard :name="user.pseudo" :mail="user.email"/>
+      <router-link to="/profile/broadcast">
+        <button class="rounded-lg font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all">
+          diffuser
+        </button>
+      </router-link>
+
+    </div>
 
       <sectionTitle title="Mes favoris :"/>
       <div class="flex flex-col gap-2">
