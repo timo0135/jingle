@@ -203,17 +203,6 @@ export async function refresh(req: Request, res: Response) {
 export async function getUser(req: Request, res: Response) {
     try{
         const user: DisplayUserDTO = await serviceAuth.getUser(req.params.id);
-    //     protected id: string | null;
-        //     protected email: string;
-        //     protected password: string;
-        //     protected pseudo: string;
-        //     protected role: number;
-        //     protected subscribers: string[] = [];
-        //     protected subscriptions: string[] = [];
-        //     protected playlists: string[] = [];
-        //     protected mixers: string[] = [];
-        //     protected directs: string[] = [];
-        //     protected guess: string[] = [];
 
         let filteredSubscribers = user.get('subscribers').map((subscriber : string) => {
             return {
@@ -335,6 +324,36 @@ export async function updateUser(req: Request, res: Response) {
                 {
                     rel: 'self',
                     href: `/users/${user.get('id')}`
+                }
+            ]
+        }
+
+        res.status(200).json(response);
+    } catch (error) {
+        handleError(res, error);
+    }
+}
+
+export async function getAllUsers(req: Request, res: Response) {
+    try {
+        const users: DisplayUserDTO[] = await serviceAuth.getAllUsers();
+        const users_response = users.map((user: DisplayUserDTO) => {
+            return {
+                id: user.get('id'),
+                email: user.get('email'),
+                pseudo: user.get('pseudo'),
+                role: user.get('role'),
+            }
+        });
+
+        const response = {
+            type: 'ressource',
+            locale: 'fr-FR',
+            users: users_response,
+            links: [
+                {
+                    rel: 'self',
+                    href: `/users`
                 }
             ]
         }

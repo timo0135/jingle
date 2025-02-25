@@ -175,6 +175,16 @@ class AuthentificationService implements AuthentificationServiceInterface {
         }
     }
 
+    async getAllUsers(): Promise<DisplayUserDTO[]> {
+        try {
+            let users = await this.instance.findAll();
+            return users.map(user => new DisplayUserDTO(user));
+        } catch (error) {
+            this.handleErrors(error);
+            throw new AuthentificationServiceInternalServerErrorException("An unexpected error occurred");
+        }
+    }
+
     handleErrors(error: any): void {
         if (error instanceof AuthentificationServiceNotFoundException) {
             throw new AuthentificationServiceNotFoundException(error.message);
