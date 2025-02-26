@@ -44,10 +44,6 @@ export default {
             const response = api.get('/users');
             console.log(response.data);
     },
-
-    mounted() {
-        getUsers();    
-        },
     }
 }
 </script>
