@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia';
 import {useAPI} from "~/utils/api";
+import router from "#app/plugins/router";
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -79,9 +80,16 @@ export const useUserStore = defineStore('user', {
         const response = await api.post('/refresh', {}, {
           headers: {'Authorization': `Bearer ${this.refresh_token}`}
         });
-        this.user_token = response.data.user.token;
+
+        if (response.status === 200) {
+          this.user_token = response.data.user.token;
+        } else {
+          throw new Error('Failed to refresh token');
+        }
       } catch (error) {
-        console.error('Failed to refresh token', error);
+        this.reset();
+        this.showErrorToast('Session expired, please sign in again');
+        await useRouter().push('/signin');
       }
     },
     async getUser() {
