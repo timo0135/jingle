@@ -39,8 +39,6 @@ export default {
 
     handleDateClick(info) {
       this.openEventForm(info.dateStr);
-      console.log('date click! ' + info.dateStr);
-      console.log(info);
     }
   }
 }
