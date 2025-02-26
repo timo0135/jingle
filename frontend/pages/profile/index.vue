@@ -137,6 +137,11 @@ onMounted(async () => {
           diffuser
         </button>
       </router-link>
+      <router-link to="/calendar">
+        <button class="rounded-lg font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all">
+          calendrier
+        </button>
+      </router-link>
 
     </div>
 

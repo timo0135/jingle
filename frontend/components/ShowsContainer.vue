@@ -3,11 +3,9 @@ import ShowCard from "~/components/cards/showCard.vue";
 import {onMounted, ref} from "vue";
 import {useAPI} from "#imports";
 import {useUserStore} from "~/stores/userStore";
-import {useRouter} from "vue-router";
 
 const api = useAPI();
 const userStore = useUserStore();
-const router = useRouter();
 
 const props = defineProps<{
   title: string;
@@ -37,8 +35,8 @@ async function getPodcasts() {
       await getFavoritePlaylist();
       await getFavoritePodcasts();
     }
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    userStore.showErrorToast(error.response.data.message);
   }
 }
 
@@ -54,8 +52,8 @@ async function getFavoritePlaylist() {
     if (favoritePlaylist) {
       favoritePlaylistId.value = favoritePlaylist.id;
     }
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    userStore.showErrorToast(error.response.data.message);
   }
 }
 
@@ -75,15 +73,8 @@ async function getFavoritePodcasts() {
         podcast.isFavorite = true;
       }
     });
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-function updateFavorite(podcastId: string) {
-  const podcast = podcasts.value.find(p => p.id === podcastId);
-  if (podcast) {
-    podcast.isFavorite = !podcast.isFavorite;
+  } catch (error: any) {
+    userStore.showErrorToast(error.response.data.message);
   }
 }
 
