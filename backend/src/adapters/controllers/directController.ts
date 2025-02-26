@@ -181,7 +181,7 @@ export async function createDirect(req: Request, res: Response) {
                 throw new PodcastServiceBadDataException('Invalid hostId');
             }
 
-            if(!validator.isDate(data.date)){
+            if (!validator.isISO8601(data.date, { strict: true })) {
                 throw new PodcastServiceBadDataException('Invalid date');
             }
 
