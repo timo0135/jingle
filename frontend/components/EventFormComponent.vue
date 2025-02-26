@@ -1,8 +1,22 @@
-<script>
+<script lang="ts">
+import { ref, defineComponent } from 'vue';
 import { useAPI } from '#imports';
+import { useUserStore } from '@/stores/userStore';
 
 const api = useAPI();
-export default {
+const userStore = useUserStore();
+
+interface FormData {
+  name: string;
+  description: string;
+  fileImage: File | null;
+  hostId: string | null;
+  date: string;
+  duration: number;
+  [key: string]: any; // Add index signature
+}
+
+export default defineComponent({
     props: {
         isVisible: {
             type: Boolean,
@@ -18,36 +32,71 @@ export default {
             eventName: '',
             eventDate: this.date,
             eventDescription: '',
-            eventImage: null,
+            eventImage: null as File | null,
             eventHostId: '',
             eventDuree: '',
-            users: [] // Add users array
+            users: [],
+            formData: ref<FormData>({
+                name: '',
+                description: '',
+                fileImage: null,
+                hostId: userStore.user_id,
+                date: '',
+                duration: 0
+            })
         }
     },
     watch: {
         date(newDate) {
             this.eventDate = newDate;
+            this.formData.date = newDate;
         }
     },
     methods: {
         closeForm() {
             this.$emit('close-form');
         },
-        handleFileUpload(event) {
-            this.eventImage = event.target.files[0];
+        handleFileUpload(event: Event) {
+            const target = event.target as HTMLInputElement;
+            if (target.files && target.files[0]) {
+                this.eventImage = target.files[0];
+                this.formData.fileImage = target.files[0];
+                console.log('File selected:', this.eventImage);
+            }
         },
-        createDirect(){
-            
+        async submitForm() {
+            try {
+                console.log('formData:', this.formData);
+                this.formData.hostId = userStore.user_id;
+                this.formData.name = this.eventName;
+                this.formData.description = this.eventDescription;
+                this.formData.duration = parseInt(this.eventDuree);
 
-        },
-        submitForm() {
+                const formDataToSend = new FormData();
+                for (const key in this.formData) {
+                    formDataToSend.append(key, this.formData[key]);
+                }
 
-            alert(`Event Created: ${this.eventName} on ${this.eventDate}`);
-            this.closeForm();
+                console.log('FormData to be sent:', formDataToSend);
+
+                const response = await api.post('/directs', formDataToSend, {
+                    headers: {
+                        'Authorization': `Bearer ${userStore.user_token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+
+                console.log('Direct created:', response);
+                alert(`Event Created: ${this.eventName} on ${this.eventDate}`);
+                this.closeForm();
+            } catch (error) {
+                console.error('error:',  error);
+                alert('An error occurred while creating the event');
+            }
         },
         getUsers() {
             api.get('/users').then(response => {
-                this.users = response.data.users; 
+                this.users = response.data.users;
             }).catch(error => {
                 console.error(error);
             });
@@ -56,7 +105,7 @@ export default {
     mounted() {
         this.getUsers();
     }
-}
+});
 </script>
 
 <template>

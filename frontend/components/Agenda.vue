@@ -15,7 +15,7 @@ export default {
     return {
       calendarOptions: {
         plugins: [ dayGridPlugin, interactionPlugin, timeGridPlugin ],
-        initialView: 'dayGridMonth',
+        initialView: 'timeGridWeek',
         locale: frLocale,
         timeZone: 'Europe/Paris',
         themeSystem: 'bootstrap',
@@ -23,7 +23,7 @@ export default {
         headerToolbar: {
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          right: 'timeGridWeek,timeGridDay'
         },
         dateClick: this.handleDateClick
       },
