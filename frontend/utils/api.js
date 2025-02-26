@@ -23,14 +23,14 @@ export function useAPI() {
 
             const status = error.response.status;
 
-
             if ((status === 401 || status === 500) &&
                 !originalRequest.url.includes('/refresh')) {
                 const newAccessToken = await userStore.refreshToken();
 
                 if (newAccessToken) {
-                    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-                    return api(originalRequest);
+                    await userStore.refreshToken();
+                    error.config.headers['Authorization'] = `Bearer ${userStore.user_token}`;
+                    return api.request(error.config);
                 }
             }
 
