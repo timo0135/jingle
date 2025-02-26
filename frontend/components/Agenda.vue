@@ -120,7 +120,6 @@ onMounted(() => {
       <img src="../public/assets/svg/xmark-solid.svg" alt="">
     </div>
 
-    <FormGlobalComponent
         title="Créer un nouvel événement"
         :fields="[
         { type: 'text', label: 'Nom du direct :', name: 'eventName', placeholder: 'Ex: Emission des Fleurs', required: true },

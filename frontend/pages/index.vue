@@ -16,7 +16,7 @@ import AudioPlayer from "~/components/AudioPlayer.vue";
         <ShowsContainer :title="'Podcasts au top'"/>
 \
 
-        <!-- <AudioPlayer/> -->
+        <AudioPlayer/>
 
 
     <Footer/>
