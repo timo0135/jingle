@@ -67,7 +67,9 @@ async function getPodcasts() {
 }
 
 onMounted(async () => {
-  await getFavoritePodcasts();
+  if (userStore.user_id) {
+    await getFavoritePodcasts();
+  }
   await getPodcasts();
 });
 </script>
