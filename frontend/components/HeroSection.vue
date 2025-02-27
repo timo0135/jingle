@@ -9,28 +9,39 @@ const descriptionDirect = ref('');
 const imageDirect = ref('');
 
 async function getDirect() {
+  console.log("Fetching direct...");
   try {
     const response = await api.get('/direct');
     if (!response.data.directs) return;
 
-    const direct = await api.get(`${response.data.directs[0].links[0].href}`);
+    const url = response.data.directs[0]?.links[0]?.href;
+
+    if (!url) {
+      useUserStore().showErrorToast('Pas de direct disponible pour le moment.');
+    }
+
+    const direct = await api.get(url);
 
     if (!direct.data.direct) return;
-
     nameDirect.value = direct.data.direct.name;
     descriptionDirect.value = direct.data.direct.description;
     imageDirect.value = direct.data.direct.image;
+
+    return direct;
   } catch (error: any) {
     console.error('Error fetching direct:', error);
   }
 }
 
-function handleDirectClick() {
+async function handleDirectClick() {
+  if (!nameDirect.value || !descriptionDirect.value || !imageDirect.value) {
+    const response = await getDirect();
+    if (!response) return;
+  }
   emit('changeVisibility', true, false, null, nameDirect.value, descriptionDirect.value, imageDirect.value);
 }
 
 onMounted(async () => {
-  await getDirect();
 });
 
 
