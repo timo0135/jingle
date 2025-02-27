@@ -155,7 +155,7 @@ onMounted(async () => {
       <div class="flex justify-between">
         <profileCard :name="user.pseudo" :mail="user.email"/>
         <div id="buttons" class="flex flex-col gap-2 justify-end items-end">
-          <router-link to="/profile/broadcast" v-if="userStore.role === 2">
+          <router-link to="/profile/broadcast" v-if="userStore.role === 2 || userStore.role === 3">
             <button
                 class="rounded-lg font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all">
               diffuser
