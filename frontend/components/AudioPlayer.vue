@@ -1,5 +1,5 @@
-import { AudioPlayer } from '../.nuxt/components';
 <script setup lang="ts">
+import {watch} from 'vue';
 
 const props = defineProps({
   direct: {
@@ -19,7 +19,6 @@ const props = defineProps({
   image: {
     type: String,
     required: false,
-    default: '/assets/img/radio.jpg'
   },
   audioUrl: {
     type: String,
@@ -32,6 +31,7 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 let audioContext: any;
 let audioBuffer: any = [];
 let ws: any;
+let audio: HTMLAudioElement | null = null; // Audio element for podcast audio
 
 function startListeningDirect() {
   ws = new WebSocket('ws://localhost:8080');
@@ -91,7 +91,6 @@ onMounted(() => {
 
 function play(): void {
   const button = document.getElementById('play_icon') as HTMLImageElement;
-  let audio: HTMLAudioElement | null = null;
   button.addEventListener('click', () => {
     if (!audio && props.audioUrl) {
       audio = new Audio(apiBaseUrl + props.audioUrl);
@@ -118,6 +117,19 @@ function play(): void {
   });
 }
 
+watch(() => props.audioUrl, (newAudioUrl) => {
+  if (audio) {
+    audio.src = apiBaseUrl + newAudioUrl;
+    audio.currentTime = 0;
+    const button = document.getElementById('play_icon') as HTMLImageElement;
+    if (button.src.includes('pause-solid.svg')) {
+      audio.play();
+    } else {
+      audio.pause();
+    }
+  }
+});
+
 function toggleMuteVolume() {
   let AudioPlayer = document.getElementById('audio_player') as HTMLDivElement;
   AudioPlayer.addEventListener('input', () => {
@@ -125,6 +137,8 @@ function toggleMuteVolume() {
     const volumeValue = parseInt(volume.value) / 100;
     if (audioContext) {
       audioContext.destination.volume = volumeValue;
+    } else if (audio) {
+      audio.volume = volumeValue;
     }
     setVolumeIcon();
   });
@@ -143,7 +157,6 @@ function setVolumeIcon(): void {
     volume_icon.src = 'assets/svg/volume-high-solid.svg';
   }
 }
-
 </script>
 
 <template>
@@ -161,25 +174,11 @@ function setVolumeIcon(): void {
         <div class="text-white" id="audio_player_direct_details_text">
           <p>{{ name }}</p>
           <p>{{ description }}</p>
-          <!-- <p v-if="direct" class="text-primary" id="live_text">En direct</p> -->
-          <!-- <p v-else>Rediffusion du podcast</p> -->
         </div>
 
         <img @click="likeDirect" class="h-8 w-8 cursor-pointer" id="like_icon" src="/assets/svg/heart-regular.svg"
              alt="">
       </div>
-      <!--------------------------->
-
-      <!--Audio player play button-->
-
-      <!-- <div class="basis-1/3 flex flex-col items-center gap-2" v-if="!direct">
-        <img @click="pauseDirect" class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="/assets/svg/play-solid.svg" alt="" id="play_icon">
-        <div class="flex justify-between gap-4 w-full">
-          <p class="text-white">00:00</p>
-          <input class="accent-primary w-full" type="range" min="0" max="100" value="0" id="audio_player_time">
-          <p class="text-white">00:00</p>
-        </div>
-      </div> -->
 
       <img class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="/assets/svg/play-solid.svg" alt=""
            id="play_icon">
@@ -188,7 +187,6 @@ function setVolumeIcon(): void {
         <input @click="play" class="accent-primary" type="range" min="0" max="100" id="audio_player_volume">
         <img @click="toggleMuteVolume" class="cursor-pointer w-6 h-auto" src="/assets/svg/volume-low-solid.svg" alt="">
       </div>
-      <!-------------------------->
     </div>
   </div>
 </template>

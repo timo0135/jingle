@@ -79,7 +79,8 @@ onMounted(async () => {
     <NavbarComponent/>
     <HeroSection @changeVisibility="changeVisibility"/>
     <ShowsContainer :title="'Podcasts au top'" :podcasts="podcasts" @changeVisibility="changeVisibility"/>
-    <AudioPlayer v-if="directVisible && !podcastVisible" :direct="true"/>
+    <AudioPlayer v-if="directVisible && !podcastVisible" :direct="true" :name="selectedName"
+                 :description="selectedDescription" :image="selectedImage"/>
     <AudioPlayer v-if="podcastVisible && !directVisible" :direct="false" :audioUrl="selectedAudioUrl"
                  :name="selectedName" :description="selectedDescription" :image="selectedImage"/>
     <Footer/>

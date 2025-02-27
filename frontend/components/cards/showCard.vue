@@ -95,13 +95,13 @@ function handleCardClick() {
 
 <template>
   <div
-      class="card bg-white border-4 border-primary px-10 py-12 rounded-3xl text-primary overflow-visible w-4/12 relative">
+      class="card bg-white border-4 border-primary px-10 py-12 rounded-3xl text-primary overflow-visible w-4/12 relative max-w-[450px] min-w-[300px]">
     <img :src="currentImgSrc" @click="toggleFavorite" height="50px" width="50px"
          class="absolute cursor-pointer top-4 right-4" alt="Icon favorite">
     <div class=" cursor-pointer" @click="handleCardClick">
-      <h2 class="text-3xl font-bungee">{{ name }}</h2>
+      <h2 class="text-3xl font-bungee overflow-hidden">{{ name }}</h2>
       <span class="font-bold font-inter text-md">{{ formattedDate }}</span>
-      <p class="font-bold text-xl">{{ description }}</p>
+      <p class="font-bold text-xl overflow-hidden">{{ description }}</p>
     </div>
   </div>
 </template>

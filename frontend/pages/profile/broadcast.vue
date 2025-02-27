@@ -83,12 +83,13 @@ export default defineComponent({
           const blob = new Blob(recordedChunks, {type: 'audio/webm; codecs=opus'});
           const file = new File([blob], 'broadcast.webm', {type: 'audio/webm'});
 
-          const reponse = await api.get('/direct', {
+          const response = await api.get('/direct', {
             headers: {
               'Authorization': `Bearer ${useUserStore().user_token}`
             }
           });
-          const direct = reponse.data.direct;
+
+          const direct = response.data.direct;
 
           formData.value.name = direct.name;
           formData.value.description = direct.description;
