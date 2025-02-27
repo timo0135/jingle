@@ -3,6 +3,7 @@ import {ref, defineComponent, watch, onMounted} from 'vue';
 import {useAPI} from '#imports';
 import {useUserStore} from '@/stores/userStore';
 
+
 export default defineComponent({
   props: {
     isVisible: {
@@ -96,7 +97,10 @@ export default defineComponent({
       });
     };
 
+
+
     onMounted(() => {
+        
       getUsers();
     });
 
