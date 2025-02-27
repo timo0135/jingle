@@ -176,7 +176,7 @@ export async function createPodcast(req: Request, res: Response) {
             if(!validator.isDate(formattedDate)){
                 throw new PodcastServiceBadDataException('Invalid date');
             }
-            if(!validator.isAlphanumeric(data.name)){
+            if(!/^[a-zA-Z0-9 \u00C0-\u017F]+$/.test(data.name)){
                 throw new PodcastServiceBadDataException('Invalid name');
             }
             if (!validator.isUUID(data.creatorId)) {
