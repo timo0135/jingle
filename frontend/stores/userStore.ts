@@ -51,7 +51,8 @@ export const useUserStore = defineStore('user', {
 
         return response.data;
       } catch (error: any) {
-        this.showErrorToast(error.response.data.message);
+        const message = error.response?.data?.message || 'Une erreur est survenue';
+        this.showErrorToast(message);
       }
     },
     async register(pseudo: string, email: string, password: string) {
@@ -73,7 +74,8 @@ export const useUserStore = defineStore('user', {
         }
 
       } catch (error: any) {
-        this.showErrorToast(error.response.data.message);
+        const message = error.response?.data?.message || 'Une erreur est survenue';
+        this.showErrorToast(message);
       }
     },
     async refreshToken() {
@@ -105,7 +107,8 @@ export const useUserStore = defineStore('user', {
           return res;
         });
       } catch (error: any) {
-        this.showErrorToast(error.response.data.message);
+        const message = error.response?.data?.message || 'Une erreur est survenue';
+        this.showErrorToast(message);
       }
     }
   },
