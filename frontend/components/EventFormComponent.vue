@@ -81,8 +81,6 @@ export default defineComponent({
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-
-                console.log('Direct created:', response);
                 alert(`Event Created: ${this.eventName} on ${this.eventDate}`);
                 this.closeForm();
             } catch (error) {

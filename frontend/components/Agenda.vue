@@ -47,6 +47,7 @@ export default {
     },
 
     getEvent(){
+      this.calendarOptions.events = [];
       const api = useAPI();
       api.get('/directs')
       .then(response => {
@@ -78,7 +79,14 @@ export default {
   },
   mounted() {
     this.getEvent();
-}
+},
+watch: {
+  showEventForm(newVal) {
+    if (!newVal) {
+      this.selectedDate = '';
+      this.getEvent();
+    }
+  }}
 }
 </script>
 
