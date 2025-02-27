@@ -157,6 +157,15 @@ function setVolumeIcon(): void {
     volume_icon.src = 'assets/svg/volume-high-solid.svg';
   }
 }
+
+function likeDirect() {
+  const likeIcon = document.getElementById('like_icon') as HTMLImageElement;
+  if (likeIcon.src.includes('heart-regular.svg')) {
+    likeIcon.src = 'assets/svg/heart-solid.svg';
+  } else {
+    likeIcon.src = 'assets/svg/heart-regular.svg';
+  }
+}
 </script>
 
 <template>
@@ -176,8 +185,8 @@ function setVolumeIcon(): void {
           <p>{{ description }}</p>
         </div>
 
-        <img @click="likeDirect" class="h-8 w-8 cursor-pointer" id="like_icon" src="/assets/svg/heart-regular.svg"
-             alt="">
+        <!--        <img @click="likeDirect" class="h-8 w-8 cursor-pointer" id="like_icon" src="/assets/svg/heart-regular.svg"-->
+        <!--             alt="">-->
       </div>
 
       <img class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="/assets/svg/play-solid.svg" alt=""
