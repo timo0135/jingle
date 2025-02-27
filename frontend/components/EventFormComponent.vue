@@ -77,9 +77,6 @@ export default defineComponent({
           }
         });
 
-        console.log('response:', response.data);
-
-        alert(`Event Created: ${eventName.value} on ${eventDate.value}`);
         closeForm();
       } catch (error: any) {
         const errorMessage = error.response.data.message || 'An error occurred';
