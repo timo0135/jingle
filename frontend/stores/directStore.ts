@@ -6,6 +6,7 @@ export const useDirectStore = defineStore('direct', {
             selectedDate: null,
 
             //Direct
+            isSearchbarActive : false,
             isAudioplayerActive: false,
 
 

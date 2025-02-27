@@ -134,9 +134,7 @@ function like(): void {
 </script>
 
 <template>
-  <transition name="fade">
-    <div id="audio_player_desktop">
-      <div class="bg-gray-700 px-[10%] py-4 fixed border-primary border-2 rounded-full w-9/10 bottom-4 left-1/2 -translate-x-1/2 justify-between items-center hidden sm:flex sm:w-[80vw]">
+      <div class="bg-gray-700 px-[10%] py-4 fixed border-primary border-2 rounded-full w-9/10 bottom-4 left-1/2 -translate-x-1/2 justify-between items-center hidden sm:flex sm:w-[80vw]" id="audio_player_desktop">
         <!--Audio player direct details-->
         <div class="basis-1/3 flex gap-4 items-center" id="audio_player_direct_details">
           <div class="w-16 h-16" id="audio_player_direct_details_image">
@@ -162,12 +160,8 @@ function like(): void {
           <img @click="toggleMuteVolume" class="cursor-pointer w-6 h-auto" src="/assets/svg/volume-low-solid.svg" alt="">
         </div>
       </div>
-    </div>
-  </transition>
 
-  <transition name="fade">
-    <div id="audio_player_mobile">
-      <div class="fixed left-4 bottom-4 flex items-center gap-4 bg-gray-600 p-2 rounded-full sm:hidden">
+      <div class="fixed left-4 bottom-4 flex items-center gap-4 bg-gray-600 p-2 rounded-full sm:hidden" id="audio_player_mobile">
         <!--Play button-->
         <div>
           <img @click="play" class="h-4 w-4 p-3 bg-primary cursor-pointer box-content rounded-full" src="/assets/svg/play-solid.svg" alt="" id="play_icon">
@@ -179,32 +173,36 @@ function like(): void {
           <p class="text-white">00:00</p>
         </div>
         <!--Volume control-->
-        <div class="flex" id="audio_player_volume_container">
-          <input @click="play" class="accent-primary hidden" type="range" min="0" max="100" id="audio_player">
+        <div class="flex items-center" id="audio_player_volume_container">
+          <input type="range" min="0" max="200" id="audio_player_volume">
           <img class="cursor-pointer w-6 h-auto" src="/assets/svg/volume-high-solid.svg" alt="">
         </div>
       </div>
-    </div>
-  </transition>
 </template>
 
 <style scoped>
-#live_text::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-right: 8px;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="red"/></svg>');
-  background-size: cover;
-  @apply animate-ping;
+#audio_player_volume_container {
+  position: relative;
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-.fade-enter-from, .fade-leave-to {
+#audio_player_volume {
+  accent-color: #FB0101;
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 0;
   opacity: 0;
-  transform: translateY(10px);
+  transition: height 0.3s ease, opacity 0.3s ease;
+  writing-mode: vertical-lr;
+}
+
+#audio_player_volume_container:hover #audio_player_volume {
+  background-color: gray;
+  padding: 0 20px;
+  height: 80px; /* Adjust the height as needed */
+  opacity: 1;
+  accent-color: #FB0101;
 }
 </style>
