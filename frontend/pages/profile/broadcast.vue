@@ -7,6 +7,7 @@ import { useAPI } from '#imports';
 
 const api = useAPI();
 
+
 interface FormData {
     name: string;
     description: string;
@@ -19,13 +20,39 @@ interface FormData {
 
 
 const formData = ref<FormData>({
-    name: 'podcats',
-    description: 'gshfhijezjfijeizfi',
+    name: '',
+    description: '',
     fileImage: null,
     file: null,
     creatorId: '',
     date: new Date().toLocaleDateString('Fr-fr'),
 });
+
+const podInfo = () => {
+    api.get('/direct')
+        .then((response) => {
+            const search = response.data.directs[0].links[0].href;
+            api.get(search)
+                .then((response) => {
+                    console.log(response.data.direct.image)
+                    api.get(response.data.direct.image).then((response) => {
+                        const image =  new File([response.data], 'image.jpeg', { type: 'image/jpeg' });
+                        formData.value.fileImage = image;
+                    });
+                    formData.value.name = response.data.direct.name;
+                    formData.value.description = response.data.direct.description;
+                    formData.value.creatorId = response.data.direct.hostId;
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+};
+
+podInfo();
 
 export default defineComponent({
 
@@ -79,14 +106,16 @@ export default defineComponent({
                 };
 
                 mediaRecorder.onstop = async () => {
+
+                    podInfo();
+                   
                     await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for data to be processed
                     const blob = new Blob(recordedChunks, { type: 'audio/webm; codecs=opus' });
                     const file = new File([blob], 'broadcast.webm', { type: 'audio/webm' });
-
-                    formData.value.fileImage = new File([new Blob()], 'image.png', { type: 'image/png' });
                     formData.value.file = file;
-                    formData.value.creatorId = useUserStore().user_id;
+                    console.log('formdata',formData.value);
                     const formDataToSend = new FormData();
+                    console.log('formdatatosend',formDataToSend);
                     for (const key in formData.value) {
                         formDataToSend.append(key, formData.value[key]);
                     }
