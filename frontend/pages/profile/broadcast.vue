@@ -34,7 +34,6 @@ const podInfo = () => {
             const search = response.data.directs[0].links[0].href;
             api.get(search)
                 .then((response) => {
-                    console.log(response.data.direct.image)
                     api.get(response.data.direct.image).then((response) => {
                         const image =  new File([response.data], 'image.jpeg', { type: 'image/jpeg' });
                         formData.value.fileImage = image;
@@ -51,8 +50,6 @@ const podInfo = () => {
             console.error(error);
         });
 };
-
-podInfo();
 
 export default defineComponent({
 
@@ -113,9 +110,7 @@ export default defineComponent({
                     const blob = new Blob(recordedChunks, { type: 'audio/webm; codecs=opus' });
                     const file = new File([blob], 'broadcast.webm', { type: 'audio/webm' });
                     formData.value.file = file;
-                    console.log('formdata',formData.value);
                     const formDataToSend = new FormData();
-                    console.log('formdatatosend',formDataToSend);
                     for (const key in formData.value) {
                         formDataToSend.append(key, formData.value[key]);
                     }
