@@ -15,3 +15,4 @@ export const IS_ME = 14;
 export const IS_MY_MUSIC = 15;
 export const LISTENER = 1;
 export const BROADCASTER = 2;
+export const ADMIN = 3;

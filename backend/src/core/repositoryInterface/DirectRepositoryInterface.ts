@@ -6,6 +6,7 @@ interface DirectRepositoryInterface {
     find(id: string): Promise<Direct>;
     findAll(): Promise<Direct[]>;
     findByUserId(userId: string): Promise<Direct[]>;
+    findNow(): Promise<Direct[]>;
 }
 
 export default DirectRepositoryInterface;

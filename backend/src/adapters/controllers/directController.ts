@@ -548,6 +548,68 @@ export async function cancelGuest(req: Request, res: Response) {
     }
 }
 
+export async function getCurrentDirects(req: Request, res: Response) {
+    try {
+        console.log('ici-------------');
+        let directs = await podcastService.getCurrentDirects();
+        let filteredDirects = directs.map(direct => {
+            let guestsFiltered = direct.get('guess').map((guest: string) => {
+                return {
+                    id: guest,
+                    links: [
+                        {
+                            rel: 'self',
+                            href: '/users/' + guest
+                        }
+                    ]
+                }
+            });
+            return {
+                id: direct.get('id'),
+                name: direct.get('name'),
+                hostId: direct.get('hostId'),
+                guests: guestsFiltered,
+                links: [
+                    {
+                        rel: 'self',
+                        href: '/directs/' + direct.get('id')
+                    },
+                    {
+                        rel: 'update',
+                        href: '/directs/' + direct.get('id')
+                    },
+                    {
+                        rel: 'delete',
+                        href: '/directs/' + direct.get('id')
+                    },
+                    {
+                        rel: 'host',
+                        href: '/users/' + direct.get('hostId')
+                    }
+                ]
+            }
+        });
+        const reponse = {
+            type: 'resource',
+            locale: 'fr-FR',
+            directs: filteredDirects,
+            links: [
+                {
+                    rel: 'self',
+                    href: '/directs'
+                },
+                {
+                    rel: 'create',
+                    href: '/directs'
+                }
+            ]
+        }
+        res.status(200).json(reponse);
+    } catch (error) {
+        handleError(res, error);
+    }
+}
+
 
 function handleError(res: Response, error: any) {
     if (error instanceof PodcastServiceNotFoundException) {

@@ -13,4 +13,5 @@ router.delete('/directs/:id', authenticate, DirectController.deleteDirect);
 router.put('/directs/:id', authenticate, DirectController.updateDirect);
 router.put('/directs/:id/guests', authenticate, DirectController.inviteGuest);
 router.delete('/directs/:id/guests/', authenticate, DirectController.cancelGuest);
+router.get('/direct', DirectController.getCurrentDirects);
 export default router;

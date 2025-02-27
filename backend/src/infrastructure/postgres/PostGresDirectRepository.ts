@@ -116,6 +116,27 @@ class PostGresDirectRepository implements DirectRepositoryInterface {
         }
     }
 
+    async findNow(): Promise<Direct[]> {
+        try {
+            let directs_response = await this.db.any(`
+                SELECT * FROM direct
+                WHERE date <= CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Paris'
+                  AND CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Paris' <= date + INTERVAL '1 minute' * duration
+            `);
+            console.log(directs_response);
+            return Promise.all(directs_response.map(async (direct: any) => {
+                let direct_guests_response = await this.db.any('SELECT user_id FROM guess WHERE direct_id = $1', direct.id);
+                let d = new Direct(direct.name, direct.description, direct.image, direct.host_id, direct.date, direct.duration);
+                d.setId(direct.id);
+                d.setGuess(direct_guests_response.map((guest: any) => guest.user_id));
+                return d;
+            }));
+        } catch (error) {
+            console.error('Error getting all directs:', error);
+            throw new RepositoryInternalServerErrorException('Unable to get all directs');
+        }
+    }
+
 }
 
 export default PostGresDirectRepository;

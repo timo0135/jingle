@@ -73,6 +73,7 @@ interface PodcastServiceInterface {
     getDirects(): Promise<DisplayDirectDTO[]>;
     getDirectById(id: string): Promise<DisplayDirectDTO>;
     getDirectsByUserId(userId: string): Promise<DisplayDirectDTO[]>;
+    getCurrentDirects(): Promise<DisplayDirectDTO[]>;
     searchDirectInfo(dto: SearchDirectDTO): Promise<DisplayDirectDTO[]>;
     createDirect(direct: CreateDirectDTO): Promise<DisplayDirectDTO>;
     deleteDirect(id: string): Promise<void>;

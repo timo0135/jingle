@@ -603,6 +603,22 @@ class PodcastService implements PodcastServiceInterface {
         }
     }
 
+    public async getCurrentDirects(): Promise<DisplayDirectDTO[]> {
+        try{
+            const promise_directs = await this.instanceDirect.findNow();
+            const directs = await Promise.all(promise_directs);
+            return directs.map((direct) => new DisplayDirectDTO(direct));
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while fetching directs");
+            }
+        }
+    }
+
     public searchDirectInfo(dto: SearchDirectDTO): Promise<DisplayDirectDTO[]> {
         throw new Error('Method not implemented.');
     }
