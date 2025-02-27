@@ -54,7 +54,6 @@ export default defineComponent({
 
     const submitForm = async () => {
       try {
-        console.log('formData:', formData.value);
         formData.value.hostId = eventHostId.value;
         formData.value.name = eventName.value;
         formData.value.description = eventDescription.value;
@@ -70,7 +69,6 @@ export default defineComponent({
         formDataToSend.append('date', formData.value.date);
         formDataToSend.append('duration', formData.value.duration.toString());
 
-        console.log('formDataToSend:', formDataToSend);
 
         const response = await api.post('/directs', formDataToSend, {
           headers: {
