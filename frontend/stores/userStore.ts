@@ -1,6 +1,5 @@
 import {defineStore} from 'pinia';
 import {useAPI} from "~/utils/api";
-import router from "#app/plugins/router";
 
 export const useUserStore = defineStore('user', {
   state: () => {

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {useUserStore} from '~/stores/userStore';
 
 export function useAPI() {
     const apiBase = import.meta.env.VITE_API_BASE_URL;
@@ -11,22 +12,30 @@ export function useAPI() {
     });
 
     api.interceptors.response.use(
-        response => response,
-        async error => {
+        (response) => response,
+        async (error) => {
             const userStore = useUserStore();
-            if (error.response.status === 401 || error.response.status === 500) {
-                try {
+            const originalRequest = error.config;
+
+            if (!error.response) {
+                return Promise.reject(error);
+            }
+
+            const status = error.response.status;
+
+            if ((status === 401 || status === 500) &&
+                !originalRequest.url.includes('/refresh')) {
+                const newAccessToken = await userStore.refreshToken();
+
+                if (newAccessToken) {
                     await userStore.refreshToken();
                     error.config.headers['Authorization'] = `Bearer ${userStore.user_token}`;
                     return api.request(error.config);
-                } catch (refreshError) {
-                    userStore.reset();
-                    return Promise.reject(refreshError);
                 }
             }
+
             return Promise.reject(error);
-        }
-    );
+        });
 
     return api;
 }
