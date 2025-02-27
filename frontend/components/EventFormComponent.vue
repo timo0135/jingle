@@ -61,12 +61,10 @@ export default defineComponent({
             if (target.files && target.files[0]) {
                 this.eventImage = target.files[0];
                 this.formData.fileImage = target.files[0];
-                console.log('File selected:', this.eventImage);
             }
         },
         async submitForm() {
             try {
-                console.log('formData:', this.formData);
                 this.formData.hostId = userStore.user_id;
                 this.formData.name = this.eventName;
                 this.formData.description = this.eventDescription;
@@ -76,8 +74,6 @@ export default defineComponent({
                 for (const key in this.formData) {
                     formDataToSend.append(key, this.formData[key]);
                 }
-
-                console.log('FormData to be sent:', formDataToSend);
 
                 const response = await api.post('/directs', formDataToSend, {
                     headers: {
@@ -94,8 +90,11 @@ export default defineComponent({
                 alert('An error occurred while creating the event');
             }
         },
+
         getUsers() {
-            api.get('/users').then(response => {
+            api.get('/users',{headers: {
+                        'Authorization': `Bearer ${userStore.user_token}`,
+                    }}).then(response => {
                 this.users = response.data.users;
             }).catch(error => {
                 console.error(error);
