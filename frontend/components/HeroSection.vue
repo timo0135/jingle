@@ -9,7 +9,6 @@ const descriptionDirect = ref('');
 const imageDirect = ref('');
 
 async function getDirect() {
-  console.log("Fetching direct...");
   try {
     const response = await api.get('/direct');
     if (!response.data.directs) return;
