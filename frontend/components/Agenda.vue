@@ -5,6 +5,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import frLocale from '@fullcalendar/core/locales/fr'
 import EventForm from './EventFormComponent.vue'
+import { useAPI } from '#imports'
 
 export default {
   components: {
@@ -15,7 +16,7 @@ export default {
     return {
       calendarOptions: {
         plugins: [ dayGridPlugin, interactionPlugin, timeGridPlugin ],
-        initialView: 'dayGridMonth',
+        initialView: 'timeGridWeek',
         locale: frLocale,
         timeZone: 'Europe/Paris',
         themeSystem: 'bootstrap',
@@ -23,9 +24,10 @@ export default {
         headerToolbar: {
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          right: 'timeGridWeek,timeGridDay'
         },
-        dateClick: this.handleDateClick
+        dateClick: this.handleDateClick,
+        events: []
       },
       showEventForm: false,
       selectedDate: ''
@@ -39,14 +41,58 @@ export default {
 
     handleDateClick(info) {
       this.openEventForm(info.dateStr);
+    },
+    addEvent(eventData) {
+      this.calendarOptions.events.push(eventData);
+    },
+
+    getEvent(){
+      this.calendarOptions.events = [];
+      const api = useAPI();
+      api.get('/directs')
+      .then(response => {
+        const directs = response.data.directs;
+        directs.forEach(direct => {
+          const self = direct.links[0].href;
+          api.get(self)
+          .then(response => {
+            const event = response.data.direct;
+            const startDate = new Date(event.date);
+            const endDate = new Date(startDate.getTime() + event.duration * 60 * 1000).toISOString();
+            this.calendarOptions.events.push({
+              title: event.name,
+              start: event.date,
+              end: endDate,
+              allDay: false
+            
+          })
+        });
+      })
+      })
+      .catch(error => {
+        console.log(error);
+      })
     }
-  }
+
+
+
+  },
+  mounted() {
+    this.getEvent();
+},
+watch: {
+  showEventForm(newVal) {
+    if (!newVal) {
+      this.selectedDate = '';
+      this.getEvent();
+    }
+  }}
 }
 </script>
 
 <template>
   <div class="flex flex-col items-center">
-    <EventForm :isVisible="showEventForm" @close-form="showEventForm = false" :date="selectedDate" class="z-50"/>
+    <EventForm :isVisible="showEventForm" @close-form="showEventForm = false" :date="selectedDate" @create-event="addEvent" class="z-50"/>
   
    <FullCalendar :options="calendarOptions" class="w-[80%] p-10 z-10"/>
   </div>
