@@ -65,7 +65,8 @@ export default defineComponent({
         },
         async submitForm() {
             try {
-                this.formData.hostId = userStore.user_id;
+                this.formData.hostId = this.eventHostId;
+                console.log('formData:', this.formData.hostId);
                 this.formData.name = this.eventName;
                 this.formData.description = this.eventDescription;
                 this.formData.duration = parseInt(this.eventDuree);
