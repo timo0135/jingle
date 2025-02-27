@@ -152,7 +152,7 @@ function setVolumeIcon(): void {
         class="bg-gray-700 px-[10%] py-4 fixed border-primary border-2 rounded-full w-9/10 bottom-4 left-1/2 -translate-x-1/2 justify-between items-center flex w-[90vw]">
 
       <!--Audio player direct details-->
-      <div class="basis-1/3 flex gap-4 items-center" id="audio_player_direct_details">
+      <div class="flex gap-4 items-center" id="audio_player_direct_details">
 
         <div class="w-16 h-16" id="audio_player_direct_details_image">
           <img class="object-cover w-full h-full" :src="apiBaseUrl + image" alt="">

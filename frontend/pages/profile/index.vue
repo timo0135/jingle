@@ -177,7 +177,7 @@ onMounted(async () => {
       </div>
 
       <sectionTitle title="Mes favoris :"/>
-      <ShowsContainer :title="'Mes favoris'" :podcasts="favoritePodcasts" @changeVisibility="changeVisibility"/>
+      <ShowsContainer :title="''" :podcasts="favoritePodcasts" @changeVisibility="changeVisibility"/>
 
       <sectionTitle title="Mes playlists :"/>
       <div class="flex flex-col gap-2">
