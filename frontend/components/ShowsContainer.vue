@@ -7,6 +7,8 @@ import {useUserStore} from "~/stores/userStore";
 const api = useAPI();
 const userStore = useUserStore();
 
+const emit = defineEmits(['changeVisibility']);
+
 const props = defineProps<{
   title: string;
 }>();
@@ -17,6 +19,8 @@ interface Podcast {
   date: string;
   description: string;
   isFavorite: boolean;
+  audioUrl: string;
+  image: string;
 }
 
 let podcasts = ref<Podcast[]>([]);
@@ -26,9 +30,15 @@ async function getPodcasts() {
   try {
     const response = await api.get('/podcasts');
     if (!response.data.podcasts) return;
-    podcasts.value = response.data.podcasts.map((podcast: any) => ({
-      ...podcast,
-      isFavorite: false,
+
+    podcasts.value = await Promise.all(response.data.podcasts.map(async (podcast: any) => {
+      const imageResponse = await api.get(`/podcasts/${podcast.id}`);
+      return {
+        ...podcast,
+        isFavorite: false,
+        audioUrl: podcast.file,
+        image: imageResponse.data.podcast.image,
+      };
     }));
 
     if (userStore.user_id) {
@@ -36,8 +46,9 @@ async function getPodcasts() {
       await getFavoritePodcasts();
     }
   } catch (error: any) {
-    userStore.showErrorToast(error.response.data.message);
-  }
+    const message = error.response?.data?.message || 'Une erreur est survenue';
+    userStore.showErrorToast(message);
+  }podcasts
 }
 
 async function getFavoritePlaylist() {
@@ -78,6 +89,10 @@ async function getFavoritePodcasts() {
   }
 }
 
+function handleShowCardClicked(audioUrl: string, name: string, description: string, image: string) {
+  emit('changeVisibility', false, true, audioUrl, name, description, image);
+}
+
 onMounted(async () => {
   const showsContainer: HTMLElement | null = document.getElementById('shows_container');
   const flecheGauche: HTMLElement | null = document.getElementById('flecheGauche');
@@ -108,7 +123,9 @@ onMounted(async () => {
     <h2 class="my-4 text-3xl underline">{{ props.title }}</h2>
     <div class="flex gap-4 overflow-x-scroll no-scrollbar overflow-auto" id="shows_container">
       <ShowCard v-for="podcast in podcasts" :key="podcast.id" :id="podcast.id" :name="podcast.name"
-                :date="podcast.date" :description="podcast.description" :isFavorite="podcast.isFavorite"/>
+                :date="podcast.date" :description="podcast.description" :isFavorite="podcast.isFavorite"
+                :audioUrl="podcast.audioUrl"
+                @showCardClicked="handleShowCardClicked(podcast.audioUrl, podcast.name, podcast.description, podcast.image)"/>
     </div>
     <div class="flex gap-4 my-2" id="show_navigation">
       <img id="flecheGauche" class="cursor-pointer" width="50px" height="50px"

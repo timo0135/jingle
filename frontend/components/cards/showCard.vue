@@ -10,7 +10,10 @@ const props = defineProps({
   date: String,
   description: String,
   isFavorite: Boolean,
+  audioUrl: String,
 });
+
+const emit = defineEmits(['showCardClicked']);
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -84,6 +87,10 @@ async function toggleFavorite() {
     console.error(error);
   }
 }
+
+function handleCardClick() {
+  emit('showCardClicked', props.audioUrl);
+}
 </script>
 
 <template>
@@ -91,9 +98,11 @@ async function toggleFavorite() {
       class="card bg-white border-4 border-primary px-10 py-12 rounded-3xl text-primary overflow-visible w-4/12 relative">
     <img :src="currentImgSrc" @click="toggleFavorite" height="50px" width="50px"
          class="absolute cursor-pointer top-4 right-4" alt="Icon favorite">
-    <h2 class="text-3xl font-bungee">{{ name }}</h2>
-    <span class="font-bold font-inter text-md">{{ formattedDate }}</span>
-    <p class="font-bold text-xl">{{ description }}</p>
+    <div class=" cursor-pointer" @click="handleCardClick">
+      <h2 class="text-3xl font-bungee">{{ name }}</h2>
+      <span class="font-bold font-inter text-md">{{ formattedDate }}</span>
+      <p class="font-bold text-xl">{{ description }}</p>
+    </div>
   </div>
 </template>
 

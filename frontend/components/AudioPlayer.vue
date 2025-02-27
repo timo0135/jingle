@@ -5,112 +5,142 @@ const props = defineProps({
   direct: {
     type: Boolean,
     required: true
+  },
+  name: {
+    type: String,
+    required: false,
+    default: ''
+  },
+  description: {
+    type: String,
+    required: false,
+    default: ''
+  },
+  image: {
+    type: String,
+    required: false,
+    default: '/assets/img/radio.jpg'
+  },
+  audioUrl: {
+    type: String,
+    required: false,
   }
 });
 
-    let audioContext : any ;
-    let audioBuffer : any  = [];
-    let ws : any;
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-    function startListening() {
-      ws = new WebSocket('ws://localhost:8080');
+let audioContext: any;
+let audioBuffer: any = [];
+let ws: any;
 
-      ws.onopen = () => {
-        console.log("WebSocket connection opened for listener.");
-        ws.send(JSON.stringify({ type: 'listen' }));
-      };
+function startListeningDirect() {
+  ws = new WebSocket('ws://localhost:8080');
 
-      ws.onmessage = (message: MessageEvent) => {
-        const data = JSON.parse(message.data);
+  ws.onopen = () => {
+    console.log("WebSocket connection opened for listener.");
+    ws.send(JSON.stringify({type: 'listen'}));
+  };
 
-        if (data.audio) {
-          audioBuffer = audioBuffer.concat(data.audio);
-          playAudioBuffer();
+  ws.onmessage = (message: MessageEvent) => {
+    const data = JSON.parse(message.data);
+    if (data.audio) {
+      audioBuffer = audioBuffer.concat(data.audio);
+      playAudioBuffer();
+    }
+  };
+
+  ws.onerror = (error: Event) => {
+    console.error("WebSocket error:", error);
+  };
+
+  ws.onclose = (event: CloseEvent) => {
+    console.log("WebSocket connection closed. Code:", event.code, "Reason:", event.reason);
+  };
+
+  audioContext = new AudioContext();
+}
+
+function stopListeningDirect() {
+  if (ws) {
+    ws.send(JSON.stringify({type: 'stopListening'}));
+    ws.close();
+    console.log("Stopped listening and WebSocket connection closed.");
+  }
+}
+
+function playAudioBuffer(): void {
+  if (audioBuffer.length === 0 || !audioContext) return;
+
+  const buffer = audioContext.createBuffer(1, audioBuffer.length, audioContext.sampleRate);
+  buffer.getChannelData(0).set(audioBuffer);
+
+  const source = audioContext.createBufferSource();
+  source.buffer = buffer;
+  source.connect(audioContext.destination);
+  source.start();
+
+  console.log("Playing audio buffer");
+  audioBuffer = [];
+}
+
+onMounted(() => {
+  play();
+  toggleMuteVolume();
+  setVolumeIcon();
+});
+
+function play(): void {
+  const button = document.getElementById('play_icon') as HTMLImageElement;
+  let audio: HTMLAudioElement | null = null;
+  button.addEventListener('click', () => {
+    if (!audio && props.audioUrl) {
+      audio = new Audio(apiBaseUrl + props.audioUrl);
+    }
+    if (button.src.includes('play-solid.svg')) {
+      if (props.direct) {
+        startListeningDirect();
+      } else {
+        if (audio) {
+          audio.play();
         }
-      };
-
-      ws.onerror = (error: Event) => {
-        console.error("WebSocket error:", error);
-      };
-
-      ws.onclose = (event: CloseEvent) => {
-        console.log("WebSocket connection closed. Code:", event.code, "Reason:", event.reason);
-      };
-
-      audioContext = new AudioContext();
+      }
+      button.src = '/assets/svg/pause-solid.svg';
+    } else {
+      if (props.direct) {
+        stopListeningDirect();
+      } else {
+        if (audio) {
+          audio.pause();
+        }
+      }
+      button.src = '/assets/svg/play-solid.svg';
     }
+  });
+}
 
-    function stopListening() {
-      if (ws) {
-        ws.send(JSON.stringify({ type: 'stopListening' }));
-        ws.close();
-        console.log("Stopped listening and WebSocket connection closed.");
-      }
+function toggleMuteVolume() {
+  let AudioPlayer = document.getElementById('audio_player') as HTMLDivElement;
+  AudioPlayer.addEventListener('input', () => {
+    const volume = document.getElementById('audio_player_volume') as HTMLInputElement;
+    const volumeValue = parseInt(volume.value) / 100;
+    if (audioContext) {
+      audioContext.destination.volume = volumeValue;
     }
+    setVolumeIcon();
+  });
+}
 
-    function playAudioBuffer() : void
-      {
-      if (audioBuffer.length === 0 || !audioContext) return;
-
-      const buffer = audioContext.createBuffer(1, audioBuffer.length, audioContext.sampleRate);
-      buffer.getChannelData(0).set(audioBuffer);
-
-      const source = audioContext.createBufferSource();
-      source.buffer = buffer;
-      source.connect(audioContext.destination);
-      source.start();
-
-      console.log("Playing audio buffer");
-      audioBuffer = [];
-    }
-
-    onMounted(() => {
-      play();
-      toggleMuteVolume();
-      setVolumeIcon();
-    });
-
-    function play() : void
-    {
-    const button = document.getElementById('play_icon') as HTMLImageElement;
-    button.addEventListener('click', () => {
-      if (button.src.includes('play-solid.svg')) {
-        startListening();
-        button.src = 'http://localhost:8084/_nuxt/public/assets/svg/pause-solid.svg';
-      }
-      else {
-        stopListening();
-        button.src = 'http://localhost:8084/_nuxt/public/assets/svg/play-solid.svg';
-      }
-    });
-  };
-
-  function toggleMuteVolume() {
-    let AudioPlayer = document.getElementById('audio_player') as HTMLDivElement;
-    AudioPlayer.addEventListener('input', () => {
-      const volume = document.getElementById('audio_player_volume') as HTMLInputElement;
-      const volumeValue = parseInt(volume.value) / 100;
-      if (audioContext) {
-        audioContext.destination.volume = volumeValue;
-      }
-      setVolumeIcon();
-    });
-  };
-
-function setVolumeIcon() : void
-{
+function setVolumeIcon(): void {
   const audio_player_volume = document.getElementById('audio_player_volume') as HTMLInputElement;
   const volume = audio_player_volume.value;
 
   const volume_icon = document.querySelector('#audio_player_volume_container img') as HTMLImageElement;
   if (volume === '0') {
-    volume_icon.src = '_nuxt/public/svg/volume-xmark-solid.svg';
-  }
-  else if (parseInt(volume) < 55) {
-    volume_icon.src = '_nuxt/public/svg/volume-low-solid.svg';
-  }
-  else {
-    volume_icon.src = '_nuxt/public/svg/volume-high-solid.svg';
+    volume_icon.src = 'assets/svg/volume-xmark-solid.svg';
+  } else if (parseInt(volume) < 55) {
+    volume_icon.src = 'assets/svg/volume-low-solid.svg';
+  } else {
+    volume_icon.src = 'assets/svg/volume-high-solid.svg';
   }
 }
 
@@ -118,23 +148,25 @@ function setVolumeIcon() : void
 
 <template>
   <div id="audio_player">
-    <div class="bg-gray-700 px-[10%] py-4 fixed border-primary border-2 rounded-full w-9/10 bottom-4 left-1/2 -translate-x-1/2 justify-between items-center flex w-[90vw]">
+    <div
+        class="bg-gray-700 px-[10%] py-4 fixed border-primary border-2 rounded-full w-9/10 bottom-4 left-1/2 -translate-x-1/2 justify-between items-center flex w-[90vw]">
 
       <!--Audio player direct details-->
       <div class="basis-1/3 flex gap-4 items-center" id="audio_player_direct_details">
 
         <div class="w-16 h-16" id="audio_player_direct_details_image">
-          <img class="object-cover w-full h-full" src="/assets/img/radio.jpg" alt="">
+          <img class="object-cover w-full h-full" :src="apiBaseUrl + image" alt="">
         </div>
 
         <div class="text-white" id="audio_player_direct_details_text">
-          <p>Valeur du store direct emission title</p>
-          <p>Valeur du store direct emission</p>
+          <p>{{ name }}</p>
+          <p>{{ description }}</p>
           <!-- <p v-if="direct" class="text-primary" id="live_text">En direct</p> -->
           <!-- <p v-else>Rediffusion du podcast</p> -->
         </div>
 
-        <img @click="likeDirect" class="h-8 w-8 cursor-pointer" id="like_icon" src="/assets/svg/heart-regular.svg" alt="">
+        <img @click="likeDirect" class="h-8 w-8 cursor-pointer" id="like_icon" src="/assets/svg/heart-regular.svg"
+             alt="">
       </div>
       <!--------------------------->
 
@@ -149,7 +181,8 @@ function setVolumeIcon() : void
         </div>
       </div> -->
 
-      <img class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="/assets/svg/play-solid.svg" alt="" id="play_icon">
+      <img class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="/assets/svg/play-solid.svg" alt=""
+           id="play_icon">
 
       <div class="flex gap-4" id="audio_player_volume_container">
         <input @click="play" class="accent-primary" type="range" min="0" max="100" id="audio_player_volume">
