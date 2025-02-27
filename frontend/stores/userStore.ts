@@ -12,6 +12,7 @@ export const useUserStore = defineStore('user', {
       isVisible: ref(false),
       toastMessage: ref(''),
       favoritePlaylistId: null,
+      role: null,
     };
   },
   actions: {
@@ -22,6 +23,7 @@ export const useUserStore = defineStore('user', {
       this.email = null;
       this.refresh_token = null;
       this.favoritePlaylistId = null;
+      this.role = null;
     },
     showErrorToast(message: string) {
       this.toastMessage = message;
@@ -40,6 +42,7 @@ export const useUserStore = defineStore('user', {
           this.user_id = res.data.user.id;
           this.user_token = res.data.user.token;
           this.refresh_token = res.data.user.refreshToken;
+          this.role = res.data.user.role;
           return res;
         });
         if (response) {

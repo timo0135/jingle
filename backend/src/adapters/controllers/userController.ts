@@ -69,7 +69,8 @@ export async function signin(req: Request, res: Response) {
             id: user.get('id'),
             email: user.get('email'),
             token: user.get('token'),
-            refreshToken: user.get('refresh')
+            refreshToken: user.get('refresh'),
+            role: user.get('role')
         }
 
         const response = {
