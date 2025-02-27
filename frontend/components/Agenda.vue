@@ -6,6 +6,9 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import frLocale from '@fullcalendar/core/locales/fr'
 import EventForm from './EventFormComponent.vue'
 import { useAPI } from '#imports'
+import { useUserStore } from '@/stores/userStore'
+
+const userStore = useUserStore();
 
 export default {
   components: {
@@ -40,7 +43,9 @@ export default {
     },
 
     handleDateClick(info) {
-      this.openEventForm(info.dateStr);
+      if (userStore.role != 1){
+        this.openEventForm(info.dateStr);
+      }
     },
     addEvent(eventData) {
       this.calendarOptions.events.push(eventData);
