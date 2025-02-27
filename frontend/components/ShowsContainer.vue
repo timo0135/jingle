@@ -19,6 +19,28 @@ const emit = defineEmits(['changeVisibility']);
 function handleShowCardClicked(audioUrl: string, name: string, description: string, image: string) {
   emit('changeVisibility', false, true, audioUrl, name, description, image);
 }
+
+onMounted(async () => {
+  const showsContainer: HTMLElement | null = document.getElementById('shows_container');
+  const flecheGauche: HTMLElement | null = document.getElementById('flecheGauche');
+  const flecheDroit: HTMLElement | null = document.getElementById('flecheDroit');
+
+  if (flecheGauche && showsContainer) {
+    flecheGauche.addEventListener('click', () => {
+      if (showsContainer) {
+        showsContainer.scrollLeft -= 150;
+      }
+    });
+  }
+
+  if (flecheDroit && showsContainer) {
+    flecheDroit.addEventListener('click', () => {
+      if (showsContainer) {
+        showsContainer.scrollLeft += 150;
+      }
+    });
+  }
+});
 </script>
 
 <template>
