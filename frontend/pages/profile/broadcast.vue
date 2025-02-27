@@ -27,6 +27,29 @@ const formData = ref<FormData>({
   date: new Date().toLocaleDateString('Fr-fr'),
 });
 
+const podInfo = () => {
+    api.get('/direct')
+        .then((response) => {
+            const search = response.data.directs[0].links[0].href;
+            api.get(search)
+                .then((response) => {
+                    api.get(response.data.direct.image).then((response) => {
+                        const image =  new File([response.data], 'image.jpeg', { type: 'image/jpeg' });
+                        formData.value.fileImage = image;
+                    });
+                    formData.value.name = response.data.direct.name;
+                    formData.value.description = response.data.direct.description;
+                    formData.value.creatorId = response.data.direct.hostId;
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+};
+
 export default defineComponent({
 
 
@@ -78,41 +101,30 @@ export default defineComponent({
           }
         };
 
-        mediaRecorder.onstop = async () => {
-          await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for data to be processed
-          const blob = new Blob(recordedChunks, {type: 'audio/webm; codecs=opus'});
-          const file = new File([blob], 'broadcast.webm', {type: 'audio/webm'});
+                mediaRecorder.onstop = async () => {
 
-          const response = await api.get('/direct', {
-            headers: {
-              'Authorization': `Bearer ${useUserStore().user_token}`
-            }
-          });
+                    podInfo();
 
-          const direct = response.data.direct;
-
-          formData.value.name = direct.name;
-          formData.value.description = direct.description;
-          formData.value.date = direct.date;
-          formData.value.fileImage = direct.fileImage;
-          formData.value.file = file;
-          formData.value.creatorId = useUserStore().user_id;
-          const formDataToSend = new FormData();
-          for (const key in formData.value) {
-            formDataToSend.append(key, formData.value[key]);
-          }
-          try {
-            await api.post(`/podcasts`, formDataToSend, {
-              headers: {
-                'Authorization': `Bearer ${useUserStore().user_token}`,
-                'Content-Type': 'multipart/form-data'
-              },
-            });
-            console.log('Podcast uploaded successfully');
-          } catch (error) {
-            console.error('Error uploading podcast:', error);
-          }
-          recordedChunks = [];
+                    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for data to be processed
+                    const blob = new Blob(recordedChunks, { type: 'audio/webm; codecs=opus' });
+                    const file = new File([blob], 'broadcast.webm', { type: 'audio/webm' });
+                    formData.value.file = file;
+                    const formDataToSend = new FormData();
+                    for (const key in formData.value) {
+                        formDataToSend.append(key, formData.value[key]);
+                    }
+                    try {
+                        await api.post(`/podcasts`, formDataToSend, {
+                            headers: {
+                                'Authorization': `Bearer ${useUserStore().user_token}`,
+                                'Content-Type': 'multipart/form-data'
+                            },
+                        });
+                        console.log('Podcast uploaded successfully');
+                    } catch (error) {
+                        console.error('Error uploading podcast:', error);
+                    }
+                    recordedChunks = [];
 
           microphoneSource.disconnect();
           desktopSource.disconnect();
