@@ -802,6 +802,19 @@ export async function upgradeUserToBroadcaster(req: Request, res: Response){
     }
 }
 
+export async function disupgradeUserToBroadcaster(req: Request, res: Response){
+    try {
+        if (!validator.isUUID(req.params.id)) {
+            throw new PodcastServiceBadDataException('Invalid user');
+        }
+        await podcastService.disupgradeListerToBroadcaster(new UpgradeListenerToBroadcasterDTO(req.params.id));
+
+        res.status(204).send();
+    }catch (error){
+        handleError(res, error);
+    }
+}
+
 function handleError(res: Response, error: any) {
     if (error instanceof PodcastServiceNotFoundException) {
         res.status(404).json({ message: error.message });

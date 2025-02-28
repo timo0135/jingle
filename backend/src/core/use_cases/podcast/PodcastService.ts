@@ -987,6 +987,23 @@ class PodcastService implements PodcastServiceInterface {
             }
         }
     }
+
+    public async disupgradeListerToBroadcaster(dto: UpgradeListenerToBroadcasterDTO): Promise<DisplayUserDTO> {
+        try{
+            const user = await this.instanceUser.find(dto.get('userId'))
+            user.setRole(constants.LISTENER);
+            await this.instanceUser.save(user);
+            return new DisplayUserDTO(user);
+        } catch (error) {
+            if (error instanceof RepositoryInternalServerErrorException) {
+                throw new PodcastServiceInternalServerErrorException(error.message);
+            } else if (error instanceof RepositoryNotFoundException) {
+                throw new PodcastServiceNotFoundException(error.message);
+            } else {
+                throw new PodcastServiceInternalServerErrorException("An error occurred while upgrading user to broadcaster");
+            }
+        }
+    }
 }
 
 export default PodcastService;

@@ -96,6 +96,8 @@ interface PodcastServiceInterface {
     subscribeToBroadcaster(dto: SubscribeToBroacasterDTO): Promise<DisplayUserDTO>;
     unsubscribeToBroadcaster(dto: UnsubscribeToBroacasterDTO): Promise<DisplayUserDTO>;
     upgradeListerToBroadcaster(dto: UpgradeListenerToBroadcasterDTO): Promise<DisplayUserDTO>;
+    disupgradeListerToBroadcaster(dto: UpgradeListenerToBroadcasterDTO): Promise<DisplayUserDTO>;
+
 }
 
 export default PodcastServiceInterface;
