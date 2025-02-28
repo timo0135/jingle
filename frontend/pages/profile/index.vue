@@ -5,10 +5,16 @@ import ShowsContainer from "~/components/ShowsContainer.vue";
 import PlaylistCard from "~/components/cards/playlistCard.vue";
 import AudioPlayer from "~/components/AudioPlayer.vue";
 import {useUserStore} from "~/stores/userStore";
-import {useAPI} from "#imports";
+import {definePageMeta, useAPI} from "#imports";
 
 const api = useAPI();
 const userStore = useUserStore();
+
+definePageMeta({
+  middleware:[
+    'auth'
+  ]
+})
 
 interface Playlist {
   id: string;

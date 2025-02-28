@@ -2,10 +2,18 @@
 import {defineComponent, onMounted, ref} from 'vue';
 import NavbarComponent from '~/components/NavbarComponent.vue';
 import Footer from '~/components/Footer.vue';
+import {definePageMeta, useUserStore} from '#imports';
+import { useAPI } from '#imports';
 import {useUserStore} from '#imports';
-import {useAPI} from '#imports';
 
 const api = useAPI();
+
+definePageMeta({
+  middleware:[
+    'auth',
+    'is-broadcaster'
+  ]
+})
 
 interface FormData {
   name: string;
