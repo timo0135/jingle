@@ -23,7 +23,6 @@ async function getDirect() {
     const direct = await api.get(url);
 
     if (!direct.data.direct) return;
-    console.log('Direct:', direct.data.direct);
     nameDirect.value = direct.data.direct.name;
     descriptionDirect.value = direct.data.direct.description;
     imageDirect.value = direct.data.direct.image;
