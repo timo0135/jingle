@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import {ref, onMounted} from 'vue';
+import { ref, onMounted } from 'vue';
 import ProfileCard from "~/components/cards/profileCard.vue";
 import ShowsContainer from "~/components/ShowsContainer.vue";
 import PlaylistCard from "~/components/cards/playlistCard.vue";
 import AudioPlayer from "~/components/AudioPlayer.vue";
-import {useUserStore} from "~/stores/userStore";
-import {definePageMeta, useAPI} from "#imports";
+import { useUserStore } from "~/stores/userStore";
+import { definePageMeta, useAPI } from "#imports";
 
 const api = useAPI();
 const userStore = useUserStore();
 
 definePageMeta({
-  middleware:[
+  middleware: [
     'auth'
   ]
 })
@@ -153,53 +153,53 @@ onMounted(async () => {
 
 <template>
   <div class="relative">
-    <NavbarComponent/>
+    <NavbarComponent />
 
     <div class="w-[95%] flex flex-col m-auto">
 
-      <sectionTitle title="Mon profil :"/>
-      <div class="flex justify-between">
-        <profileCard :name="user.pseudo" :mail="user.email"/>
-        <div id="buttons" class="flex flex-col gap-2 justify-end items-end">
+      <sectionTitle title="Mon profil :" />
+      <div class="flex flex-col md:flex-row justify-between">
+        <profileCard :name="user.pseudo" :mail="user.email" />
+        <div id="buttons" class="flex flex-row gap-2 justify-center items-end mt-4 md:mt-0 md:flex-col md:justify-end">
           <router-link to="/profile/broadcast" v-if="userStore.role === 2 || userStore.role === 3">
             <button
-                class="rounded-lg font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all">
+              class="rounded-lg font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all text-sm md:text-base">
               diffuser
             </button>
           </router-link>
           <router-link to="/calendar">
             <button
-                class="rounded-lg font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all">
+              class="rounded-lg font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all text-sm md:text-base">
               calendrier
             </button>
           </router-link>
           <router-link to="/profile/admin" v-if="userStore.role === 3">
             <button
-                class="rounded-lg font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all">
+              class="rounded-lg font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all text-sm md:text-base">
               admin
             </button>
           </router-link>
         </div>
       </div>
 
-      <sectionTitle title="Mes favoris :"/>
-      <ShowsContainer :title="''" :podcasts="favoritePodcasts" @changeVisibility="changeVisibility"/>
+      <div>
+        <sectionTitle title="Mes favoris :" />
+        <ShowsContainer :title="''" :podcasts="favoritePodcasts" @changeVisibility="changeVisibility" />
+      </div>
 
-      <sectionTitle title="Mes playlists :"/>
-      <div class="flex flex-col gap-2">
-        <div v-for="playlist in playlists" :key="playlist.id">
-          <playlistCard :title="playlist.name" :number="playlist.nbPodcasts"/>
+      <div >
+        <sectionTitle title="Mes playlists :" />
+        <div class="flex flex-col gap-2 py-4" >
+          <div v-for="playlist in playlists" :key="playlist.id">
+            <playlistCard :title="playlist.name" :number="playlist.nbPodcasts" />
+          </div>
         </div>
       </div>
     </div>
 
-    <AudioPlayer v-if="directVisible && !podcastVisible" :direct="true"/>
+    <AudioPlayer v-if="directVisible && !podcastVisible" :direct="true" />
     <AudioPlayer v-if="podcastVisible && !directVisible" :direct="false" :audioUrl="selectedAudioUrl"
-                 :name="selectedName" :description="selectedDescription" :image="selectedImage"/>
-    <Footer/>
+      :name="selectedName" :description="selectedDescription" :image="selectedImage" />
+    <Footer />
   </div>
 </template>
-
-<style scoped>
-/* Add your styles here */
-</style>

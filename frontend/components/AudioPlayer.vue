@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {watch} from 'vue';
+import { watch } from 'vue';
 
 const props = defineProps({
   direct: {
@@ -38,7 +38,7 @@ function startListeningDirect() {
 
   ws.onopen = () => {
     console.log("WebSocket connection opened for listener.");
-    ws.send(JSON.stringify({type: 'listen'}));
+    ws.send(JSON.stringify({ type: 'listen' }));
   };
 
   ws.onmessage = (message: MessageEvent) => {
@@ -62,7 +62,7 @@ function startListeningDirect() {
 
 function stopListeningDirect() {
   if (ws) {
-    ws.send(JSON.stringify({type: 'stopListening'}));
+    ws.send(JSON.stringify({ type: 'stopListening' }));
     ws.close();
     console.log("Stopped listening and WebSocket connection closed.");
   }
@@ -171,30 +171,31 @@ function likeDirect() {
 <template>
   <div id="audio_player">
     <div
-        class="bg-gray-700 px-[10%] py-4 fixed border-primary border-2 rounded-full w-9/10 bottom-4 left-1/2 -translate-x-1/2 justify-between items-center flex w-[90vw]">
+      class="bg-gray-700 px-4 py-2 md:px-[10%] md:py-4 fixed border-primary border-2 rounded-full w-[90vw] bottom-4 left-1/2 -translate-x-1/2 justify-between items-center flex">
 
       <!--Audio player direct details-->
-      <div class="flex gap-4 items-center" id="audio_player_direct_details">
+      <div class="flex gap-2 md:gap-4 items-center" id="audio_player_direct_details">
 
-        <div class="w-16 h-16" id="audio_player_direct_details_image">
+        <div class="hidden md:block w-12 h-12 md:w-16 md:h-16" id="audio_player_direct_details_image">
           <img class="object-cover w-full h-full" :src="apiBaseUrl + image" alt="">
         </div>
 
-        <div class="text-white" id="audio_player_direct_details_text">
-          <p>{{ name }}</p>
-          <p>{{ description }}</p>
+        <div class="text-white text-sm md:text-base" id="audio_player_direct_details_text">
+          <p class="truncate">{{ name }}</p>
+          <p class="truncate">{{ description }}</p>
         </div>
 
         <!--        <img @click="likeDirect" class="h-8 w-8 cursor-pointer" id="like_icon" src="/assets/svg/heart-regular.svg"-->
         <!--             alt="">-->
       </div>
 
-      <img class="h-6 w-6 p-3 bg-primary cursor-pointer rounded-2xl box-content" src="/assets/svg/play-solid.svg" alt=""
-           id="play_icon">
+      <img class="h-4 w-4 p-2 md:h-6 md:w-6 md:p-3 bg-primary cursor-pointer rounded-2xl box-content"
+        src="/assets/svg/play-solid.svg" alt="" id="play_icon">
 
-      <div class="flex gap-4" id="audio_player_volume_container">
+      <div class="flex gap-2 md:gap-4" id="audio_player_volume_container">
         <input @click="play" class="accent-primary" type="range" min="0" max="100" id="audio_player_volume">
-        <img @click="toggleMuteVolume" class="cursor-pointer w-6 h-auto" src="/assets/svg/volume-low-solid.svg" alt="">
+        <img @click="toggleMuteVolume" class="cursor-pointer w-4 h-auto md:w-6" src="/assets/svg/volume-low-solid.svg"
+          alt="">
       </div>
     </div>
   </div>

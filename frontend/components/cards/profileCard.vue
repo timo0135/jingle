@@ -51,27 +51,27 @@ const handleSave = async () => {
 </script>
 
 <template>
-  <div id="profile_card" class="border-primary border-4 rounded-2xl flex gap-10 px-12 py-4 w-fit bg-white">
+  <div id="profile_card" class="border-primary border-4 rounded-2xl flex flex-row md:flex-row gap-4 md:gap-10 px-4 md:px-12 py-4 w-full md:w-fit bg-white">
     <img src="/assets/img/default.jpg" alt="Image de l'émission"
-         class="border-4 border-primary object-cover rounded-2xl w-40 h-40"/>
+         class="border-4 border-primary object-cover rounded-2xl w-24 h-24 md:w-40 md:h-40"/>
 
     <div class="details flex flex-col justify-between text-primary">
       <div class="flex flex-col gap-2 justify-center h-full">
-        <h2 class="font-bungee text-3xl">
+        <h2 class="font-bungee text-xl md:text-3xl">
           Nom :
           <span v-if="!isEditing">{{ name }}</span>
           <input v-else v-model="editedName" class="border-4 border-primary rounded-2xl p-2 w-full">
         </h2>
-        <p class="font-bold font-inter">
+        <p class="font-bold font-inter text-sm md:text-base">
           Mail :
           <span v-if="!isEditing">{{ mail }}</span>
           <input v-else v-model="editedMail" class="border-4 border-primary rounded-2xl p-2 w-full">
         </p>
         <button v-if="!isEditing" @click="handleEdit"
-                class="bg-primary font-bold font-inter text-center text-white px-20 py-3 rounded-2xl w-fit">Modifier
+                class="bg-primary font-bold font-inter text-center text-white px-10 md:px-20 py-2 md:py-3 rounded-2xl w-full md:w-fit">Modifier
         </button>
         <button v-else @click="handleSave"
-                class="bg-primary font-bold font-inter text-center text-white px-20 py-3 rounded-2xl w-fit">Enregistrer
+                class="bg-primary font-bold font-inter text-center text-white px-5 py-2 md:py-3 rounded-2xl w-full md:w-fit">Enregistrer
         </button>
       </div>
     </div>

@@ -86,7 +86,3 @@ onMounted(async () => {
     <Footer/>
   </div>
 </template>
-
-<style scoped>
-/* Add your styles here */
-</style>

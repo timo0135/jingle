@@ -19,7 +19,7 @@ function toggleImage() {
 
 <template>
   <div
-      class="card bg-white border-4 border-primary px-10 py-12 rounded-3xl text-primary overflow-visible w-4/12 relative">
+      class="card  bg-white border-4 border-primary px-10 py-12 rounded-3xl text-primary overflow-visible w-4/12 relative max-w-[450px] min-w-[300px]">
     <h2 class="text-3xl font-bungee">{{ props.title }}</h2>
     <span class="font-bold font-inter text-md">{{ props.number }} emissions</span>
   </div>

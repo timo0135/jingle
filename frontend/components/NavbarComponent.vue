@@ -50,11 +50,11 @@ const searchPodcast = async () => {
         <!--Si l'utilisateur est connecté-->
         <div v-else class="basis-1/2 flex gap-3 justify-end cursor-pointer">
           <nuxt-link @click="handleLogout">
-            <img src="/assets/svg/logout.svg" alt="Icone de déconnexion">
+            <img src="/assets/svg/logout.svg" alt="Icone de déconnexion" class = "w-4 h-4">
           </nuxt-link>
 
           <nuxt-link to="/profile">
-            <img src="/assets/svg/profile.svg" alt="Icone de profile">
+            <img src="/assets/svg/profile.svg" alt="Icone de profile" class = "w-4 h-4">
           </nuxt-link>
         </div>
       </div>

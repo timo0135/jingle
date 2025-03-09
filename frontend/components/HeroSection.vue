@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {useAPI} from "#imports";
-import {ref, onMounted} from 'vue';
+import { useAPI } from "#imports";
+import { ref, onMounted } from 'vue';
 
 const emit = defineEmits(['changeVisibility']);
 const api = useAPI();
@@ -69,17 +69,17 @@ onMounted(async () => {
 
 <template>
   <main>
-    <div class="font-bungee flex gap-10 items-center justify-between text-primary m-auto w-[95%]" id="hero_section">
-      <div class="basis-9/12 flex flex-col g-4">
-        <h1 class="text-9xl" id="live_text">Jingle <br>en direct</h1>
+    <div class="font-bungee flex flex-col md:flex-row gap-10 items-center justify-between text-primary m-auto w-[95%]"
+      id="hero_section">
+      <div class="basis-full md:basis-9/12 flex flex-col gap-4 text-center md:text-left">
+        <h1 class="text-6xl md:text-9xl" id="live_text">Jingle <br>en direct</h1>
         <button
-            class="border-4 bg-white border-primary font-inter font-extrabold px-16 py-4 rounded-full text-2xl w-fit hover:bg-primary hover:text-white hover:border-white transition"
-            @click="handleDirectClick">Ecouter
+          class="border-4 bg-white border-primary font-inter font-extrabold px-8 md:px-16 py-2 md:py-4 rounded-full text-xl md:text-2xl w-fit hover:bg-primary hover:text-white hover:border-white transition"
+          @click="handleDirectClick">Ecouter
         </button>
       </div>
       <div class="basis-3/12" id="live_show_card">
-        <live-show-card :title="nameDirect" :img="imageDirect" :time_slot="date"
-                        :description="descriptionDirect"/>
+        <live-show-card :title="nameDirect" :img="imageDirect" :time_slot="date" :description="descriptionDirect" />
       </div>
     </div>
   </main>
