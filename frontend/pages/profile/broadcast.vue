@@ -219,7 +219,7 @@ export default defineComponent({
     <h1 class="text-6xl font-bold text-primary">Poste de diffusion</h1>
 
     <h2 class="text-4xl text-primary">Broadcasting</h2>
-    <div class="flex gap-8">
+    <div class="flex flex-col md:flex-row gap-8">
       <button
           class="rounded-lg font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all"
           id="start">Start
@@ -236,7 +236,7 @@ export default defineComponent({
     </div>
 
     <div class="controls flex flex-col gap-4">
-      <div class="flex gap-8">
+      <div class="flex flex-col md:flex-row gap-8">
         <button
             class="rounded-lg font-bungee bg-white border-4 border-primary px-4 py-2 text-primary text-nowrap hover:bg-primary hover:text-white hover:border-white transition-all"
             id="play-audio">Lire l'audio
