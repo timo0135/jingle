@@ -17,7 +17,7 @@ export default {
     return {
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
-        initialView: 'timeGridWeek',
+        initialView: 'timeGridDay',
         locale: frLocale,
         timeZone: 'Europe/Paris',
         themeSystem: 'bootstrap',
@@ -98,6 +98,25 @@ export default {
     <EventForm :isVisible="showEventForm" @close-form="showEventForm = false" :date="selectedDate"
                @create-event="addEvent" class="z-50"/>
 
-    <FullCalendar :options="calendarOptions" class="w-[80%] p-10 z-10"/>
+    <FullCalendar :options="calendarOptions" class="md:h-auto md:w-[80%] md:p-10 z-10 w-96 h-screen p-1"/>
   </div>
 </template>
+
+<style>
+
+@media screen and (max-width: 768px) {
+  #fc-dom-1 {
+    font-size: 1rem;
+  }
+
+  button {
+    font-size: 1rem;
+  }
+  
+  .fc-header-toolbar{
+    --tw-space-x-reverse: 0;
+    margin-right: calc(0.5rem /* 8px */ * var(--tw-space-x-reverse));
+    margin-left: calc(0.5rem /* 8px */ * calc(1 - var(--tw-space-x-reverse)));
+  }
+}
+</style>
